@@ -1,0 +1,38 @@
+#include "../incs/minishell.h"
+
+extern int	fd;
+
+t_tree	*pipeline(t_list **lst)
+{
+	t_tree	*tree;
+
+	if (!lst || !*lst)
+		return (NULL);
+	tree = command(lst);
+	if (consume(PIPE, lst))
+		return (new_tree(PIPE, tree, pipeline(lst)));
+	return (tree);
+}
+
+t_tree	*list(t_list **lst)
+{
+	t_tree	*tree;
+
+	if (!lst || !*lst)
+		return (NULL);
+	tree = pipeline(lst);
+	if (consume(SCOLON, lst))
+		return (new_tree(SCOLON, tree, list(lst)));
+	return (tree);
+}
+
+t_tree	*parser(t_list *lst)
+{
+	t_tree	*tree;
+
+	tree = list(&lst);
+	traverse_tree(tree, 0);
+	if (syntax_error(tree))
+		write(2, "syntax error\n", 13);
+	return (tree);
+}
