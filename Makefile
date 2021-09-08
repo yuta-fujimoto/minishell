@@ -20,18 +20,19 @@ LIBNAME := libft.a
 all :$(NAME)
 
 $(NAME): $(OBJS)
-	@$(MAKE) bonus -C $(LIB) 
+	$(MAKE) bonus -C $(LIB) 
 	$(CC) $(CFLAG) $(CDFLAGS) -I$(INCS) -o $(NAME) $(OBJS) $(LIB)/$(LIBNAME)
 
 debug: $(OBJS)
-	@$(MAKE) bonus -C $(LIB) 
+	$(MAKE) bonus -C $(LIB) 
 	$(CC) $(CFLAG) $(CDFLAGS) -I$(INCS) -o $(NAME) $(OBJS) $(LIB)/$(LIBNAME) -fsanitize=address
 
 clean:
 	rm -f $(OBJS)
-##TODO need to remove libft/*.o too
+	$(MAKE) clean -C $(LIB)
+
 fclean: clean
 	rm -f $(NAME)
-##TODO need to remove libft/libft.a too
+	$(MAKE) fclean -C $(LIB)
 
 re: fclean all
