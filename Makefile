@@ -8,7 +8,8 @@ SRCS :=	srcs/main.c \
 		srcs/parser.c \
 		srcs/parser2.c \
 		srcs/tree.c \
-		srcs/syntax_error.c
+		srcs/syntax_error.c \
+		srcs/execute_tree.c
 OBJS := $(SRCS:.c=.o)
 INCS := ./incs
 LIB := libft

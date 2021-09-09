@@ -60,6 +60,7 @@ int	main(int ac, char **av)
 		tree = parser(lst);
 		if (*input)
 			add_history(input);
+		execute_input(tree);
 		ft_free(&lst, &tree, &input);
 	}
 }

@@ -6,3 +6,51 @@ input >> ls
 
 ====result of parser====
 0 1 >> [ls]
+
+input >> lsl
+
+====result of lexar====
+[lsl]
+
+====result of parser====
+0 1 >> [lsl]
+
+input >> l
+
+====result of lexar====
+[l]
+
+====result of parser====
+0 1 >> [l]
+
+input >> ls
+
+====result of lexar====
+[ls]
+
+====result of parser====
+0 1 >> [ls]
+
+input >> ls
+
+====result of lexar====
+[ls]
+
+====result of parser====
+0 1 >> [ls]
+
+input >> ls
+
+====result of lexar====
+[ls]
+
+====result of parser====
+0 1 >> [ls]
+
+input >> ls
+
+====result of lexar====
+[ls]
+
+====result of parser====
+0 1 >> [ls]

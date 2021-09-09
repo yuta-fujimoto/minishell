@@ -56,4 +56,6 @@ void	traverse_tree(t_tree *l, int h);
 void	free_tree(t_tree *l);
 /* tree library */
 
+void	execute_input(t_tree *l);
+/* execution */
 #endif
