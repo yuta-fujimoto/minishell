@@ -1,7 +1,7 @@
 
 NAME := minishell
 CC 	 := gcc
-CFLAG := -Wall -Werror -Wextra -I $(shell brew --prefix readline)/include
+CFLAG := -Wall -Werror -Wextra -I$(shell brew --prefix readline)/include
 CDFLAGS := -lreadline -lhistory -L$(shell brew --prefix readline)/lib
 SRCS :=	srcs/main.c \
 		srcs/lexar.c \
