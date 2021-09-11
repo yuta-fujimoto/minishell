@@ -53,6 +53,7 @@ static bool	process_cmd(t_node node)
 	char		*cmd;
 	extern char	**environ;
 	char		**paths;
+	int			wstatus;
 
 	if (node.av[0][0] != '/')
 	{
@@ -82,7 +83,9 @@ static bool	process_cmd(t_node node)
 		return (FAILURE);
 	}
 	else
-		wait(NULL);//look into other wait options need waitpit?
+		wait(&wstatus);//look into other wait options need waitpid?
+	if (!WIFEXITED(wstatus))
+		return (FAILURE);
 	return (SUCCESS);
 }
 
