@@ -28,6 +28,8 @@ typedef struct s_tree
 	struct s_tree	*right;
 }	t_tree;
 
+# define FAILURE 1
+# define SUCCESS 0
 # define STR 0
 # define RDIR 1
 # define RRDIR 2
@@ -56,6 +58,6 @@ void	traverse_tree(t_tree *l, int h);
 void	free_tree(t_tree *l);
 /* tree library */
 
-void	execute_input(t_tree *l);
+bool	execute_input(t_tree *l);
 /* execution */
 #endif

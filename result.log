@@ -7,11 +7,17 @@ input >> ls
 ====result of parser====
 0 1 >> [ls]
 
-input >> ls; ls; ls; ls;
+input >> lst
 
 ====result of lexar====
-[ls]
-[;]
+[lst]
+
+====result of parser====
+0 1 >> [lst]
+
+input >> ls; ls; ls;
+
+====result of lexar====
 [ls]
 [;]
 [ls]
@@ -26,49 +32,38 @@ input >> ls; ls; ls; ls;
 	13 0 >> 
 			0 1 >> [ls]
 		13 0 >> 
-				0 1 >> [ls]
-			13 0 >> 
 
-input >> man man
+input >> cta result.log 
 
 ====result of lexar====
-[man]
-[man]
+[cta]
+[result.log]
 
 ====result of parser====
-0 2 >> [man][man]
+0 2 >> [cta][result.log]
 
-input >> vim test.c
-
-====result of lexar====
-[vim]
-[test.c]
-
-====result of parser====
-0 2 >> [vim][test.c]
-
-input >> cat test.c 
+input >> cat result.log 
 
 ====result of lexar====
 [cat]
-[test.c]
+[result.log]
 
 ====result of parser====
-0 2 >> [cat][test.c]
+0 2 >> [cat][result.log]
 
-input >> echo yoyoyo
+input >> ls
+
+====result of lexar====
+[ls]
+
+====result of parser====
+0 1 >> [ls]
+
+input >> echo hey
 
 ====result of lexar====
 [echo]
-[yoyoyo]
+[hey]
 
 ====result of parser====
-0 2 >> [echo][yoyoyo]
-
-input >> env
-
-====result of lexar====
-[env]
-
-====result of parser====
-0 1 >> [env]
+0 2 >> [echo][hey]

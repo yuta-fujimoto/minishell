@@ -1,13 +1,17 @@
 #include "../incs/minishell.h"
-#include <sys/stat.h>
 
 static void	free_paths(char **paths)
 {
-	while (*paths)
+	int	i;
+
+	i = 0;
+	while (paths[i])
 	{
-		free(*paths++);
-		*paths = NULL;	
+		free(paths[i++]);
+		paths[i] = NULL;
 	}
+	free(paths);
+	paths = NULL;
 }
 
 static char	*create_path(char *cmd, char **paths)
@@ -20,15 +24,15 @@ static char	*create_path(char *cmd, char **paths)
 	i = 0;
 	while (paths[i])
 	{
-		abs_path = ft_strcjoin(paths[i], cmd, '/');	
-		if  (stat(abs_path, &ss) == 0 && ss.st_mode & S_IXUSR)
+		abs_path = ft_strcjoin(paths[i], cmd, '/');
+		if ((stat(abs_path, &ss) == 0 && ss.st_mode & S_IXUSR) || !abs_path
+			|| !paths[i + 1])
 			break ;
 		free(abs_path);
 		abs_path = NULL;
 		i++;
 	}
 	free_paths(paths);
-	free(paths);
 	return (abs_path);
 }
 
@@ -43,23 +47,25 @@ static char	**find_paths(void)
 	return (paths);
 }
 
-static void	process_cmd(t_node node)
+static bool	process_cmd(t_node node)
 {
 	pid_t		c_pid;
 	char		*cmd;
 	extern char	**environ;
 	char		**paths;
-	
+
 	if (node.av[0][0] != '/')
 	{
 		paths = find_paths();
-	//figure out what to do in case of NULL (ie, '/' not found or mllc err)
+		if (!paths)
+			return (FAILURE);
 		cmd = create_path(node.av[0], paths);
 	}
 	else
 		cmd = ft_strdup(node.av[0]);
-	//figure out what to do in case of NULL (ie, '/' not found or mllc err)
-	c_pid = fork();	
+	if (!cmd)
+		return (FAILURE);
+	c_pid = fork();
 	if (c_pid == 0)
 	{
 		if (execve(cmd, node.av, environ) == -1)
@@ -71,13 +77,20 @@ static void	process_cmd(t_node node)
 		free(cmd);
 	}
 	else if (c_pid < 0)
-		printf("PID<0");//figure out what to do in case of pid error
+	{
+		dprintf(STDERR_FILENO, "Child process could not be created\n");
+		return (FAILURE);
+	}
 	else
-		wait(NULL);//look into other wait options
+		wait(NULL);//look into other wait options need waitpit?
+	return (SUCCESS);
 }
 
-void	execute_input(t_tree *l)
+bool	execute_input(t_tree *l)
 {
+	int	ret;
+
+	ret = 0;
 	if (l != NULL)
 	{
 		execute_input(l->left);
@@ -86,8 +99,10 @@ void	execute_input(t_tree *l)
 //			if (l->node.av[0] == a builtin cmd)
 //				run_builtin_cmd;
 //			else
-			process_cmd(l->node);
+			if (process_cmd(l->node) == FAILURE)
+				return (FAILURE);
 		}
 		execute_input(l->right);
 	}
+	return (SUCCESS);
 }
