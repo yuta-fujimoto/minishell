@@ -34,23 +34,24 @@ int	main(int ac, char **av)
 	char	*input;
 	t_list	*lst;
 	t_tree	*tree;
+	int		ret;
 
 	(void)ac;
 	(void)av;
 	fd = open("result.log", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR
 			| S_IWUSR | S_IRGRP | S_IROTH);
 	if (signal(SIGINT, sigint_handler) == SIG_ERR)
-		return (0);
+		return (EXIT_SUCCESS);
 	while (1)
 	{
 		input = readline("minishell > ");
 		if (!input || ft_strncmp(input, "exit", 5) == 0)
 		{
 			if (!input)
-				write(1, "exit\n", 5);
+				write(STDOUT_FILENO, "exit\n", 5);
 			else
 				free(input);
-			exit(0);
+			exit(EXIT_SUCCESS);
 		}
 		lst = lexar(input);
 		dprintf(fd, "\ninput >> %s\n", input);
@@ -60,6 +61,9 @@ int	main(int ac, char **av)
 		tree = parser(lst);
 		if (*input)
 			add_history(input);
+		ret = execute_input(tree);
 		ft_free(&lst, &tree, &input);
+		if (ret == FAILURE)
+			exit(EXIT_FAILURE);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: fyuta <fyuta@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/08 22:39:12 by fyuta             #+#    #+#             */
-/*   Updated: 2021/04/21 11:54:49 by fyuta            ###   ########.fr       */
+/*   Updated: 2021/09/10 21:54:25 by jthompso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,5 +67,6 @@ t_list			*ft_lstmap(t_list *lst, void *(*f)(void *),
 					void (*del)(void *));
 t_list			*ft_lstnew(void *word, int flgs);
 int				ft_lstsize(t_list *lst);
+char    *ft_strcjoin(char const *s1, char const *s2, int c);
 
 #endif
