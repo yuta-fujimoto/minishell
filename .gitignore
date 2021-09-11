@@ -1,0 +1,6 @@
+*.o
+libft.a
+minishell
+a.out
+.vscode/*
+result.log
