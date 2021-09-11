@@ -86,7 +86,7 @@ int	ft_export(char **av, t_env **env)
 gcc -Wall -Wextra -Werror srcs/builtin/ft_export.c srcs/builtin/env_utils.c  srcs/builtin/ft_export_utils.c libft/libft.a
 */
 
-int	main(int ac, char **av)
+/* int	main(int ac, char **av)
 {
 	t_env		*env;
 	extern char	**environ;
@@ -97,3 +97,4 @@ int	main(int ac, char **av)
 		print_name_value(env);
 	ft_envclear(&env, free);
 }
+*/
