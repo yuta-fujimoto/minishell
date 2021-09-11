@@ -25,7 +25,7 @@ static char	*create_path(char *cmd, char **paths)
 	while (paths[i])
 	{
 		abs_path = ft_strcjoin(paths[i], cmd, '/');
-		if ((stat(abs_path, &ss) == 0 && ss.st_mode & S_IXUSR) || !abs_path
+		if ((stat(abs_path, &ss) == 0 && (ss.st_mode & S_IXUSR)) || !abs_path
 			|| !paths[i + 1])
 			break ;
 		free(abs_path);
