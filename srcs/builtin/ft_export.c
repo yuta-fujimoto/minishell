@@ -84,7 +84,7 @@ int	ft_export(char **av, t_env **env)
 		else if (type == UPDATE && !ft_export_update(*av, env))
 			return (FAILURE);
 		else if (type == ADD && !ft_export_add(*av, env))
-				return (FAILURE);
+			return (FAILURE);
 		av++;
 	}
 	return (rlt);
