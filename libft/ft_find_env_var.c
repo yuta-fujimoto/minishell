@@ -1,6 +1,6 @@
 #include "libft.h"
 
-t_env	*ft_getenv(t_env *env, char *name)
+t_env	*ft_find_env_var(t_env *env, char *name)
 {
 	if (!env || !name)
 		return (NULL);

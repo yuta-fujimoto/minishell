@@ -1,6 +1,6 @@
 #include "../../incs/minishell.h"
 
-int	ft_export_print(t_env *env)
+bool	ft_export_print(t_env *env)
 {
 	t_env	*tmp;
 	int		env_count;
@@ -24,43 +24,51 @@ int	ft_export_print(t_env *env)
 		i++;
 	}
 	print_name_value(tmp);
-	return (SUCCESS);
+	return (true);
 }
 
-void	ft_export_update(char *s, t_env **env)
+bool	ft_export_update(char *s, t_env **env)
 {
 	char	*name;
 
 	name = get_name(s);
-	if (ft_getenv(*env, name))
+	if (ft_find_env_var(*env, name))
 		delete_env(env, name);
-	ft_envadd_back(env, ft_envnew(get_name(s), get_value(s)));
-	free(name);
+	return (ft_envadd_back(env, ft_envnew(name, get_value(s))));
 }
 
-void	ft_export_add(char *s, t_env **env)
+bool	ft_export_add(char *s, t_env **env)
 {
 	t_env	*p;
 	char	*tmp;
 	char	*name;
+	char	*value;
 
 	name = get_name(s);
-	p = ft_getenv(*env, name);
-	if (!p)
-		ft_envadd_back(env, ft_envnew(get_name(s), get_value(s)));
-	else
+	value = get_value(s);
+	if (!name || !value)
 	{
-		tmp = p->name;
-		p->name = ft_strjoin(tmp, name);
-		free(name);
-		free(tmp);
+		if (name && !value)
+			free(name);
+		return (false);
 	}
+	p = ft_find_env_var(*env, name);
+	if (!p)
+		return (ft_envadd_back(env, ft_envnew(name, value)));
+	tmp = p->value;
+	p->value = ft_strjoin(tmp, value);
+	free(value);
+	free(name);
+	free(tmp);
+	if (!p->value)
+		return (false);
+	return (true);
 }
 
 int	ft_export(char **av, t_env **env)
 {
-	int			type;
-	int			rlt;
+	int	type;
+	int	rlt;
 
 	if (!*(++av))
 		return (ft_export_print(*env));
@@ -73,10 +81,10 @@ int	ft_export(char **av, t_env **env)
 			ft_putendl_fd("not a valid identifier", STDOUT_FILENO);
 			rlt = FAILURE;
 		}
-		else if (type == UPDATE)
-			ft_export_update(*av, env);
-		else if (type == ADD)
-			ft_export_add(*av, env);
+		else if (type == UPDATE && !ft_export_update(*av, env))
+			return (FAILURE);
+		else if (type == ADD && !ft_export_add(*av, env))
+				return (FAILURE);
 		av++;
 	}
 	return (rlt);
@@ -86,7 +94,8 @@ int	ft_export(char **av, t_env **env)
 gcc -Wall -Wextra -Werror srcs/builtin/ft_export.c srcs/builtin/env_utils.c  srcs/builtin/ft_export_utils.c libft/libft.a
 */
 
-/* int	main(int ac, char **av)
+/*
+int	main(int ac, char **av)
 {
 	t_env		*env;
 	extern char	**environ;

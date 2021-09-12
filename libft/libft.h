@@ -16,6 +16,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <limits.h>
+# include <stdbool.h>
 
 typedef struct s_list
 {
@@ -76,12 +77,12 @@ t_list			*ft_lstmap(t_list *lst, void *(*f)(void *),
 t_list			*ft_lstnew(void *word, int flgs);
 int				ft_lstsize(t_list *lst);
 char			*ft_strcjoin(char const *s1, char const *s2, int c);
-void			ft_envadd_back(t_env **env, t_env *new);
+bool			ft_envadd_back(t_env **env, t_env *new);
 void			ft_envclear(t_env **env, void (*del)(void *));
 void			ft_envdelone(t_env *env, void (*del)(void*));
 void			ft_enviter(t_env *env, void (*f)(void *));
 t_env			*ft_envnew(char *name, char *value);
 int				ft_envsize(t_env *env);
-t_env			*ft_getenv(t_env *env, char *name);
+t_env			*ft_find_env_var(t_env *env, char *name);
 
 #endif
