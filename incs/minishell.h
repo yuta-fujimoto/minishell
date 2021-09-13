@@ -11,6 +11,7 @@
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <sys/stat.h>
+# include <limits.h>
 # include "../libft/libft.h"
 
 typedef struct s_node
@@ -43,6 +44,12 @@ typedef struct s_tree
 # define DAND 12
 # define SCOLON 13
 
+# define ADD 14
+# define UPDATE 15
+# define ERROR 16
+# define NOTHING 17
+/* buildin_export */
+
 t_list	*lexar(char *line);
 /* lexar */
 
@@ -60,4 +67,15 @@ void	free_tree(t_tree *l);
 
 bool	execute_input(t_tree *l);
 /* execution */
+
+int		identifier_type(char *s);
+void	delete_env(t_env **env, char *name);
+void	print_name_value(t_env *env);
+void	ft_swap_env(t_env *a, t_env *b);
+t_env	*environ_to_list(char **environ);
+char	*get_value(char *s);
+char	*get_name(char *s);
+int		ft_export(char **av, t_env **env);
+/* builtin */
+
 #endif

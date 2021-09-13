@@ -91,9 +91,6 @@ static bool	process_cmd(t_node node)
 
 bool	execute_input(t_tree *l)
 {
-	int	ret;
-
-	ret = 0;
 	if (l != NULL)
 	{
 		execute_input(l->left);
