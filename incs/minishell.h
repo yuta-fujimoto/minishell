@@ -78,4 +78,7 @@ char	*get_name(char *s);
 int		ft_export(char **av, t_env **env);
 /* builtin */
 
+bool	pipe_node(t_node l, t_node r);
+/* piping */
+
 #endif

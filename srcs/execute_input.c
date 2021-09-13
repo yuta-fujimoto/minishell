@@ -93,16 +93,24 @@ bool	execute_input(t_tree *l)
 {
 	if (l != NULL)
 	{
-		execute_input(l->left);
-		if (l->node.av)
+		if (l->node.flgs == PIPE)
 		{
-//			if (l->node.av[0] == a builtin cmd)
-//				run_builtin_cmd;
-//			else
-			if (process_cmd(l->node) == FAILURE)
+			if (pipe_node(l->left, l->right) == FAILURE)
 				return (FAILURE);
 		}
-		execute_input(l->right);
+		else
+		{
+			execute_input(l->left);
+			if (l->node.av)
+			{
+//				if (l->node.av[0] == a builtin cmd)
+//					run_builtin_cmd;
+//				else
+				if (process_cmd(l->node) == FAILURE)
+					return (FAILURE);
+			}
+			execute_input(l->right);
+		}
 	}
 	return (SUCCESS);
 }
