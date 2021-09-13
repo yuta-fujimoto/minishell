@@ -46,12 +46,6 @@ bool	ft_export_add(char *s, t_env **env)
 
 	name = get_name(s);
 	value = get_value(s);
-	if (!name || !value)
-	{
-		if (name && !value)
-			free(name);
-		return (false);
-	}
 	p = ft_find_env_var(*env, name);
 	if (!p)
 		return (ft_envadd_back(env, ft_envnew(name, value)));
