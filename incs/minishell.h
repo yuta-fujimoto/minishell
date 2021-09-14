@@ -79,6 +79,7 @@ int		ft_export(char **av, t_env **env);
 /* builtin */
 
 bool	pipe_node(t_node l, t_node r);
+char	*create_cmd_path(t_node node);
 /* piping */
 
 #endif

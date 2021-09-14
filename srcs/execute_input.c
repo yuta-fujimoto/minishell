@@ -47,39 +47,47 @@ static char	**find_paths(void)
 	return (paths);
 }
 
-static bool	process_cmd(t_node node)
+char	*create_cmd_path(t_node node)
 {
-	pid_t		c_pid;
-	char		*cmd;
-	extern char	**environ;
-	char		**paths;
-	int			wstatus;
+	char	**paths;
+	char	*cmd_path;
 
 	if (node.av[0][0] != '/')
 	{
 		paths = find_paths();
 		if (!paths)
-			return (FAILURE);
-		cmd = create_path(node.av[0], paths);
+			return (NULL);
+		cmd_path = create_path(node.av[0], paths);
 	}
 	else
-		cmd = ft_strdup(node.av[0]);
-	if (!cmd)
+		cmd_path = ft_strdup(node.av[0]);
+	return(cmd_path);
+}
+
+static bool	process_cmd(t_node node)
+{
+	pid_t		c_pid;
+	char		*cmd_path;
+	extern char	**environ;	
+	int			wstatus;
+
+	cmd_path = create_cmd_path(node);
+	if (!cmd_path)
 		return (FAILURE);
 	c_pid = fork();
 	if (c_pid == 0)
 	{
-		if (execve(cmd, node.av, environ) == -1)
+		if (execve(cmd_path, node.av, environ) == -1)
 		{
 			printf("minishell: %s: command not found\n", node.av[0]);
-			free(cmd);
+			free(cmd_path);
 			exit (EXIT_FAILURE);
 		}
-		free(cmd);
+		free(cmd_path);
 	}
 	else if (c_pid < 0)
 	{
-		dprintf(STDERR_FILENO, "Child process could not be created\n");
+		ft_putendl_fd("Child process could not be created", STDERR_FILENO);
 		return (FAILURE);
 	}
 	else
@@ -95,7 +103,7 @@ bool	execute_input(t_tree *l)
 	{
 		if (l->node.flgs == PIPE)
 		{
-			if (pipe_node(l->left, l->right) == FAILURE)
+			if (pipe_node(l->left->node, l->right->node) == FAILURE)
 				return (FAILURE);
 		}
 		else
