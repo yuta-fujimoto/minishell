@@ -96,9 +96,9 @@ bool	execute_input(t_tree *l)
 		execute_input(l->left);
 		if (l->node.av)
 		{
-//			if (l->node.av[0] == a builtin cmd)
-//				run_builtin_cmd;
-//			else
+			if (is_buildin(l->node.av[0]))
+				run_builtin_cmd(l->node.av);
+			else
 			if (process_cmd(l->node) == FAILURE)
 				return (FAILURE);
 		}

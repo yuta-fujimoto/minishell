@@ -9,7 +9,12 @@ SRCS :=	srcs/main.c \
 		srcs/parser2.c \
 		srcs/tree.c \
 		srcs/syntax_error.c \
-		srcs/execute_input.c
+		srcs/execute_input.c \
+		srcs/builtin/ft_export.c \
+		srcs/builtin/ft_env.c \
+		srcs/builtin/ft_export_utils.c \
+		srcs/builtin/env_utils.c \
+		srcs/builtin/buildin.c
 OBJS := $(SRCS:.c=.o)
 INCS := ./incs
 LIB := libft
@@ -20,13 +25,25 @@ LIBNAME := libft.a
 
 all :$(NAME)
 
+ifeq ($(shell uname),Linux)
 $(NAME): $(OBJS)
-	$(MAKE) bonus -C $(LIB) 
+	$(MAKE) bonus -C $(LIB)
+	$(CC) $(CFLAG)-I$(INCS) -o $(NAME) $(OBJS) $(LIB)/$(LIBNAME) $(CDFLAGS) 
+else
+$(NAME): $(OBJS)
+	$(MAKE) bonus -C $(LIB)
 	$(CC) $(CFLAG) $(CDFLAGS) -I$(INCS) -o $(NAME) $(OBJS) $(LIB)/$(LIBNAME)
+endif
 
+ifeq ($(shell uname),Linux)
 debug: $(OBJS)
-	$(MAKE) bonus -C $(LIB) 
+	$(MAKE) bonus -C $(LIB)
+	$(CC) $(CFLAG)-I$(INCS) -o $(NAME) $(OBJS) $(LIB)/$(LIBNAME) $(CDFLAGS) -fsanitize=address
+else
+debug: $(OBJS)
+	$(MAKE) bonus -C $(LIB)
 	$(CC) $(CFLAG) $(CDFLAGS) -I$(INCS) -o $(NAME) $(OBJS) $(LIB)/$(LIBNAME) -fsanitize=address
+endif
 
 clean:
 	rm -f $(OBJS)

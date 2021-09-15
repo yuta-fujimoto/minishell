@@ -15,7 +15,6 @@ void	sigint_handler(int signal)
 	write(1, "\n", 1);
 	rl_redisplay();
 }
-// I don't know how each setences in this function works.
 
 void	ft_free(t_list **lst, t_tree **tree, char **input)
 {
@@ -35,9 +34,12 @@ int	main(int ac, char **av)
 	t_list	*lst;
 	t_tree	*tree;
 	int		ret;
+	extern char **environ;
 
 	(void)ac;
 	(void)av;
+	if (!environ)
+		return (EXIT_FAILURE);
 	fd = open("result.log", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR
 			| S_IWUSR | S_IRGRP | S_IROTH);
 	if (signal(SIGINT, sigint_handler) == SIG_ERR)
@@ -51,6 +53,7 @@ int	main(int ac, char **av)
 				write(STDOUT_FILENO, "exit\n", 5);
 			else
 				free(input);
+			free_environ(environ);
 			exit(EXIT_SUCCESS);
 		}
 		lst = lexar(input);
