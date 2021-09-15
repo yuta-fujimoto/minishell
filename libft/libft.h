@@ -6,7 +6,7 @@
 /*   By: fyuta <fyuta@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/08 22:39:12 by fyuta             #+#    #+#             */
-/*   Updated: 2021/09/14 21:26:48 by jthompso         ###   ########.fr       */
+/*   Updated: 2021/09/15 15:24:56 by jthompso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 # include <limits.h>
 # include <stdbool.h>
 
-# define BUFFER_SIZE 32
-# define MAX_FD 10
 typedef struct s_list
 {
 	char			*word;
