@@ -9,7 +9,8 @@ SRCS :=	srcs/main.c \
 		srcs/parser2.c \
 		srcs/tree.c \
 		srcs/syntax_error.c \
-		srcs/execute_input.c
+		srcs/execute_input.c \
+		srcs/pipe_node.c
 OBJS := $(SRCS:.c=.o)
 INCS := ./incs
 LIB := libft

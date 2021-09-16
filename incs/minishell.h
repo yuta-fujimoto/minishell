@@ -66,6 +66,9 @@ void	free_tree(t_tree *l);
 /* tree library */
 
 bool	execute_input(t_tree *l);
+bool	execve_error(char *cmd, char *cmd_path);
+bool	minishell_error(void);
+bool	wait_options(pid_t pid);
 /* execution */
 
 int		identifier_type(char *s);
@@ -77,5 +80,9 @@ char	*get_value(char *s);
 char	*get_name(char *s);
 int		ft_export(char **av, t_env **env);
 /* builtin */
+
+bool	pipe_node(t_node l, t_node r);
+char	*create_cmd_path(t_node node);
+/* piping */
 
 #endif
