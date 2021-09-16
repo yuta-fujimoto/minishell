@@ -1,5 +1,15 @@
 #include "../incs/minishell.h"
 
+bool		execve_error(char *cmd, char *cmd_path)
+{
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(cmd, STDERR_FILENO);
+	ft_putendl_fd(": command not found", STDERR_FILENO);
+	free(cmd_path);
+	cmd_path = NULL;
+	return (EXIT_FAILURE);
+}
+
 static void	free_paths(char **paths)
 {
 	int	i;
@@ -10,7 +20,8 @@ static void	free_paths(char **paths)
 		free(paths[i++]);
 		paths[i] = NULL;
 	}
-	free(paths);
+	if (paths)
+		free(paths);
 	paths = NULL;
 }
 
@@ -73,27 +84,24 @@ static bool	process_cmd(t_node node)
 
 	cmd_path = create_cmd_path(node);
 	if (!cmd_path)
-		return (FAILURE);
+		return (minishell_error());
 	c_pid = fork();
 	if (c_pid == 0)
 	{
 		if (execve(cmd_path, node.av, environ) == -1)
-		{
-			printf("minishell: %s: command not found\n", node.av[0]);
-			free(cmd_path);
-			exit (EXIT_FAILURE);
-		}
+			exit (execve_error(node.av[0], cmd_path));
 		free(cmd_path);
 	}
 	else if (c_pid < 0)
 	{
 		ft_putendl_fd("Child process could not be created", STDERR_FILENO);
-		return (FAILURE);
+		return (minishell_error());
 	}
 	else
 		wait(&wstatus);//look into other wait options need waitpid?
+	//maybe use wait options function
 	if (!WIFEXITED(wstatus))
-		return (FAILURE);
+		return (minishell_error());
 	return (SUCCESS);
 }
 
@@ -104,7 +112,7 @@ bool	execute_input(t_tree *l)
 		if (l->node.flgs == PIPE)
 		{
 			if (pipe_node(l->left->node, l->right->node) == FAILURE)
-				return (FAILURE);
+				return (minishell_error());
 		}
 		else
 		{
@@ -115,7 +123,7 @@ bool	execute_input(t_tree *l)
 //					run_builtin_cmd;
 //				else
 				if (process_cmd(l->node) == FAILURE)
-					return (FAILURE);
+					return (minishell_error());
 			}
 			execute_input(l->right);
 		}

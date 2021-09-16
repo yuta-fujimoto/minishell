@@ -66,6 +66,8 @@ void	free_tree(t_tree *l);
 /* tree library */
 
 bool	execute_input(t_tree *l);
+bool	execve_error(char *cmd, char *cmd_path);
+bool	minishell_error(void);
 /* execution */
 
 int		identifier_type(char *s);

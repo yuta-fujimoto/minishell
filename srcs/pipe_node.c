@@ -1,8 +1,13 @@
 #include "../incs/minishell.h"
 
-static bool	pipe_exit_failure(int *fd, char *message)
+bool		minishell_error(void)
 {
-	ft_putendl_fd(message, STDERR_FILENO);
+	ft_putendl_fd("minishell:error", STDERR_FILENO);
+	return (FAILURE);
+}
+
+static bool	pipe_exit_failure(int *fd)
+{
 	if (fd)
 	{
 		if (fd[0])
@@ -10,7 +15,7 @@ static bool	pipe_exit_failure(int *fd, char *message)
 		if (fd[1])
 			close(fd[1]);
 	}
-	return (false);
+	return (minishell_error());
 }
 
 static void	update_pipe(int *fd, int option)
@@ -35,7 +40,7 @@ static bool	wait_options(pid_t pid)
 
 	waitpid(pid, &wstatus, 0);
 	if (!WIFEXITED(wstatus))
-		return (FAILURE);
+		return (minishell_error());
 	return (SUCCESS);
 }
 
@@ -46,24 +51,20 @@ static bool	process_child(int *fd, char **environ, t_node node, int option)
 
 	cmd_path = create_cmd_path(node);
 	if (!cmd_path)
-		return (FAILURE);
+		return (minishell_error());
 	pid = fork();
 	if (pid < 0)
-		return (FAILURE);
+		return (minishell_error());
 	else if (pid > 0)
 	{
 		if (wait_options(pid) == FAILURE)
-			return (FAILURE);
+			return (minishell_error());
 	}
 	else
 	{
 		update_pipe(fd, option);
 		if (execve(cmd_path, node.av, environ) == -1)
-		{
-			printf("minishell: %s: command not found\n", node.av[0]);
-			free(cmd_path);
-			exit(EXIT_FAILURE);
-		}		
+			exit (execve_error(node.av[0], cmd_path));
 		free(cmd_path);
 	}
 	return (SUCCESS);
@@ -75,14 +76,14 @@ bool	pipe_node(t_node l, t_node r)
 	extern char	**environ;
 
 	if (pipe(fd) == -1)
-		return (pipe_exit_failure(NULL, "minishell pipe error1"));
+		return (minishell_error());
 	//if builtin do builtin, else process child l
 	if (process_child(fd, environ, l, 1) == FAILURE)
-		return (pipe_exit_failure(fd, "minishell pipe error2"));
+		return (pipe_exit_failure(fd));
 	close(fd[1]);
 	//if builtin do builtin, else process child r
 	if (process_child(fd, environ, r, 0) == FAILURE)
-		return (pipe_exit_failure(fd, "minishell pipe error3"));
+		return (pipe_exit_failure(fd));
 	close(fd[0]);
 	return (SUCCESS);
 }
