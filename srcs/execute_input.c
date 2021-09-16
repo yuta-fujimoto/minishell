@@ -10,19 +10,19 @@ bool		execve_error(char *cmd, char *cmd_path)
 	return (EXIT_FAILURE);
 }
 
-static void	free_paths(char **paths)
+static void	free_str_arr(char **str_arr)
 {
 	int	i;
 
 	i = 0;
-	while (paths[i])
+	while (str_arr[i])
 	{
-		free(paths[i++]);
-		paths[i] = NULL;
+		free(str_arr[i]);
+		str_arr[i++] = NULL;
 	}
-	if (paths)
-		free(paths);
-	paths = NULL;
+	if (str_arr)
+		free(str_arr);
+	str_arr = NULL;
 }
 
 static char	*create_path(char *cmd, char **paths)
@@ -43,7 +43,7 @@ static char	*create_path(char *cmd, char **paths)
 		abs_path = NULL;
 		i++;
 	}
-	free_paths(paths);
+	free_str_arr(paths);
 	return (abs_path);
 }
 
@@ -79,8 +79,7 @@ static bool	process_cmd(t_node node)
 {
 	pid_t		c_pid;
 	char		*cmd_path;
-	extern char	**environ;	
-	int			wstatus;
+	extern char	**environ;
 
 	cmd_path = create_cmd_path(node);
 	if (!cmd_path)
@@ -89,8 +88,7 @@ static bool	process_cmd(t_node node)
 	if (c_pid == 0)
 	{
 		if (execve(cmd_path, node.av, environ) == -1)
-			exit (execve_error(node.av[0], cmd_path));
-		free(cmd_path);
+			exit (execve_error(node.av[0], cmd_path));	
 	}
 	else if (c_pid < 0)
 	{
@@ -98,10 +96,11 @@ static bool	process_cmd(t_node node)
 		return (minishell_error());
 	}
 	else
-		wait(&wstatus);//look into other wait options need waitpid?
-	//maybe use wait options function
-	if (!WIFEXITED(wstatus))
-		return (minishell_error());
+	{
+		if (wait_options(c_pid) == FAILURE)
+			return (minishell_error());
+		free(cmd_path);
+	}
 	return (SUCCESS);
 }
 

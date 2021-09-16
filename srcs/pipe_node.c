@@ -34,7 +34,7 @@ static void	update_pipe(int *fd, int option)
 	}
 }
 
-static bool	wait_options(pid_t pid)
+bool	wait_options(pid_t pid)
 {
 	int	wstatus;
 
@@ -59,13 +59,13 @@ static bool	process_child(int *fd, char **environ, t_node node, int option)
 	{
 		if (wait_options(pid) == FAILURE)
 			return (minishell_error());
+		free(cmd_path);
 	}
 	else
 	{
 		update_pipe(fd, option);
 		if (execve(cmd_path, node.av, environ) == -1)
 			exit (execve_error(node.av[0], cmd_path));
-		free(cmd_path);
 	}
 	return (SUCCESS);
 }

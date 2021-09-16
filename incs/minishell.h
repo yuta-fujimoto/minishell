@@ -68,6 +68,7 @@ void	free_tree(t_tree *l);
 bool	execute_input(t_tree *l);
 bool	execve_error(char *cmd, char *cmd_path);
 bool	minishell_error(void);
+bool	wait_options(pid_t pid);
 /* execution */
 
 int		identifier_type(char *s);
