@@ -1,5 +1,14 @@
 #include "../../incs/minishell.h"
 
+void	ft_export_error(char *arg, int *rlt)
+{
+	ft_putstr_fd("minishell: export: ", STDERR_FILENO);
+	ft_putchar_fd('\'', STDERR_FILENO);
+	ft_putstr_fd(arg, STDERR_FILENO);
+	ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
+	*rlt = FAILURE;
+}
+
 int	identifier_type(char *s)
 {
 	size_t	i;

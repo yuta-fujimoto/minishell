@@ -1,4 +1,4 @@
-#include "../incs/minishell.h"
+#include "../../incs/minishell.h"
 
 int	ft_pwd(void)
 {

@@ -10,11 +10,15 @@ SRCS :=	srcs/main.c \
 		srcs/tree.c \
 		srcs/syntax_error.c \
 		srcs/execute_input.c \
+		srcs/builtin/ft_exit.c \
 		srcs/builtin/ft_export.c \
 		srcs/builtin/ft_env.c \
+		srcs/builtin/ft_unset.c \
+		srcs/builtin/ft_pwd.c \
 		srcs/builtin/ft_export_utils.c \
 		srcs/builtin/env_utils.c \
-		srcs/builtin/buildin.c
+		srcs/builtin/buildin.c \
+		srcs/pipe_node.c
 OBJS := $(SRCS:.c=.o)
 INCS := ./incs
 LIB := libft

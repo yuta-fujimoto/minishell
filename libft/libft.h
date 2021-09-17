@@ -6,7 +6,7 @@
 /*   By: fyuta <fyuta@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/08 22:39:12 by fyuta             #+#    #+#             */
-/*   Updated: 2021/09/10 21:54:25 by jthompso         ###   ########.fr       */
+/*   Updated: 2021/09/15 15:24:56 by jthompso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ typedef struct s_env
 }	t_env;
 
 int				ft_atoi(const char *nptr);
+long			ft_atol(const char *nptr, int *flg);
 void			ft_bzero(void *s, size_t n);
 void			*ft_calloc(size_t nmemb, size_t size);
 int				ft_isalnum(int c);
