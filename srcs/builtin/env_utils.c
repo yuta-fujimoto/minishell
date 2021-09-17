@@ -31,7 +31,7 @@ t_env	*environ_to_list(void)
 	while (*tmp)
 	{
 		if (!ft_envadd_back(&env,
-			ft_envnew(get_name(*tmp), get_value(*tmp))))
+				ft_envnew(get_name(*tmp), get_value(*tmp))))
 		{
 			ft_envclear(&env, free);
 			return (NULL);

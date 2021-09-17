@@ -15,9 +15,9 @@ bool	is_buildin(char *cmd)
 	return (false);
 }
 
-int		run_builtin_cmd(char **av, t_set *set)
+int	run_builtin_cmd(char **av, t_set *set)
 {
-	int			rlt;
+	int	rlt;
 
 	if (ft_strncmp(av[0], "export", 7) == 0)
 		rlt = ft_export(av);

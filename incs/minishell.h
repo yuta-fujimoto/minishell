@@ -58,7 +58,9 @@ typedef struct s_set
 # define NOTHING 17
 /* buildin_export */
 
+void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
+/* utils */
 
 t_list	*lexar(char *line);
 /* lexar */
@@ -89,7 +91,6 @@ void	ft_swap_env(t_env *a, t_env *b);
 t_env	*environ_to_list(void);
 char	**list_to_environ(t_env *env);
 void	free_environ(void);
-void	free_str_arr(char **str_arr);
 char	*get_value(char *s);
 char	*get_name(char *s);
 int		ft_export(char **av);

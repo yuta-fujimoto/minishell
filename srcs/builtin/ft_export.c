@@ -1,6 +1,6 @@
 #include "../../incs/minishell.h"
 
-int		ft_export_end(t_env *env, int rlt)
+int	ft_export_end(t_env *env, int rlt)
 {
 	extern char	**environ;
 

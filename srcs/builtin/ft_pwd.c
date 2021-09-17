@@ -2,7 +2,7 @@
 
 int	ft_pwd(void)
 {
-	char pathname[PATH_MAX];
+	char	pathname[PATH_MAX];
 
 	if (getcwd(pathname, PATH_MAX))
 	{
