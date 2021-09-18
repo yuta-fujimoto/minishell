@@ -88,7 +88,7 @@ static bool	process_cmd(t_node node)
 	if (c_pid == 0)
 	{
 		if (execve(cmd_path, node.av, environ) == -1)
-			exit (execve_error(node.av[0], cmd_path));
+			exit (execve_error(node.av[0], cmd_path));	
 	}
 	else if (c_pid < 0)
 	{
