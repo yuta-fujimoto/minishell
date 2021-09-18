@@ -10,7 +10,7 @@ bool		execve_error(char *cmd, char *cmd_path)
 	return (EXIT_FAILURE);
 }
 
-static void	free_str_arr(char **str_arr)
+void	free_str_arr(char **str_arr)
 {
 	int	i;
 
@@ -104,7 +104,7 @@ static bool	process_cmd(t_node node)
 	return (SUCCESS);
 }
 
-bool	execute_input(t_tree *l)
+bool	execute_input(t_tree *l, t_set *set)
 {
 	if (l != NULL)
 	{
@@ -115,16 +115,18 @@ bool	execute_input(t_tree *l)
 		}
 		else
 		{
-			execute_input(l->left);
+			execute_input(l->left, set);
 			if (l->node.av)
 			{
-//				if (l->node.av[0] == a builtin cmd)
-//					run_builtin_cmd;
-//				else
-				if (process_cmd(l->node) == FAILURE)
+				if (is_buildin(l->node.av[0]))
+				{
+					if (run_builtin_cmd(l->node.av, set) == FAILURE)
+						return (minishell_error());
+				}
+				else if (process_cmd(l->node) == FAILURE)
 					return (minishell_error());
 			}
-			execute_input(l->right);
+			execute_input(l->right, set);
 		}
 	}
 	return (SUCCESS);

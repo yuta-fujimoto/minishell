@@ -12,6 +12,7 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <limits.h>
+# include <errno.h>
 # include "../libft/libft.h"
 
 typedef struct s_node
@@ -28,6 +29,13 @@ typedef struct s_tree
 	struct s_tree	*left;
 	struct s_tree	*right;
 }	t_tree;
+
+typedef struct s_set
+{
+	t_tree	*tree;
+	char	*input;
+	t_list	*lst;
+}	t_set;
 
 # define FAILURE 1
 # define SUCCESS 0
@@ -50,6 +58,10 @@ typedef struct s_tree
 # define NOTHING 17
 /* buildin_export */
 
+void	free_str_arr(char **str_arr);
+void	free_set(t_set *set);
+/* utils */
+
 t_list	*lexar(char *line);
 /* lexar */
 
@@ -65,20 +77,29 @@ void	traverse_tree(t_tree *l, int h);
 void	free_tree(t_tree *l);
 /* tree library */
 
-bool	execute_input(t_tree *l);
+bool	execute_input(t_tree *l, t_set *set);
 bool	execve_error(char *cmd, char *cmd_path);
 bool	minishell_error(void);
 bool	wait_options(pid_t pid);
 /* execution */
 
+void	ft_export_error(char *arg);
 int		identifier_type(char *s);
 void	delete_env(t_env **env, char *name);
 void	print_name_value(t_env *env);
 void	ft_swap_env(t_env *a, t_env *b);
-t_env	*environ_to_list(char **environ);
+t_env	*environ_to_list(void);
+char	**list_to_environ(t_env *env);
+void	free_environ(void);
 char	*get_value(char *s);
 char	*get_name(char *s);
-int		ft_export(char **av, t_env **env);
+int		ft_export(char **av);
+bool	ft_env(void);
+int		ft_unset(char **av);
+int		ft_pwd(void);
+bool	ft_exit(char **av, t_set *set);
+bool	is_buildin(char *cmd);
+int		run_builtin_cmd(char **av, t_set *set);
 /* builtin */
 
 bool	pipe_node(t_node l, t_node r);

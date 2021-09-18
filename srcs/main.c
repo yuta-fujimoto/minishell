@@ -15,25 +15,22 @@ void	sigint_handler(int signal)
 	write(1, "\n", 1);
 	rl_redisplay();
 }
-// I don't know how each setences in this function works.
 
-void	ft_free(t_list **lst, t_tree **tree, char **input)
+void	free_set(t_set *set)
 {
-	ft_lstclear(lst, free);
-	free_tree(*tree);
-	*tree = NULL;
-	if (input)
+	ft_lstclear(&set->lst, free);
+	free_tree(set->tree);
+	set->tree = NULL;
+	if (set->input)
 	{
-		free(*input);
-		*input = NULL;
+		free(set->input);
+		set->input = NULL;
 	}
 }
 
 int	main(int ac, char **av)
 {
-	char	*input;
-	t_list	*lst;
-	t_tree	*tree;
+	t_set	set;
 	int		ret;
 
 	(void)ac;
@@ -44,25 +41,23 @@ int	main(int ac, char **av)
 		return (EXIT_SUCCESS);
 	while (1)
 	{
-		input = readline("minishell > ");
-		if (!input || ft_strncmp(input, "exit", 5) == 0)
+		set.input = readline("minishell > ");
+		if (!set.input)
 		{
-			if (!input)
+			if (!set.input)
 				write(STDOUT_FILENO, "exit\n", 5);
-			else
-				free(input);
 			exit(EXIT_SUCCESS);
 		}
-		lst = lexar(input);
-		dprintf(fd, "\ninput >> %s\n", input);
+		set.lst = lexar(set.input);
+		dprintf(fd, "\ninput >> %s\n", set.input);
 		dprintf(fd, "\n====result of lexar====\n");
-		ft_lstiter(lst, ft_printf);
+		ft_lstiter(set.lst, ft_printf);
 		dprintf(fd, "\n====result of parser====\n");
-		tree = parser(lst);
-		if (*input)
-			add_history(input);
-		ret = execute_input(tree);
-		ft_free(&lst, &tree, &input);
+		set.tree = parser(set.lst);
+		if (*set.input)
+			add_history(set.input);
+		ret = execute_input(set.tree, &set);
+		free_set(&set);
 		if (ret == FAILURE)
 			exit(EXIT_FAILURE);
 	}

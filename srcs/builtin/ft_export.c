@@ -1,5 +1,17 @@
 #include "../../incs/minishell.h"
 
+int	ft_export_end(t_env *env, int rlt)
+{
+	extern char	**environ;
+
+	free_environ();
+	environ = list_to_environ(env);
+	if (!environ)
+		rlt = FAILURE;
+	ft_envclear(&env, free);
+	return (rlt);
+}
+
 bool	ft_export_print(t_env *env)
 {
 	t_env	*tmp;
@@ -59,45 +71,27 @@ bool	ft_export_add(char *s, t_env **env)
 	return (true);
 }
 
-int	ft_export(char **av, t_env **env)
+int	ft_export(char **av)
 {
-	int	type;
-	int	rlt;
-
-	if (!*(++av))
-		return (ft_export_print(*env));
-	while (*av)
-	{
-		rlt = SUCCESS;
-		type = identifier_type(*av);
-		if (type == ERROR)
-		{
-			ft_putendl_fd("not a valid identifier", STDOUT_FILENO);
-			rlt = FAILURE;
-		}
-		else if (type == UPDATE && !ft_export_update(*av, env))
-			return (FAILURE);
-		else if (type == ADD && !ft_export_add(*av, env))
-			return (FAILURE);
-		av++;
-	}
-	return (rlt);
-}
-
-/* debug
-gcc -Wall -Wextra -Werror srcs/builtin/ft_export.c srcs/builtin/env_utils.c  srcs/builtin/ft_export_utils.c libft/libft.a
-*/
-
-/*
-int	main(int ac, char **av)
-{
+	int			type;
 	t_env		*env;
 	extern char	**environ;
 
-	(void)ac;
-	env = environ_to_list(environ);
-	if (ft_export(av, &env) == SUCCESS)
-		print_name_value(env);
-	ft_envclear(&env, free);
+	env = environ_to_list();
+	if (!env)
+		return (FAILURE);
+	if (!*(++av))
+		return (ft_export_print(env));
+	while (*av)
+	{
+		type = identifier_type(*av);
+		if (type == ERROR)
+			ft_export_error(*av);
+		else if (type == UPDATE && !ft_export_update(*av, &env))
+			return (ft_export_end(env, FAILURE));
+		else if (type == ADD && !ft_export_add(*av, &env))
+			return (ft_export_end(env, FAILURE));
+		av++;
+	}
+	return (ft_export_end(env, SUCCESS));
 }
-*/
