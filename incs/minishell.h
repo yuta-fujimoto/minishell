@@ -83,7 +83,7 @@ bool	minishell_error(void);
 bool	wait_options(pid_t pid);
 /* execution */
 
-void	ft_export_error(char *arg, int *rlt);
+void	ft_export_error(char *arg);
 int		identifier_type(char *s);
 void	delete_env(t_env **env, char *name);
 void	print_name_value(t_env *env);

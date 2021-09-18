@@ -9,9 +9,7 @@ int	ft_unset(char **av)
 	env = environ_to_list();
 	if (!env)
 		return (FAILURE);
-	if (!av)
-		return (SUCCESS);
-	i = 0;
+	i = 1;
 	while (av[i])
 	{
 		delete_env(&env, av[i]);
@@ -20,5 +18,7 @@ int	ft_unset(char **av)
 	free_environ();
 	environ = list_to_environ(env);
 	ft_envclear(&env, free);
+	if (!environ)
+		return (FAILURE);
 	return (SUCCESS);
 }

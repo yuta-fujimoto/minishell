@@ -119,7 +119,10 @@ bool	execute_input(t_tree *l, t_set *set)
 			if (l->node.av)
 			{
 				if (is_buildin(l->node.av[0]))
-					run_builtin_cmd(l->node.av, set);
+				{
+					if (run_builtin_cmd(l->node.av, set) == FAILURE)
+						return (minishell_error());
+				}
 				else if (process_cmd(l->node) == FAILURE)
 					return (minishell_error());
 			}

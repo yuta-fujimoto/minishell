@@ -74,7 +74,6 @@ bool	ft_export_add(char *s, t_env **env)
 int	ft_export(char **av)
 {
 	int			type;
-	int			rlt;
 	t_env		*env;
 	extern char	**environ;
 
@@ -85,15 +84,14 @@ int	ft_export(char **av)
 		return (ft_export_print(env));
 	while (*av)
 	{
-		rlt = SUCCESS;
 		type = identifier_type(*av);
 		if (type == ERROR)
-			ft_export_error(*av, &rlt);
+			ft_export_error(*av);
 		else if (type == UPDATE && !ft_export_update(*av, &env))
 			return (ft_export_end(env, FAILURE));
 		else if (type == ADD && !ft_export_add(*av, &env))
 			return (ft_export_end(env, FAILURE));
 		av++;
 	}
-	return (ft_export_end(env, rlt));
+	return (ft_export_end(env, SUCCESS));
 }
