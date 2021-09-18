@@ -6,31 +6,35 @@ bool		minishell_error(void)
 	return (FAILURE);
 }
 
-static bool	pipe_exit_failure(int *fd)
+static bool	pipe_exit_failure(int fd1, int fd2)
 {
-	if (fd)
-	{
-		if (fd[0])
-			close(fd[0]);
-		if (fd[1])
-			close(fd[1]);
-	}
-	return (minishell_error());
+	if (fd1)
+		close(fd1);
+	if (fd2)
+		close(fd2);
+	return (FAILURE);
 }
 
-static void	update_pipe(int *fd, int option)
+void	update_pipes(t_pipes *pipes)
 {
-	if (option == 1)
+	if (pipes->status == FIRST_PIPE)
 	{
-		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[1]);
+		close(pipes->fd_a[0]);
+		dup2(pipes->fd_a[1], STDOUT_FILENO);
+		close(pipes->fd_a[1]);
+	}
+	else if (pipes->status == MIDDLE_PIPE)
+	{
+		dup2(pipes->fd_a[0], STDIN_FILENO);
+		close(pipes->fd_a[0]);
+		close(pipes->fd_b[0]);
+		dup2(pipes->fd_b[1], STDOUT_FILENO);
 	}
 	else
 	{
-		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
-		close(fd[0]);
+		close(pipes->fd_a[1]);
+		dup2(pipes->fd_a[0], STDIN_FILENO);
+		close(pipes->fd_a[0]);
 	}
 }
 
@@ -44,46 +48,68 @@ bool	wait_options(pid_t pid)
 	return (SUCCESS);
 }
 
-static bool	process_child(int *fd, char **environ, t_node node, int option)
+static void	update_status(t_node node, t_pipes *pipes)
 {
-	pid_t	pid;
-	char	*cmd_path;
-
-	cmd_path = create_cmd_path(node);
-	if (!cmd_path)
-		return (minishell_error());
-	pid = fork();
-	if (pid < 0)
-		return (minishell_error());
-	else if (pid > 0)
-	{
-		if (wait_options(pid) == FAILURE)
-			return (minishell_error());
-		free(cmd_path);
-	}
+	if (node.flgs == PIPE)
+		pipes->status = MIDDLE_PIPE;
 	else
-	{
-		update_pipe(fd, option);
-		if (execve(cmd_path, node.av, environ) == -1)
-			exit (execve_error(node.av[0], cmd_path));
-	}
-	return (SUCCESS);
+		pipes->status = END_PIPE;
 }
 
-bool	pipe_node(t_node l, t_node r)
+static void	swap_fds(t_pipes *pipes)
 {
-	int			fd[2];
-	extern char	**environ;
+	int tmp[2];
 
-	if (pipe(fd) == -1)
-		return (minishell_error());
-	//if builtin do builtin, else process child l
-	if (process_child(fd, environ, l, 1) == FAILURE)
-		return (pipe_exit_failure(fd));
-	close(fd[1]);
-	//if builtin do builtin, else process child r
-	if (process_child(fd, environ, r, 0) == FAILURE)
-		return (pipe_exit_failure(fd));
-	close(fd[0]);
-	return (SUCCESS);
+	tmp[0] = pipes->fd_a[0];
+	tmp[1] = pipes->fd_a[1];
+	pipes->fd_a[0] = pipes->fd_b[0];
+	pipes->fd_a[1] = pipes->fd_b[1];
+	pipes->fd_b[0] = tmp[0];
+	pipes->fd_b[1] = tmp[1];
+}
+
+static bool pipe_nodes(t_tree *parent, t_pipes *pipes, t_set *set)
+{
+    if (pipes->status == FIRST_PIPE)
+    {
+		if (run_shell_cmd(parent->left->node, pipes, set) == FAILURE)
+            return (pipe_exit_failure(pipes->fd_a[0], pipes->fd_a[1]));
+        close(pipes->fd_a[1]);
+        update_status(parent->right->node, pipes);
+        if (pipes->status == MIDDLE_PIPE)
+            pipe_nodes(parent->right, pipes, set);
+        else
+            pipe_nodes(parent, pipes, set);
+    }
+    else if (pipes->status == MIDDLE_PIPE)
+    {
+        if (pipe(pipes->fd_b) == -1)
+            return (pipe_exit_failure(pipes->fd_a[0], pipes->fd_a[1]));
+		if (run_shell_cmd(parent->left->node, pipes, set) == FAILURE)
+            return (pipe_exit_failure(pipes->fd_a[0], pipes->fd_b[1]));
+        close(pipes->fd_a[0]);
+        close(pipes->fd_b[1]);
+        swap_fds(pipes);
+        update_status(parent->right->node, pipes);
+        if (pipes->status == MIDDLE_PIPE)
+            pipe_nodes(parent->right, pipes, set);
+        else
+            pipe_nodes(parent, pipes, set);
+    }else
+    {
+		if (run_shell_cmd(parent->right->node, pipes, set) == SUCCESS)
+            return (pipe_exit_failure(pipes->fd_a[0], 0));
+        close(pipes->fd_a[0]);
+    }
+    return (SUCCESS);
+}
+
+bool    ms_pipe(t_tree *parent, t_pipes *pipes, t_set *set)
+{
+    if (pipe(pipes->fd_a) == -1)
+        return (FAILURE);
+    pipes->status = FIRST_PIPE;
+    if (pipe_nodes(parent, pipes, set) == FAILURE)
+        return (FAILURE);
+    return (SUCCESS);
 }

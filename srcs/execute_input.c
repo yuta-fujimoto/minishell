@@ -75,59 +75,69 @@ char	*create_cmd_path(t_node node)
 	return(cmd_path);
 }
 
-static bool	process_cmd(t_node node)
+bool	run_shell_cmd(t_node node, t_pipes *pipes, t_set *set)
 {
 	pid_t		c_pid;
 	char		*cmd_path;
 	extern char	**environ;
 
-	cmd_path = create_cmd_path(node);
-	if (!cmd_path)
-		return (minishell_error());
-	c_pid = fork();
-	if (c_pid == 0)
+	cmd_path = NULL;
+	if (!is_buildin(node.av[0]))
 	{
-		if (execve(cmd_path, node.av, environ) == -1)
-			exit (execve_error(node.av[0], cmd_path));	
+		cmd_path = create_cmd_path(node);
+		if (!cmd_path)
+			return (FAILURE);
 	}
-	else if (c_pid < 0)
+	c_pid = fork();
+	if (c_pid < 0)
+		return (FAILURE);
+	else if (c_pid == 0)
 	{
-		ft_putendl_fd("Child process could not be created", STDERR_FILENO);
-		return (minishell_error());
+		if (pipes->status)
+			update_pipes(pipes);
+		if (is_buildin(node.av[0]))
+		{
+			if (run_builtin_cmd(node.av, set) == FAILURE)
+				exit (execve_error(node.av[0], cmd_path));
+			exit(0);
+		}
+		else if (execve(cmd_path, node.av, environ) == -1)
+			exit (execve_error(node.av[0], cmd_path));	
 	}
 	else
 	{
 		if (wait_options(c_pid) == FAILURE)
-			return (minishell_error());
-		free(cmd_path);
+			return (FAILURE);
+		if (cmd_path)
+			free(cmd_path);
 	}
 	return (SUCCESS);
 }
 
 bool	execute_input(t_tree *l, t_set *set)
 {
-	if (l != NULL)
+	t_pipes	pipes;
+
+	pipes.status = 0;
+	if (l && l->node.flgs == PIPE)
 	{
-		if (l->node.flgs == PIPE)
+		if (ms_pipe(l, &pipes, set) == FAILURE)
+			return (minishell_error());
+	}
+	else if (l)
+	{
+		execute_input(l->left, set);
+		if (l->node.av)
 		{
-			if (pipe_node(l->left->node, l->right->node) == FAILURE)
-				return (minishell_error());
-		}
-		else
-		{
-			execute_input(l->left, set);
-			if (l->node.av)
+			if (is_buildin(l->node.av[0]))
 			{
-				if (is_buildin(l->node.av[0]))
-				{
-					if (run_builtin_cmd(l->node.av, set) == FAILURE)
-						return (minishell_error());
-				}
-				else if (process_cmd(l->node) == FAILURE)
+				if (run_builtin_cmd(l->node.av, set) == FAILURE)
 					return (minishell_error());
 			}
-			execute_input(l->right, set);
+			else if (run_shell_cmd(l->node, &pipes, set) == FAILURE)
+				return (minishell_error());
 		}
+		execute_input(l->right, set);
 	}
 	return (SUCCESS);
 }

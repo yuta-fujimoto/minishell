@@ -37,6 +37,14 @@ typedef struct s_set
 	t_list	*lst;
 }	t_set;
 
+typedef struct s_pipes
+{
+	int	status;
+	int	fd_a[2];
+	int fd_b[2];
+	int	safe_stdout;
+}				t_pipes;
+
 # define FAILURE 1
 # define SUCCESS 0
 # define STR 0
@@ -57,6 +65,11 @@ typedef struct s_set
 # define ERROR 16
 # define NOTHING 17
 /* buildin_export */
+
+# define FIRST_PIPE 18
+# define MIDDLE_PIPE 19
+# define END_PIPE 20
+/* piping */
 
 void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
@@ -81,6 +94,7 @@ bool	execute_input(t_tree *l, t_set *set);
 bool	execve_error(char *cmd, char *cmd_path);
 bool	minishell_error(void);
 bool	wait_options(pid_t pid);
+bool	run_shell_cmd(t_node node, t_pipes *pipes, t_set *set);
 /* execution */
 
 void	ft_export_error(char *arg);
@@ -102,8 +116,8 @@ bool	is_buildin(char *cmd);
 int		run_builtin_cmd(char **av, t_set *set);
 /* builtin */
 
-bool	pipe_node(t_node l, t_node r);
-char	*create_cmd_path(t_node node);
+bool	ms_pipe(t_tree *parent, t_pipes *pipes, t_set *set);
+void	update_pipes(t_pipes *pipes);
 /* piping */
 
 #endif

@@ -36,7 +36,7 @@ bool	ft_export_print(t_env *env)
 		i++;
 	}
 	print_name_value(tmp);
-	return (true);
+	return (ft_export_end(env,SUCCESS));
 }
 
 bool	ft_export_update(char *s, t_env **env)
