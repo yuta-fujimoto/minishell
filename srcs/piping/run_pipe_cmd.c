@@ -1,6 +1,6 @@
 #include "../../incs/minishell.h"
 
-static bool	free_cmd_path(char *cmd_path)
+bool	free_cmd_path(char *cmd_path)
 {
 	free(cmd_path);
 	cmd_path = NULL;

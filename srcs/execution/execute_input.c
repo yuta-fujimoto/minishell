@@ -17,7 +17,7 @@ static bool	run_shell_cmd(t_node node)
 		return (FAILURE);
 	c_pid = fork();
 	if (c_pid < 0)
-		return (FAILURE);
+		return (free_cmd_path(cmd_path));
 	else if (c_pid == 0)
 	{
 		if (execve(cmd_path, node.av, environ) == -1)

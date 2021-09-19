@@ -11,7 +11,7 @@ SRCS :=	srcs/main.c \
 		srcs/syntax_error.c \
 		srcs/execution/execute_input.c \
 		srcs/execution/create_cmd_path.c \
-		srcs/execution/buildin.c \
+		srcs/execution/run_builtin_cmd.c \
 		srcs/execution/execution_utils.c \
 		srcs/builtin/ft_exit.c \
 		srcs/builtin/ft_export.c \

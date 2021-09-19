@@ -74,6 +74,7 @@ typedef struct s_pipes
 void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
 bool	execve_error(char *cmd, char *cmd_path);
+bool	free_cmd_path(char *cmd_path);
 /* utils */
 
 t_list	*lexar(char *line);
