@@ -41,7 +41,7 @@ typedef struct s_pipes
 {
 	int	status;
 	int	fd_a[2];
-	int fd_b[2];
+	int	fd_b[2];
 	int	safe_stdout;
 }				t_pipes;
 
@@ -73,6 +73,7 @@ typedef struct s_pipes
 
 void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
+bool	execve_error(char *cmd, char *cmd_path);
 /* utils */
 
 t_list	*lexar(char *line);
@@ -90,11 +91,9 @@ void	traverse_tree(t_tree *l, int h);
 void	free_tree(t_tree *l);
 /* tree library */
 
-bool	execute_input(t_tree *l, t_set *set);
-bool	execve_error(char *cmd, char *cmd_path);
-bool	minishell_error(void);
 bool	wait_options(pid_t pid);
-bool	run_shell_cmd(t_node node, t_pipes *pipes, t_set *set);
+char	*create_cmd_path(t_node node);
+bool	execute_input(t_tree *l, t_set *set);
 /* execution */
 
 void	ft_export_error(char *arg);
@@ -116,8 +115,13 @@ bool	is_buildin(char *cmd);
 int		run_builtin_cmd(char **av, t_set *set);
 /* builtin */
 
-bool	ms_pipe(t_tree *parent, t_pipes *pipes, t_set *set);
-void	update_pipes(t_pipes *pipes);
+bool	execute_pipe(t_tree *parent, t_pipes *pipes, t_set *set);
+bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set);
+bool	pipe_exit_failure(int fd1, int fd2);
+void	update_pipes_status(t_node node, t_pipes *pipes);
+void	swap_fds(t_pipes *pipes);
+void	close_pipes(t_pipes *pipes);
+t_node	decide_cmd_node(t_tree *parent, t_pipes *pipes);
 /* piping */
 
 #endif
