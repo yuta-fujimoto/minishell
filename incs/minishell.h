@@ -42,7 +42,6 @@ typedef struct s_pipes
 	int	status;
 	int	fd_a[2];
 	int	fd_b[2];
-	int	safe_stdout;
 }				t_pipes;
 
 # define FAILURE 1
