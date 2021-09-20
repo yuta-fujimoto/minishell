@@ -60,6 +60,7 @@ typedef struct s_set
 
 void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
+char	*create_path(char *cmd, char **paths);
 /* utils */
 
 t_list	*lexar(char *line);
@@ -93,6 +94,7 @@ char	**list_to_environ(t_env *env);
 void	free_environ(void);
 char	*get_value(char *s);
 char	*get_name(char *s);
+int		ft_cd(char **av);
 int		ft_export(char **av);
 bool	ft_env(void);
 int		ft_unset(char **av);

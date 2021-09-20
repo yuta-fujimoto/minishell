@@ -25,7 +25,7 @@ void	free_str_arr(char **str_arr)
 	str_arr = NULL;
 }
 
-static char	*create_path(char *cmd, char **paths)
+char	*create_path(char *cmd, char **paths)
 {
 	char		*abs_path;
 	int			i;

@@ -12,6 +12,8 @@ bool	is_buildin(char *cmd)
 		return (true);
 	if (ft_strncmp(cmd, "exit", 5) == 0)
 		return (true);
+	if (ft_strncmp(cmd, "cd", 3) == 0)
+		return (true);
 	return (false);
 }
 
@@ -29,5 +31,7 @@ int	run_builtin_cmd(char **av, t_set *set)
 		rlt = ft_pwd();
 	if (ft_strncmp(av[0], "exit", 5) == 0)
 		ft_exit(av, set);
+	if (ft_strncmp(av[0], "cd", 3) == 0)
+		ft_cd(av);
 	return (rlt);
 }
