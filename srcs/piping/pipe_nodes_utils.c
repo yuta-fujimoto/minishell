@@ -1,12 +1,34 @@
 #include "../../incs/minishell.h"
 
-bool	pipe_exit_failure(int fd1, int fd2)
+bool	pipe_exit_failure(t_pipes *pipes)
 {
-	if (fd1)
-		close(fd1);
-	if (fd2)
-		close(fd2);
+	if (pipes->status == FIRST_PIPE)
+	{
+		close (pipes->fd_a[0]);
+		close (pipes->fd_a[1]);
+	}
+	else if (pipes->status == MIDDLE_PIPE)
+	{	
+		close (pipes->fd_a[0]);
+		close (pipes->fd_b[0]);
+		close (pipes->fd_b[1]);
+	}
+	else
+		close (pipes->fd_a[0]);
 	return (FAILURE);
+}
+
+void	close_pipes(t_pipes *pipes)
+{
+	if (pipes->status == FIRST_PIPE)
+		close(pipes->fd_a[1]);
+	else if (pipes->status == MIDDLE_PIPE)
+	{	
+		close(pipes->fd_a[0]);
+		close(pipes->fd_b[1]);
+	}
+	else
+		close(pipes->fd_a[0]);
 }
 
 void	update_pipes_status(t_node node, t_pipes *pipes)
@@ -27,19 +49,6 @@ void	swap_fds(t_pipes *pipes)
 	pipes->fd_a[1] = pipes->fd_b[1];
 	pipes->fd_b[0] = tmp[0];
 	pipes->fd_b[1] = tmp[1];
-}
-
-void	close_pipes(t_pipes *pipes)
-{
-	if (pipes->status == FIRST_PIPE)
-		close(pipes->fd_a[1]);
-	else if (pipes->status == MIDDLE_PIPE)
-	{	
-		close(pipes->fd_a[0]);
-		close(pipes->fd_b[1]);
-	}
-	else
-		close(pipes->fd_a[0]);
 }
 
 t_node	decide_cmd_node(t_tree *parent, t_pipes *pipes)

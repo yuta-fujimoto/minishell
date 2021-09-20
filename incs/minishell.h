@@ -72,7 +72,7 @@ typedef struct s_pipes
 
 void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
-bool	execve_error(char *cmd, char *cmd_path);
+bool	exec_cmd_error(char *cmd, char *cmd_path);
 bool	free_cmd_path(char *cmd_path);
 /* utils */
 
@@ -115,9 +115,9 @@ bool	is_buildin(char *cmd);
 int		run_builtin_cmd(char **av, t_set *set);
 /* builtin */
 
-bool	execute_pipe(t_tree *parent, t_pipes *pipes, t_set *set);
+bool	execute_pipe(t_tree *parent, t_set *set);
 bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set);
-bool	pipe_exit_failure(int fd1, int fd2);
+bool	pipe_exit_failure(t_pipes *pipes);
 void	update_pipes_status(t_node node, t_pipes *pipes);
 void	swap_fds(t_pipes *pipes);
 void	close_pipes(t_pipes *pipes);

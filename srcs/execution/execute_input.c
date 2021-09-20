@@ -6,7 +6,7 @@ static bool	minishell_error(void)
 	return (FAILURE);
 }
 
-static bool	run_shell_cmd(t_node node)
+static bool	run_gnu_cmd(t_node node)
 {
 	pid_t		c_pid;
 	char		*cmd_path;
@@ -21,12 +21,12 @@ static bool	run_shell_cmd(t_node node)
 	else if (c_pid == 0)
 	{
 		if (execve(cmd_path, node.av, environ) == -1)
-			exit (execve_error(node.av[0], cmd_path));
+			exit(exec_cmd_error(node.av[0], cmd_path));
 	}
 	else
 	{
 		if (wait_options(c_pid) == FAILURE)
-			return (FAILURE);
+			return (free_cmd_path(cmd_path));
 		free(cmd_path);
 	}
 	return (SUCCESS);
@@ -39,21 +39,19 @@ static bool	execute_cmd(t_node node, t_set *set)
 	if (is_buildin(node.av[0]))
 		rlt = run_builtin_cmd(node.av, set);
 	else
-		rlt = run_shell_cmd(node);
+		rlt = run_gnu_cmd(node);
 	return (rlt);
 }
 
 bool	execute_input(t_tree *l, t_set *set)
 {
-	t_pipes	pipes;
 	int		rlt;
 
-	pipes.status = 0;
 	rlt = SUCCESS;
 	if (!l)
-		;
+		return (SUCCESS);
 	else if (l->node.flgs == PIPE)
-		rlt = execute_pipe(l, &pipes, set);
+		rlt = execute_pipe(l, set);
 	else
 	{
 		execute_input(l->left, set);
