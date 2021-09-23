@@ -42,11 +42,20 @@ bool	ft_export_print(t_env *env)
 bool	ft_export_update(char *s, t_env **env)
 {
 	char	*name;
+	char	*value;
+	t_env	*env_var;
 
 	name = get_name(s);
-	if (ft_find_env_var(*env, name))
-		delete_env(env, name);
-	return (ft_envadd_back(env, ft_envnew(name, get_value(s))));
+	value = get_value(s);
+	env_var = ft_find_env_var(*env, name);
+	if (env_var && value)
+	{
+		free(name);
+		free(env_var->value);
+		env_var->value = value;
+		return (SUCCESS);
+	}
+	return (ft_envadd_back(env, ft_envnew(name, value)));
 }
 
 bool	ft_export_add(char *s, t_env **env)

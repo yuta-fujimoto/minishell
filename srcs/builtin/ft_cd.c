@@ -1,18 +1,57 @@
 #include "../../incs/minishell.h"
 
-int	set_working_directory(char *newpath)
+char *get_available_path(char *pathname, bool *print_path)
 {
-	char	*cmd[3];
+	char *newpath;
+	char **cdpaths;
 
-	cmd[0] = "export";
-	cmd[1] = ft_strjoin("PWD=", newpath);
-	cmd[2] = NULL;
-	if (!cmd[0])
+	if (pathname[0] == '/')
+		return (canonical_path(pathname));
+	if (ft_strncmp(pathname, ".", 2) == 0 || ft_strncmp(pathname, "./", 2) == 0
+		|| ft_strncmp(pathname, "../", 3) == 0 || ft_strncmp(pathname, "..", 3) == 0)
+		return (canonical_path(absolute_path(pathname)));
+	cdpaths = ft_split(getenv("CDPATH"), ':');
+	if (!cdpaths)
+		return (canonical_path(absolute_path(pathname)));
+	newpath = create_path(pathname, cdpaths);
+	if (!newpath)
+		return (canonical_path(absolute_path(pathname)));
+	*print_path = true;
+	return (canonical_path(absolute_path(newpath)));
+}
+
+int try_canonical_path(char *input)
+{
+	char	*pathname;
+	bool	print_path;
+	int		rlt;
+
+	print_path = false;
+	pathname = get_available_path(input, &print_path);
+	if (!pathname)
 		return (FAILURE);
-	if (ft_export(cmd) == FAILURE)
+	if (!pathname)
 		return (FAILURE);
-	free(cmd[1]);
-	return (SUCCESS);
+	rlt = chdir(pathname);
+	if (rlt != 0)
+		return (FAILURE);
+	if (print_path)
+		ft_putendl_fd(pathname, STDOUT_FILENO);
+	rlt = set_working_directory(pathname);
+	return (rlt);
+}
+
+int try_verbatim_path(char *input)
+{
+	char *pathname;
+
+	pathname = absolute_path(input);
+	printf("%s\n", pathname);
+	if (pathname)
+		return (FAILURE);
+	if (chdir(pathname) != 0)
+		return (FAILURE);
+	return (set_working_directory(pathname));
 }
 
 int ft_cd_env(char *env)
@@ -33,29 +72,9 @@ int ft_cd_env(char *env)
 	return (SUCCESS);
 }
 
-char *get_path(char *pathname)
-{
-	char *newpath;
-	char **cdpaths;
-
-	if (pathname[0] == '/')
-		return (ft_strdup(pathname));
-	if (ft_strncmp(pathname, ".", 2) == 0 || ft_strncmp(pathname, "./", 2) == 0
-		|| ft_strncmp(pathname, "../", 3) == 0 || ft_strncmp(pathname, "..", 3) == 0)
-		return (ft_strdup(pathname));
-	cdpaths = ft_split(getenv("CDPATH"), ':');
-	if (!cdpaths)
-		return (ft_strdup(pathname));
-	newpath = create_path(pathname, cdpaths);
-	if (!newpath)
-		return (ft_strdup(pathname));
-	return (newpath);
-}
-
 int	ft_cd(char **av)
 {
-	int	rlt;
-	char *pathname;
+	char *err;
 
 	if (!av[1])
 		return (ft_cd_env("HOME"));
@@ -66,13 +85,14 @@ int	ft_cd(char **av)
 	}
 	if (ft_strncmp(av[1], "-", 2) == 0)
 		return (ft_cd_env("OLDPWD"));
-	pathname = absolute_path(pathname);
-	if (!pathname)
+	if (try_canonical_path(av[1]) == SUCCESS)
+		return (SUCCESS);
+	if (av[1][0] != '/' && try_verbatim_path(av[1]) == SUCCESS)
+		return (SUCCESS);
+	err = ft_strjoin("minishell: cd: ", av[1]);
+	if (!err)
 		return (FAILURE);
-	rlt = chdir(pathname);
-	if (rlt != 0)
-		perror("minishell: cd ");
-	else if (set_working_directory(av[1]) == FAILURE)
-		return (FAILURE);
+	perror(err);
+	free(err);
 	return (SUCCESS);
 }

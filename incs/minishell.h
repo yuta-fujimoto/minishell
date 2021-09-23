@@ -85,6 +85,7 @@ bool	wait_options(pid_t pid);
 /* execution */
 
 void	ft_export_error(char *arg);
+char	*get_current_directory(void);
 int		identifier_type(char *s);
 void	delete_env(t_env **env, char *name);
 void	print_name_value(t_env *env);
@@ -94,6 +95,9 @@ char	**list_to_environ(t_env *env);
 void	free_environ(void);
 char	*get_value(char *s);
 char	*get_name(char *s);
+char	*canonical_path(char *pathname);
+int	set_working_directory(char *pathname);
+char *absolute_path(char *pathname);
 int		ft_cd(char **av);
 int		ft_export(char **av);
 bool	ft_env(void);

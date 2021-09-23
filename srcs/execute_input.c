@@ -33,6 +33,8 @@ char	*create_path(char *cmd, char **paths)
 
 	abs_path = NULL;
 	i = 0;
+	if (!paths)
+		return (NULL);
 	while (paths[i])
 	{
 		abs_path = ft_strcjoin(paths[i], cmd, '/');
