@@ -32,6 +32,6 @@ int	run_builtin_cmd(char **av, t_set *set)
 	if (ft_strncmp(av[0], "exit", 5) == 0)
 		ft_exit(av, set);
 	if (ft_strncmp(av[0], "cd", 3) == 0)
-		ft_cd(av);
+		rlt = ft_cd(av);
 	return (rlt);
 }
