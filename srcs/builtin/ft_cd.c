@@ -4,7 +4,6 @@ char	*get_available_path(char *pathname, bool *print_path)
 {
 	char	*newpath;
 	char	**cdpaths;
-	char	*rlt;
 
 	if (pathname[0] == '/')
 		return (ft_strdup(pathname));
@@ -19,9 +18,7 @@ char	*get_available_path(char *pathname, bool *print_path)
 	if (!newpath)
 		return (absolute_path(pathname));
 	*print_path = true;
-	rlt = absolute_path(newpath);
-	free(newpath);
-	return (rlt);
+	return (newpath);
 }
 
 int	try_absolute_path(char *input)
