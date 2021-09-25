@@ -12,6 +12,10 @@ SRCS :=	srcs/main.c \
 		srcs/execute_input.c \
 		srcs/builtin/ft_cd.c \
 		srcs/builtin/cd_utils.c \
+		srcs/execution/execute_input.c \
+		srcs/execution/create_cmd_path.c \
+		srcs/execution/run_builtin_cmd.c \
+		srcs/execution/execution_utils.c \
 		srcs/builtin/ft_exit.c \
 		srcs/builtin/ft_export.c \
 		srcs/builtin/ft_env.c \
@@ -19,8 +23,9 @@ SRCS :=	srcs/main.c \
 		srcs/builtin/ft_pwd.c \
 		srcs/builtin/ft_export_utils.c \
 		srcs/builtin/env_utils.c \
-		srcs/builtin/buildin.c \
-		srcs/pipe_node.c
+		srcs/piping/execute_pipe.c \
+		srcs/piping/pipe_nodes_utils.c \
+		srcs/piping/run_pipe_cmd.c
 OBJS := $(SRCS:.c=.o)
 INCS := ./incs
 LIB := libft
