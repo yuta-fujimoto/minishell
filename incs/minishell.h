@@ -75,7 +75,6 @@ void	free_set(t_set *set);
 char	*create_path(char *cmd, char **paths);
 bool	exec_cmd_error(char *cmd, char *cmd_path);
 bool	free_cmd_path(char *cmd_path);
-bool	minishell_error(void);
 /* utils */
 
 t_list	*lexar(char *line);
