@@ -113,6 +113,7 @@ char	*absolute_path(char *pathname);
 char	*update_environ_value(t_env *env, char *value);
 char	*update_path(char **pathname, char *newcmp);
 int		ft_cd(char **av);
+int		ft_echo(char **av);
 int		ft_export(char **av);
 bool	ft_env(void);
 int		ft_unset(char **av);

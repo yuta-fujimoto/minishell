@@ -17,10 +17,11 @@ SRCS :=	srcs/main.c \
 		srcs/builtin/ft_exit.c \
 		srcs/builtin/ft_export.c \
 		srcs/builtin/ft_cd.c \
-		srcs/builtin/cd_utils.c \
+		srcs/builtin/ft_echo.c \
 		srcs/builtin/ft_env.c \
 		srcs/builtin/ft_unset.c \
 		srcs/builtin/ft_pwd.c \
+		srcs/builtin/ft_cd_utils.c \
 		srcs/builtin/ft_export_utils.c \
 		srcs/builtin/env_utils.c \
 		srcs/piping/execute_pipe.c \
