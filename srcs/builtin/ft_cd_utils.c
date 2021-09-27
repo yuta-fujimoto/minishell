@@ -1,5 +1,27 @@
 #include "../../incs/minishell.h"
 
+int ft_cd_end(char *tmp, t_env **env, int ret_val)
+{
+	fflush(NULL);
+	if (tmp)
+		free(tmp);
+	if (env)
+		ft_envclear(env, free);
+	return (ret_val);
+}
+
+int	cd_error(char *pathname)
+{
+	char	*err;
+
+	err = ft_strjoin("minishell: cd ", pathname);
+	if (!err)
+		return (FAILURE);
+	perror(err);
+	free(err);
+	return (SUCCESS);
+}
+
 char	*update_environ_value(t_env *env, char *value)
 {
 	char	*oldvalue;
@@ -9,23 +31,6 @@ char	*update_environ_value(t_env *env, char *value)
 	oldvalue = env->value;
 	env->value = value;
 	return (oldvalue);
-}
-
-char	*update_path(char **pathname, char *newcmp)
-{
-	char	*tmp;
-
-	if (!newcmp)
-		return (*pathname);
-	if (!(*pathname))
-		return (ft_strjoin("/", newcmp));
-	tmp = *pathname;
-	if (*pathname[ft_strlen(*pathname) - 1] == '/')
-		*pathname = ft_strjoin(*pathname, newcmp);
-	else
-		*pathname = ft_strcjoin(*pathname, newcmp, '/');
-	free(tmp);
-	return (*pathname);
 }
 
 char	*absolute_path(char *pathname)
@@ -58,10 +63,10 @@ int	set_working_directory(char *pathname)
 		oldpwd = ft_strdup("");
 	tmp = update_environ_value(ft_find_env_var(env, "OLDPWD"), oldpwd);
 	if (!tmp && !ft_envadd_back(&env, ft_envnew(ft_strdup("OLDPWD"), oldpwd)))
-		return (FAILURE);
-	free(tmp);
-	free_environ();
+		return (ft_cd_end(tmp, &env, FAILURE));
+	free(environ);
 	environ = list_to_environ(env);
-	ft_envclear(&env, free);
-	return (SUCCESS);
+	if (!environ)
+		return (ft_cd_end(tmp, &env, FAILURE));
+	return (ft_cd_end(tmp, &env, SUCCESS));
 }
