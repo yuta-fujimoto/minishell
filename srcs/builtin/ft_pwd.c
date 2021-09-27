@@ -25,8 +25,10 @@ int	ft_pwd(void)
 		free(pathname);
 		return (SUCCESS);
 	}
-	perror("minishell: pwd");
 	if (errno == ENOENT)
+	{
+		perror("minishell: pwd");
 		return (SUCCESS);
+	}
 	return (FAILURE);
 }

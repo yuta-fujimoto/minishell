@@ -57,6 +57,8 @@ int	set_working_directory(char *pathname)
 	char		*tmp;
 
 	env = environ_to_list();
+	if (!env)
+		return (FAILURE);
 	oldpwd = update_environ_value(ft_find_env_var(env, "PWD"),
 			pathname);
 	if (!oldpwd)
@@ -64,7 +66,7 @@ int	set_working_directory(char *pathname)
 	tmp = update_environ_value(ft_find_env_var(env, "OLDPWD"), oldpwd);
 	if (!tmp && !ft_envadd_back(&env, ft_envnew(ft_strdup("OLDPWD"), oldpwd)))
 		return (ft_cd_end(tmp, &env, FAILURE));
-	free(environ);
+	free_environ();
 	environ = list_to_environ(env);
 	if (!environ)
 		return (ft_cd_end(tmp, &env, FAILURE));
