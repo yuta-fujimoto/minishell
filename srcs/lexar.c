@@ -19,6 +19,11 @@ char	*get_str(char *line)
 			quote_flg = *tmp;
 		else if (quote_flg != 0 && (*tmp == '\"' || *tmp == '\''))
 			quote_flg = 0;
+		else if (*tmp == '\\' && *(tmp + 1) != '\0')
+		{
+			tmp++;
+			cnt++;
+		}
 		tmp++;
 	}
 	return (ft_substr(line, 0, cnt - 1));
@@ -26,12 +31,15 @@ char	*get_str(char *line)
 
 void	lst_line_update(t_list **list, char *word, int flgs, char **line)
 {
-	if (**line == '\0')
-		return ;
 	if (word == NULL)
 	{
 		ft_lstclear(list, free);
 		exit(1);
+	}
+	if (**line == '\0')
+	{
+		free(word);
+		return ;
 	}
 	ft_lstadd_back(list, ft_lstnew(word, flgs));
 	*line += ft_strlen(word);
