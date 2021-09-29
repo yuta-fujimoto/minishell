@@ -58,7 +58,7 @@ int	ft_export_update(char *s, t_env **env)
 	return (FAILURE);
 }
 
-bool	ft_export_add(char *s, t_env **env)
+int	ft_export_add(char *s, t_env **env)
 {
 	t_env	*p;
 	char	*tmp;
@@ -103,4 +103,3 @@ int	ft_export(char **av)
 	}
 	return (ft_export_end(env, SUCCESS));
 }
-	
