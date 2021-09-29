@@ -8,7 +8,7 @@ int	ft_export_end(t_env *env, int rlt)
 	return (rlt);
 }
 
-bool	ft_export_print(t_env *env)
+int	ft_export_print(t_env *env)
 {
 	t_env	*tmp;
 	int		env_count;
@@ -35,13 +35,15 @@ bool	ft_export_print(t_env *env)
 	return (ft_export_end(env, SUCCESS));
 }
 
-bool	ft_export_update(char *s, t_env **env)
+int	ft_export_update(char *s, t_env **env)
 {
 	char	*name;
 	char	*value;
 	t_env	*env_var;
 
 	name = get_name(s);
+	if (!name)
+		return (FAILURE);
 	value = get_value(s);
 	env_var = ft_find_env_var(*env, name);
 	if (env_var && value)
@@ -51,7 +53,9 @@ bool	ft_export_update(char *s, t_env **env)
 		env_var->value = value;
 		return (SUCCESS);
 	}
-	return (ft_envadd_back(env, ft_envnew(name, value)));
+	if (ft_envadd_back(env, ft_envnew(name, value)))
+		return (SUCCESS);
+	return (FAILURE);
 }
 
 bool	ft_export_add(char *s, t_env **env)
@@ -91,11 +95,12 @@ int	ft_export(char **av)
 		type = identifier_type(*av);
 		if (type == ERROR)
 			ft_export_error(*av);
-		else if (type == UPDATE && !ft_export_update(*av, &env))
+		else if (type == UPDATE && ft_export_update(*av, &env) == FAILURE)
 			return (ft_export_end(env, FAILURE));
-		else if (type == ADD && !ft_export_add(*av, &env))
+		else if (type == ADD && ft_export_add(*av, &env) == FAILURE)
 			return (ft_export_end(env, FAILURE));
 		av++;
 	}
 	return (ft_export_end(env, SUCCESS));
 }
+	

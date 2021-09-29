@@ -21,7 +21,7 @@ char	*get_available_path(char *pathname, bool *print_path)
 	newpath = create_path(pathname, cdpaths);
 	if (!newpath)
 		return (NULL);
-	if (!str_equal(pathname, newpath, ft_strlen(pathname)))
+	if (!str_equal(pathname, newpath, ft_strlen(pathname) + 1))
 		*print_path = true;
 	return (newpath);
 }

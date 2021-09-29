@@ -58,7 +58,7 @@ int	list_to_environ(t_env *env)
 		new_environ[i] = ft_strcjoin(env->name, env->value, '=');
 		if (!new_environ[i])
 		{
-			free_environ();
+			free_str_arr(new_environ);
 			return (FAILURE);
 		}
 		env = env->next;
