@@ -36,7 +36,7 @@ void	delete_env(t_env **env, char *name)
 	t_env	*p;
 	t_env	*tmp;
 
-	if (ft_strncmp(name, (*env)->name, UINT_MAX) == 0)
+	if (str_equal(name, (*env)->name, UINT_MAX))
 	{
 		tmp = *env;
 		*env = (*env)->next;
@@ -46,7 +46,7 @@ void	delete_env(t_env **env, char *name)
 	p = *env;
 	while (p->next)
 	{
-		if (ft_strncmp(name, p->next->name, UINT_MAX) == 0)
+		if (str_equal(name, p->next->name, UINT_MAX))
 		{
 			tmp = p->next;
 			p->next = p->next->next;

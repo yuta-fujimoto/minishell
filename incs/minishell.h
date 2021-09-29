@@ -44,6 +44,8 @@ typedef struct s_pipes
 	int	fd_b[2];
 }				t_pipes;
 
+# define SYS_ERROR -1
+# define SAME 0
 # define FAILURE 1
 # define SUCCESS 0
 # define STR 0
@@ -72,8 +74,10 @@ typedef struct s_pipes
 
 void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
+char	*create_path(char *cmd, char **paths);
 bool	exec_cmd_error(char *cmd, char *cmd_path);
 bool	free_cmd_path(char *cmd_path);
+bool	str_equal(char *s1, char *s2, size_t n);
 /* utils */
 
 t_list	*lexar(char *line);
@@ -97,15 +101,22 @@ bool	execute_input(t_tree *l, t_set *set);
 /* execution */
 
 void	ft_export_error(char *arg);
+char	*get_current_directory(void);
 int		identifier_type(char *s);
 void	delete_env(t_env **env, char *name);
 void	print_name_value(t_env *env);
 void	ft_swap_env(t_env *a, t_env *b);
 t_env	*environ_to_list(void);
-char	**list_to_environ(t_env *env);
+int		list_to_environ(t_env *env);
 void	free_environ(void);
 char	*get_value(char *s);
 char	*get_name(char *s);
+int		set_working_directory(char *pathname);
+char	*absolute_path(char *pathname);
+int		cd_error(char *pathname);
+char	*update_environ_value(t_env *env, char *value);
+int		ft_cd(char **av);
+int		ft_echo(char **av);
 int		ft_export(char **av);
 bool	ft_env(void);
 int		ft_unset(char **av);

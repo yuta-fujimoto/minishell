@@ -2,17 +2,13 @@
 
 int	ft_export_end(t_env *env, int rlt)
 {
-	extern char	**environ;
-
-	free_environ();
-	environ = list_to_environ(env);
-	if (!environ)
+	if (list_to_environ(env) == FAILURE)
 		rlt = FAILURE;
 	ft_envclear(&env, free);
 	return (rlt);
 }
 
-bool	ft_export_print(t_env *env)
+int	ft_export_print(t_env *env)
 {
 	t_env	*tmp;
 	int		env_count;
@@ -39,17 +35,30 @@ bool	ft_export_print(t_env *env)
 	return (ft_export_end(env, SUCCESS));
 }
 
-bool	ft_export_update(char *s, t_env **env)
+int	ft_export_update(char *s, t_env **env)
 {
 	char	*name;
+	char	*value;
+	t_env	*env_var;
 
 	name = get_name(s);
-	if (ft_find_env_var(*env, name))
-		delete_env(env, name);
-	return (ft_envadd_back(env, ft_envnew(name, get_value(s))));
+	if (!name)
+		return (FAILURE);
+	value = get_value(s);
+	env_var = ft_find_env_var(*env, name);
+	if (env_var && value)
+	{
+		free(name);
+		free(env_var->value);
+		env_var->value = value;
+		return (SUCCESS);
+	}
+	if (ft_envadd_back(env, ft_envnew(name, value)))
+		return (SUCCESS);
+	return (FAILURE);
 }
 
-bool	ft_export_add(char *s, t_env **env)
+int	ft_export_add(char *s, t_env **env)
 {
 	t_env	*p;
 	char	*tmp;
@@ -60,22 +69,25 @@ bool	ft_export_add(char *s, t_env **env)
 	value = get_value(s);
 	p = ft_find_env_var(*env, name);
 	if (!p)
-		return (ft_envadd_back(env, ft_envnew(name, value)));
+	{
+		if (ft_envadd_back(env, ft_envnew(name, value)))
+			return (SUCCESS);
+		return (FAILURE);
+	}
 	tmp = p->value;
 	p->value = ft_strjoin(tmp, value);
 	free(value);
 	free(name);
 	free(tmp);
 	if (!p->value)
-		return (false);
-	return (true);
+		return (FAILURE);
+	return (SUCCESS);
 }
 
 int	ft_export(char **av)
 {
 	int			type;
 	t_env		*env;
-	extern char	**environ;
 
 	env = environ_to_list();
 	if (!env)
@@ -87,9 +99,9 @@ int	ft_export(char **av)
 		type = identifier_type(*av);
 		if (type == ERROR)
 			ft_export_error(*av);
-		else if (type == UPDATE && !ft_export_update(*av, &env))
+		else if (type == UPDATE && ft_export_update(*av, &env) == FAILURE)
 			return (ft_export_end(env, FAILURE));
-		else if (type == ADD && !ft_export_add(*av, &env))
+		else if (type == ADD && ft_export_add(*av, &env) == FAILURE)
 			return (ft_export_end(env, FAILURE));
 		av++;
 	}

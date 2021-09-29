@@ -4,6 +4,7 @@ CC 	 := gcc
 CFLAG := -Wall -Werror -Wextra -I$(shell brew --prefix readline)/include
 CDFLAGS := -lreadline -lhistory -L$(shell brew --prefix readline)/lib
 SRCS :=	srcs/main.c \
+		srcs/common_utils.c \
 		srcs/lexar.c \
 		srcs/parser.c \
 		srcs/parser2.c \
@@ -15,9 +16,12 @@ SRCS :=	srcs/main.c \
 		srcs/execution/execution_utils.c \
 		srcs/builtin/ft_exit.c \
 		srcs/builtin/ft_export.c \
+		srcs/builtin/ft_cd.c \
+		srcs/builtin/ft_echo.c \
 		srcs/builtin/ft_env.c \
 		srcs/builtin/ft_unset.c \
 		srcs/builtin/ft_pwd.c \
+		srcs/builtin/ft_cd_utils.c \
 		srcs/builtin/ft_export_utils.c \
 		srcs/builtin/env_utils.c \
 		srcs/piping/execute_pipe.c \

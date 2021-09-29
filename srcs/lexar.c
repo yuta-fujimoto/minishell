@@ -46,9 +46,9 @@ t_list	*lexar(char *line)
 	{
 		while (*line == ' ' || *line == '\t')
 			line++;
-		if (ft_strncmp(line, ">>", 2) == 0)
+		if (str_equal(line, ">>", 2))
 			lst_line_update(&list, ft_strdup(">>"), RRDIR, &line);
-		else if (ft_strncmp(line, "<<", 2) == 0)
+		else if (str_equal(line, "<<", 2))
 			lst_line_update(&list, ft_strdup("<<"), LLDIR, &line);
 		else if (*line == '>')
 			lst_line_update(&list, ft_strdup(">"), RDIR, &line);
