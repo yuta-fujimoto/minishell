@@ -69,15 +69,19 @@ int	ft_export_add(char *s, t_env **env)
 	value = get_value(s);
 	p = ft_find_env_var(*env, name);
 	if (!p)
-		return (ft_envadd_back(env, ft_envnew(name, value)));
+	{
+		if (ft_envadd_back(env, ft_envnew(name, value)))
+			return (SUCCESS);
+		return (FAILURE);
+	}
 	tmp = p->value;
 	p->value = ft_strjoin(tmp, value);
 	free(value);
 	free(name);
 	free(tmp);
 	if (!p->value)
-		return (false);
-	return (true);
+		return (FAILURE);
+	return (SUCCESS);
 }
 
 int	ft_export(char **av)
