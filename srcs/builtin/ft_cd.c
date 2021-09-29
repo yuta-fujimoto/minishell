@@ -4,20 +4,25 @@ char	*get_available_path(char *pathname, bool *print_path)
 {
 	char	*newpath;
 	char	**cdpaths;
+	char	*env_cdpath;
 
 	if (pathname[0] == '/')
 		return (ft_strdup(pathname));
-	if (ft_strncmp(pathname, ".", 2) == 0 || ft_strncmp(pathname, "./", 2) == 0
-		|| ft_strncmp(pathname, "../", 3) == 0
-		|| ft_strncmp(pathname, "..", 3) == 0)
+	if (str_equal(pathname, ".", 2) || str_equal(pathname, "./", 2)
+		|| str_equal(pathname, "../", 3)
+		|| str_equal(pathname, "..", 3))
 		return (absolute_path(pathname));
-	cdpaths = ft_split(getenv("CDPATH"), ':');
+	env_cdpath = getenv("CDPATH");
+	if (!env_cdpath)
+		return (absolute_path(pathname));
+	cdpaths = ft_split(env_cdpath, ':');
 	if (!cdpaths)
-		return (absolute_path(pathname));
+		return (NULL);
 	newpath = create_path(pathname, cdpaths);
 	if (!newpath)
-		return (absolute_path(pathname));
-	*print_path = true;
+		return (NULL);
+	if (!str_equal(pathname, newpath, ft_strlen(pathname)))
+		*print_path = true;
 	return (newpath);
 }
 
@@ -25,14 +30,12 @@ int	try_absolute_path(char *input, bool *malloc_success)
 {
 	char	*pathname;
 	bool	print_path;
-	int		rlt;
 
 	print_path = false;
 	pathname = get_available_path(input, &print_path);
 	if (!pathname)
 		return (FAILURE);
-	rlt = chdir(pathname);
-	if (rlt != 0)
+	if (chdir(pathname) == SYS_ERROR)
 	{
 		*malloc_success = true;
 		free(pathname);
@@ -40,14 +43,15 @@ int	try_absolute_path(char *input, bool *malloc_success)
 	}
 	if (print_path)
 		ft_putendl_fd(pathname, STDOUT_FILENO);
-	return (set_working_directory(pathname));
+	free(pathname);
+	return (set_working_directory(get_current_directory()));
 }
 
 int	try_verbatim_path(char *input, bool *malloc_success)
 {
 	char	*pathname;
 
-	if (chdir(input) != 0)
+	if (chdir(input) == SYS_ERROR)
 	{
 		*malloc_success = true;
 		return (FAILURE);
@@ -81,14 +85,11 @@ int	ft_cd_env(char *env)
 		ft_putendl_fd(" not set", STDERR_FILENO);
 		return (SUCCESS);
 	}
-	if (chdir(pathname) != 0)
+	if (chdir(pathname) == SYS_ERROR)
 		return (cd_error(pathname));
-	if (ft_strncmp(env, "OLDPWD", 7) == 0)
+	if (str_equal(env, "OLDPWD", 7))
 		ft_putendl_fd(pathname, STDOUT_FILENO);
-	pathname = ft_strdup(pathname);
-	if (!pathname)
-		return (FAILURE);
-	return (set_working_directory(pathname));
+	return (set_working_directory(get_current_directory()));
 }
 
 int	ft_cd(char **av)
@@ -103,10 +104,12 @@ int	ft_cd(char **av)
 		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
 		return (SUCCESS);
 	}
-	if (ft_strncmp(av[1], "-", 2) == 0)
+	if (str_equal(av[1], "-", 2))
 		return (ft_cd_env("OLDPWD"));
 	if (try_absolute_path(av[1], &malloc_success) == SUCCESS)
 		return (SUCCESS);
+	if (!malloc_success)
+		return (FAILURE);
 	if (av[1][0] != '/' && try_verbatim_path(av[1], &malloc_success) == SUCCESS)
 		return (SUCCESS);
 	if (!malloc_success)

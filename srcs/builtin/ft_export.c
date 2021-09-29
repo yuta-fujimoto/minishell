@@ -2,11 +2,7 @@
 
 int	ft_export_end(t_env *env, int rlt)
 {
-	extern char	**environ;
-
-	free_environ();
-	environ = list_to_environ(env);
-	if (!environ)
+	if (list_to_environ(env) == FAILURE)
 		rlt = FAILURE;
 	ft_envclear(&env, free);
 	return (rlt);
@@ -84,7 +80,6 @@ int	ft_export(char **av)
 {
 	int			type;
 	t_env		*env;
-	extern char	**environ;
 
 	env = environ_to_list();
 	if (!env)

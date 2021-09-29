@@ -5,7 +5,7 @@ void ft_echo(char **av)
 	int nflag;
 
 	nflag = 0;
-	while (*(++av) && ft_strncmp(*av, "-n", 3) == 0)
+	while (*(++av) && str_equal(*av, "-n", 3))
 		nflag = 1;
 	while (*av)
 	{
