@@ -72,7 +72,7 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set)
 		run_child(node, pipes, set, cmd_path);
 	else
 	{
-		if (wait_options(c_pid) == FAILURE)
+		if (!wait_options(c_pid))
 			return (free_cmd_path(cmd_path));
 		if (cmd_path)
 			free(cmd_path);
