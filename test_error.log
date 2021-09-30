@@ -1,0 +1,152 @@
+command : echo test tout
+>>> MINISHELL
+exit
+>>> BASH
+
+command : echo test tout
+>>> MINISHELL
+exit
+>>> BASH
+
+command : echo -n test tout
+>>> MINISHELL
+exit
+>>> BASH
+
+command : echo -n -n -n test tout
+>>> MINISHELL
+exit
+>>> BASH
+
+command : echo -nnnnnnnnnnnnnnnnnnnn test tout
+>>> MINISHELL
+exit
+>>> BASH
+
+command : echo -nnnnnnnnnnnnnfnnnnnnn test tout
+>>> MINISHELL
+exit
+>>> BASH
+
+command : cd .. ; pwd; env | grep PWD
+>>> MINISHELL
+exit
+>>> BASH
+
+command : cd /home ; pwd; env | grep PWD
+>>> MINISHELL
+exit
+>>> BASH
+
+command : cd ; pwd; env | grep PWD
+>>> MINISHELL
+exit
+>>> BASH
+
+command : mkdir test_dir ; cd test_dir ; rm -rf ../test_dir ; cd . ; pwd ; cd . ; pwd ; cd .. ; pwd ; env | grep PWD
+>>> MINISHELL
+cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+exit
+>>> BASH
+cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory
+
+command : cd fdfddffdfdfdff
+>>> MINISHELL
+minishell: cd fdfddffdfdfdff: No such file or directory
+exit
+>>> BASH
+bash: line 1: cd: fdfddffdfdfdff: No such file or directory
+
+command : unset PWD; cd ./; cd ./ env | grep PWD
+>>> MINISHELL
+minishell: cd: too many arguments
+exit
+>>> BASH
+bash: line 1: cd: too many arguments
+
+command : export CDPATH=/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD
+>>> MINISHELL
+exit
+>>> BASH
+
+command : export CDPATH=/home:/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD
+>>> MINISHELL
+exit
+>>> BASH
+
+command : cd
+>>> MINISHELL
+exit
+>>> BASH
+
+command : export AAA=BBB; env | grep AAA
+>>> MINISHELL
+exit
+>>> BASH
+
+command : export AAA=BBB; export AAA+=BBB; env | grep AAA
+>>> MINISHELL
+exit
+>>> BASH
+
+command : export AAA-=BBB; env | grep AAA
+>>> MINISHELL
+minishell: export: 'AAA-=BBB': not a valid identifier
+exit
+>>> BASH
+bash: line 1: export: `AAA-=BBB': not a valid identifier
+
+command : export AAA=; env | grep AAA
+>>> MINISHELL
+exit
+>>> BASH
+
+command : export 1AAA=; env | grep 1AAA
+>>> MINISHELL
+minishell: export: '1AAA=': not a valid identifier
+exit
+>>> BASH
+bash: line 1: export: `1AAA=': not a valid identifier
+
+command : export A1AA=; env | grep A1AA
+>>> MINISHELL
+exit
+>>> BASH
+
+command : export A1AA; env | grep A1AA
+>>> MINISHELL
+exit
+>>> BASH
+
+command : export LLL
+>>> MINISHELL
+exit
+>>> BASH
+
+command : export A=B; unset A ; env | grep A
+>>> MINISHELL
+exit
+>>> BASH
+
+command : export F=B; unset A B C D E F ; env | grep A
+>>> MINISHELL
+exit
+>>> BASH
+
+command : unset A B C D E F
+>>> MINISHELL
+exit
+>>> BASH
+
+command : echo test | cat -e | cat -e
+>>> MINISHELL
+exit
+>>> BASH
+
+command : ls|ls|ls|ls|ls|ls|ls
+>>> MINISHELL
+exit
+>>> BASH
+

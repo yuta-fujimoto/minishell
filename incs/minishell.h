@@ -80,6 +80,9 @@ bool	free_cmd_path(char *cmd_path);
 t_list	*lexar(char *line);
 /* lexar */
 
+int	expansion(t_list *lst);
+/* expansion */
+
 t_tree	*command(t_list **lst);
 int		consume(int flgs, t_list **lst);
 t_tree	*parser(t_list *lst);

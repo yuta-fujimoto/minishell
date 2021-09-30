@@ -49,6 +49,11 @@ int	main(int ac, char **av)
 			exit(EXIT_SUCCESS);
 		}
 		set.lst = lexar(set.input);
+		if (expansion(set.lst) == FAILURE)
+		{
+			free_set(&set);
+			exit(EXIT_FAILURE);
+		}
 		dprintf(fd, "\ninput >> %s\n", set.input);
 		dprintf(fd, "\n====result of lexar====\n");
 		ft_lstiter(set.lst, ft_printf);

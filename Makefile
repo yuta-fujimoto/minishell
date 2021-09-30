@@ -6,6 +6,7 @@ CDFLAGS := -lreadline -lhistory -L$(shell brew --prefix readline)/lib
 SRCS :=	srcs/main.c \
 		srcs/common_utils.c \
 		srcs/lexar.c \
+		srcs/expansion.c \
 		srcs/parser.c \
 		srcs/parser2.c \
 		srcs/tree.c \
