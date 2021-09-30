@@ -10,6 +10,7 @@ SRCS :=	srcs/main.c \
 		srcs/parser2.c \
 		srcs/tree.c \
 		srcs/syntax_error.c \
+		srcs/set_redirection.c \
 		srcs/execution/execute_input.c \
 		srcs/execution/create_cmd_path.c \
 		srcs/execution/run_builtin_cmd.c \

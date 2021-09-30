@@ -44,6 +44,15 @@ typedef struct s_pipes
 	int	fd_b[2];
 }				t_pipes;
 
+typedef struct s_redir
+{
+	int		status;
+	int		safe_fd;
+	int		new_fd;
+	int		old_fd;
+	bool	error;
+}				t_redir;
+
 # define SYS_ERROR -1
 # define SAME 0
 # define FAILURE 1
@@ -134,5 +143,10 @@ void	swap_fds(t_pipes *pipes);
 void	close_pipes(t_pipes *pipes);
 t_node	decide_cmd_node(t_tree *parent, t_pipes *pipes);
 /* piping */
+
+bool	close_fd(int fd, int rlt);
+bool	reset_old_fd(t_redir *redir, int rlt);
+char	**set_redirection(char **cmd, t_redir *redir);
+/* redirection */
 
 #endif
