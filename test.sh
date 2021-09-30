@@ -25,11 +25,13 @@ rm test_error.log
 
 function exec_test()
 {
-	echo "<<<<<<<<<<<<< MINISHELL >>>>>>>>>>>>>>" >>test_error.log
+	echo "command : "$@ >> test_error.log
+	echo ">>> MINISHELL" >>test_error.log
 	TEST1=$(echo $@ "; exit" | ./minishell 2>>test_error.log | grep -v "minishell >")
 	ES_1=$?
-	echo "<<<<<<<<<<<<< BASH >>>>>>>>>>>>>>" >>test_error.log
+	echo ">>> BASH" >>test_error.log
 	TEST2=$(echo $@ "; exit" | bash 2>>test_error.log)
+	echo >>test_error.log
 	ES_2=$?
 	if [ "$TEST1" == "$TEST2" ] && [ "$ES_1" == "$ES_2" ]; then
 		printf " $BOLDGREEN%s$RESET" "✓ "
@@ -70,23 +72,24 @@ exec_test 'echo -nnnnnnnnnnnnnnnnnnnn test tout'
 exec_test 'echo -nnnnnnnnnnnnnfnnnnnnn test tout'
 
 # CD PWD TESTS
-exec_test 'cd .. ; pwd; env | grep PWD'
+exec_test 'cd .. ; pwd; env | grep PWD | sort'
 if [ $(uname) == "Linux" ]; then 
-	exec_test 'cd /home ; pwd; env | grep PWD'
+	exec_test 'cd /home ; pwd; env | grep PWD | sort'
 else
-	exec_test 'cd /Users ; pwd; env | grep PWD'
+	exec_test 'cd /Users ; pwd; env | grep PWD | sort'
 fi
-exec_test 'cd ; pwd; env | grep PWD'
-exec_test 'mkdir test_dir ; cd test_dir ; rm -rf ../test_dir ; cd . ; pwd ; cd . ; pwd ; cd .. ; pwd ; env | grep PWD'
+exec_test 'cd ; pwd; env | grep PWD | sort'
+exec_test 'mkdir test_dir ; cd test_dir ; rm -rf ../test_dir ; cd . ; pwd ; cd . ; pwd ; cd .. ; pwd ; env | grep PWD | sort'
 exec_test 'cd fdfddffdfdfdff'
+# exec_test 'cd ./; unset OLDPWD ;cd ./; env | grep PWD' fix later,,,,,
 if [ $(uname) == "Linux" ]; then
-	exec_test 'export CDPATH=/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD' 
-	exec_test 'export CDPATH=/home:/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD' 
-else
-	exec_test 'export CDPATH=/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD' 
-	exec_test 'export CDPATH=/home:/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD'
-# replace with your minishell path!!
+	exec_test 'export CDPATH=/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD | sort' 
+	exec_test 'export CDPATH=/home:/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD | sort' 
 fi
+#	exec_test 'export CDPATH=/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD | sort' 
+#	exec_test 'export CDPATH=/home:/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD | sort'
+# replace with your minishell path!!
+
 exec_test 'cd'
 
 # export TESTS
@@ -101,8 +104,8 @@ exec_test 'export LLL'
 # echo "export > a | exit" | bash ; echo "export | grep -v "minishell >" > a | exit" | ./minishell > b | diff a b >> test_env.log | rm a b;
 
 # unset TESTS
-exec_test 'export A=B; unset A ; env | grep A'
-exec_test 'export F=B; unset A B C D E F ; env | grep A'
+exec_test 'export AAA=B; unset AAA ; env | grep AAA'
+exec_test 'export FFF=B; unset A B C D E FFF ; env | grep FFF'
 exec_test 'unset A B C D E F'
 
 # env TESTS

@@ -1,8 +1,7 @@
 #include "../../incs/minishell.h"
 
-int ft_cd_end(char *tmp, t_env **env, int ret_val)
+int	ft_cd_end(char *tmp, t_env **env, int ret_val)
 {
-	fflush(NULL);
 	if (tmp)
 		free(tmp);
 	if (env)
@@ -51,24 +50,26 @@ char	*absolute_path(char *pathname)
 
 int	set_working_directory(char *pathname)
 {
-	t_env		*env;
-	char		*oldpwd;
-	extern char	**environ;
-	char		*tmp;
+	t_env	*env;
+	char	*oldpwd;
+	char	*tmp;
 
+	if (!pathname)
+		return (FAILURE);
 	env = environ_to_list();
 	if (!env)
-		return (FAILURE);
+		return (ft_cd_end(pathname, NULL, FAILURE));
 	oldpwd = update_environ_value(ft_find_env_var(env, "PWD"),
 			pathname);
 	if (!oldpwd)
+	{
+		free(pathname);
 		oldpwd = ft_strdup("");
+	}
 	tmp = update_environ_value(ft_find_env_var(env, "OLDPWD"), oldpwd);
 	if (!tmp && !ft_envadd_back(&env, ft_envnew(ft_strdup("OLDPWD"), oldpwd)))
-		return (ft_cd_end(tmp, &env, FAILURE));
-	free_environ();
-	environ = list_to_environ(env);
-	if (!environ)
+		return (ft_cd_end(oldpwd, &env, FAILURE));
+	if (list_to_environ(env) == FAILURE)
 		return (ft_cd_end(tmp, &env, FAILURE));
 	return (ft_cd_end(tmp, &env, SUCCESS));
 }
