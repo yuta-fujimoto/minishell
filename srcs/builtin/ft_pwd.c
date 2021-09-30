@@ -20,9 +20,15 @@ int	ft_pwd(void)
 
 	pathname = get_current_directory();
 	if (pathname)
+	{
 		ft_putendl_fd(pathname, STDOUT_FILENO);
-	else
+		free(pathname);
+		return (SUCCESS);
+	}
+	if (errno == ENOENT)
+	{
 		perror("minishell: pwd");
-	free(pathname);
-	return (SUCCESS);
+		return (SUCCESS);
+	}
+	return (FAILURE);
 }
