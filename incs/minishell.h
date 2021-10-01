@@ -50,6 +50,11 @@ typedef struct s_redir
 	int		safe_fd;
 	int		new_fd;
 	int		stdio_fd;
+	bool	redirection;
+	int		r_flags;
+	int		rr_flags;
+	int		l_flags;
+	int		permissions;
 }				t_redir;
 
 # define SYS_ERROR -1
@@ -145,9 +150,8 @@ t_node	decide_cmd_node(t_tree *parent, t_pipes *pipes);
 
 bool	close_fd(int fd, int rlt);
 bool	reset_stdio_fd(t_redir *redir, int rlt);
-char	**set_redirection(char **cmd, t_redir *redir, bool *touch);
-bool	is_rdir_out(char *av_i);
-bool	is_rdir_in(char *av_i);
+char	**ms_redirection(char **cmd, t_redir *redir, bool *touch);
+bool	is_rdir(char *av_i);
 bool	is_open_fd(int fd);
 /* redirection */
 

@@ -1,6 +1,6 @@
 #include "../incs/minishell.h"
 
-static bool reset_fds(t_redir *redir)
+static bool	reset_fds(t_redir *redir)
 {
 	bool	error;
 
@@ -10,6 +10,7 @@ static bool reset_fds(t_redir *redir)
 		if (!reset_stdio_fd(redir, SUCCESS))
 			error = true;
 		redir->status = 0;
+		redir->redirection = false;
 	}
 	redir->stdio_fd = -1;
 	if (!close_fd(redir->new_fd, SUCCESS))
@@ -23,14 +24,9 @@ static bool reset_fds(t_redir *redir)
 	return (true);
 }
 
-bool	is_rdir_out(char *cmd_i)
+bool	is_rdir(char *cmd_i)
 {
-	return (cmd_i[0] == '>');
-}
-
-bool	is_rdir_in(char *cmd_i)
-{
-	return (cmd_i[0] == '<');
+	return (cmd_i[0] == '>' || cmd_i[0] == '<');
 }
 
 bool	is_open_fd(int fd)
@@ -63,11 +59,11 @@ static void	decide_stdio_fd(t_redir *redir)
 static bool	open_new_fd(char *filename, t_redir *redir)
 {
 	if (redir->status == RDIR)
-		redir->new_fd = open(filename, O_RDWR | O_CREAT | O_TRUNC | O_CLOEXEC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+		redir->new_fd = open(filename, redir->r_flags, redir->permissions);
 	else if (redir->status == RRDIR)
-		redir->new_fd = open(filename, O_RDWR | O_CREAT | O_APPEND | O_CLOEXEC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+		redir->new_fd = open(filename, redir->rr_flags, redir->permissions);
 	else if (redir->status == LDIR)
-		redir->new_fd = open(filename, O_RDWR | O_CREAT | O_CLOEXEC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+		redir->new_fd = open(filename, redir->l_flags, redir->permissions);
 	else
 		;
 	if (redir->new_fd == SYS_ERROR)
@@ -75,10 +71,8 @@ static bool	open_new_fd(char *filename, t_redir *redir)
 	return (true);
 }
 
-static bool	redirect_output(char **cmd, int i, t_redir *redir)
+static bool	set_redirection(char **cmd, int i, t_redir *redir)
 {
-	int	rlt;
-
 	set_status(cmd[i], redir);
 	decide_stdio_fd(redir);
 	if (!open_new_fd(cmd[i + 1], redir))
@@ -86,20 +80,10 @@ static bool	redirect_output(char **cmd, int i, t_redir *redir)
 	redir->safe_fd = dup(redir->stdio_fd);
 	if (redir->safe_fd == SYS_ERROR)
 		return (false);
-	rlt = dup2(redir->new_fd, redir->stdio_fd);
-	if (rlt == SYS_ERROR)
+	if (dup2(redir->new_fd, redir->stdio_fd) == SYS_ERROR)
 		return (false);
+	redir->redirection = true;
 	return (true);
-}
-
-static int	ft_str_arr_len(char **str_arr)
-{
-	int	i;
-
-	i = 0;
-	while (str_arr[i])
-		i++;
-	return (i);
 }
 
 static int	count_cmd_info(char **cmd)
@@ -111,7 +95,7 @@ static int	count_cmd_info(char **cmd)
 	len = ft_str_arr_len(cmd);
 	while (cmd[i])
 	{
-		if (is_rdir_out(cmd[i]) || is_rdir_in(cmd[i]))	
+		if (is_rdir(cmd[i]))
 			len -= 2;
 		i++;
 	}
@@ -127,7 +111,7 @@ static char	**create_new_cmd(char **cmd, bool *touch)
 
 	i = 0;
 	j = 0;
-	new_cmd_len = count_cmd_info(cmd);	
+	new_cmd_len = count_cmd_info(cmd);
 	if (!new_cmd_len)
 	{
 		*touch = true;
@@ -135,11 +119,11 @@ static char	**create_new_cmd(char **cmd, bool *touch)
 	}
 	new_cmd = malloc(sizeof(char **) * new_cmd_len + 1);
 	if (!new_cmd)
-		return (NULL);	
+		return (NULL);
 	while (cmd[i])
 	{
-		if (is_rdir_out(cmd[i]) || is_rdir_in(cmd[i]))
-			i += 2;/*this could be trouble, but it should already be syntax error boefre this piont*/
+		if (is_rdir(cmd[i]))
+			i += 2;/*this could be trouble, ensure if > is not followed by anything, it is syntax error*/
 		else
 			new_cmd[j++] = cmd[i++];
 	}
@@ -147,24 +131,18 @@ static char	**create_new_cmd(char **cmd, bool *touch)
 	return (new_cmd);
 }
 
-char **set_redirection(char **cmd, t_redir *redir, bool *touch)
+char	**ms_redirection(char **cmd, t_redir *redir, bool *touch)
 {
 	int		i;
-	int		rlt;
 
-	i = 0;
-	while (cmd[i])
+	i = -1;
+	while (cmd[++i])
 	{
-		if (is_rdir_out(cmd[i]) || is_rdir_in(cmd[i]))
-		{
-			if (!reset_fds(redir))
-				return (NULL);
-		}
-		if (is_rdir_out(cmd[i]))
-			rlt = redirect_output(cmd, i, redir);
-		else if (is_rdir_in(cmd[i]))
-			rlt = redirect_output(cmd, i, redir);	
-		if (!rlt)
+		if (!is_rdir(cmd[i]))
+			continue ;
+		if (!reset_fds(redir))
+			return (NULL);
+		if (!set_redirection(cmd, i, redir))
 			return (NULL);
 		i++;
 	}

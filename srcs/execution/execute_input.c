@@ -38,6 +38,11 @@ static void	init_redirection(t_redir *redir)
 	redir->safe_fd = -1;
 	redir->new_fd = -1;
 	redir->stdio_fd = -1;
+	redir->redirection = false;
+	redir->r_flags = O_RDWR | O_CREAT | O_TRUNC | O_CLOEXEC;
+	redir->rr_flags = O_RDWR | O_CREAT | O_APPEND | O_CLOEXEC;
+	redir->l_flags = O_RDWR | O_CREAT | O_CLOEXEC;
+	redir->permissions = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 }
 
 static bool	has_redirection(char **av)
@@ -47,7 +52,7 @@ static bool	has_redirection(char **av)
 	i = 0;
 	while (av[i])
 	{
-		if (is_rdir_out(av[i]) || is_rdir_in(av[i]))
+		if (is_rdir(av[i]))
 			return (true);
 		i++;
 	}
@@ -57,7 +62,7 @@ static bool	has_redirection(char **av)
 static char	**create_cmd(char **av, t_redir *redir, bool *touch)
 {
 	if (has_redirection(av))
-		return (set_redirection(av, redir, touch));
+		return (ms_redirection(av, redir, touch));
 	else
 		return (av);
 }
@@ -65,9 +70,9 @@ static char	**create_cmd(char **av, t_redir *redir, bool *touch)
 bool	reset_stdio_fd(t_redir *redir, int rlt)
 {
 	int	ret;
-	
+
 	ret = 0;
-	if (redir->status && redir->stdio_fd != -1)
+	if (redir->redirection)
 		ret = dup2(redir->safe_fd, redir->stdio_fd);
 	if (ret == SYS_ERROR || rlt == FAILURE)
 		return (false);
@@ -86,7 +91,7 @@ bool	close_fd(int fd, int rlt)
 	return (true);
 }
 
-static bool end_redirection(char **cmd, t_redir *redir, int rlt)
+static bool	end_redirection(char **cmd, t_redir *redir, int rlt)
 {
 	if (cmd)
 	{
@@ -105,7 +110,7 @@ static bool end_redirection(char **cmd, t_redir *redir, int rlt)
 	return (rlt);
 }
 
-static bool	execute_cmd(t_node node, t_set *set)
+static bool	execute_cmd(char **av, t_set *set)
 {
 	int		rlt;
 	char	**cmd;
@@ -113,9 +118,9 @@ static bool	execute_cmd(t_node node, t_set *set)
 	bool	touch;
 
 	touch = false;
-	init_redirection(&redir);
-	cmd = create_cmd(node.av, &redir, &touch);
 	rlt = SUCCESS;
+	init_redirection(&redir);
+	cmd = create_cmd(av, &redir, &touch);
 	if (!cmd && !touch)
 		return (end_redirection(NULL, &redir, FAILURE));
 	else if (!touch)
@@ -125,7 +130,7 @@ static bool	execute_cmd(t_node node, t_set *set)
 		else
 			rlt = run_gnu_cmd(cmd);
 	}	
-	if (has_redirection(node.av))
+	if (has_redirection(av))
 		rlt = end_redirection(cmd, &redir, rlt);
 	return (rlt);
 }
@@ -144,7 +149,7 @@ bool	execute_input(t_tree *l, t_set *set)
 		execute_input(l->left, set);
 		if (l->node.av)
 		{
-			if (execute_cmd(l->node, set) == FAILURE)
+			if (execute_cmd(l->node.av, set) == FAILURE)
 				return (minishell_error());
 		}
 		execute_input(l->right, set);

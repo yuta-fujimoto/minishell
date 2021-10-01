@@ -1,6 +1,6 @@
 #include "../../incs/minishell.h"
 
-char *get_current_directory(void)
+char	*get_current_directory(void)
 {
 	char	*p;
 
@@ -16,7 +16,7 @@ char *get_current_directory(void)
 
 int	ft_pwd(void)
 {
-	char *pathname;
+	char	*pathname;
 
 	pathname = get_current_directory();
 	if (pathname)
