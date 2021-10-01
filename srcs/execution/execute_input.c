@@ -6,13 +6,13 @@ static bool	minishell_error(void)
 	return (FAILURE);
 }
 
-static bool	run_gnu_cmd(t_node node)
+static bool	run_gnu_cmd(char **cmd)
 {
 	pid_t		c_pid;
 	char		*cmd_path;
 	extern char	**environ;
 
-	cmd_path = create_cmd_path(node);
+	cmd_path = create_cmd_path(cmd);
 	if (!cmd_path)
 		return (FAILURE);
 	c_pid = fork();
@@ -20,8 +20,8 @@ static bool	run_gnu_cmd(t_node node)
 		return (free_cmd_path(cmd_path));
 	else if (c_pid == 0)
 	{
-		if (execve(cmd_path, node.av, environ) == SYS_ERROR)
-			exit(exec_cmd_error(node.av[0], cmd_path));
+		if (execve(cmd_path, cmd, environ) == SYS_ERROR)
+			exit(exec_cmd_error(cmd[0], cmd_path));
 	}
 	else
 	{
@@ -37,8 +37,7 @@ static void	init_redirection(t_redir *redir)
 	redir->status = 0;
 	redir->safe_fd = -1;
 	redir->new_fd = -1;
-	redir->old_fd = -1;
-	redir->error = false;
+	redir->stdio_fd = -1;
 }
 
 static bool	has_redirection(char **av)
@@ -48,28 +47,28 @@ static bool	has_redirection(char **av)
 	i = 0;
 	while (av[i])
 	{
-		if (str_equal(av[i], ">", 2) || str_equal(av[i], "<", 2))
+		if (is_rdir_out(av[i]) || is_rdir_in(av[i]))
 			return (true);
 		i++;
 	}
 	return (false);
 }
 
-static char	**create_cmd(char **av, t_redir *redir)
+static char	**create_cmd(char **av, t_redir *redir, bool *touch)
 {
 	if (has_redirection(av))
-		return (set_redirection(av, redir));
+		return (set_redirection(av, redir, touch));
 	else
 		return (av);
 }
 
-bool	reset_old_fd(t_redir *redir, int rlt)
+bool	reset_stdio_fd(t_redir *redir, int rlt)
 {
 	int	ret;
 	
 	ret = 0;
-	if (redir->status)
-		ret = dup2(redir->safe_fd, redir->old_fd);
+	if (redir->status && redir->stdio_fd != -1)
+		ret = dup2(redir->safe_fd, redir->stdio_fd);
 	if (ret == SYS_ERROR || rlt == FAILURE)
 		return (false);
 	return (true);
@@ -94,67 +93,61 @@ static bool end_redirection(char **cmd, t_redir *redir, int rlt)
 		free(cmd);
 		cmd = NULL;
 	}
-	if (!reset_old_fd(redir, rlt))
+	if (!reset_stdio_fd(redir, rlt))
 		rlt = FAILURE;
-	if (redir->old_fd != STDOUT_FILENO && redir->old_fd != STDIN_FILENO)
+	if (is_open_fd(redir->new_fd))
 	{
-		if (!close_fd(redir->old_fd, rlt))
+		if (!close_fd(redir->new_fd, rlt))
 			rlt = FAILURE;
 	}
-//	if (!close_fd(redir->new_fd, rlt))
-//		rlt = FAILURE;
 	if (!close_fd(redir->safe_fd, rlt))
 		rlt = FAILURE;
 	return (rlt);
 }
-/* dont't need this close due to close on ecex flag???*/
 
 static bool	execute_cmd(t_node node, t_set *set)
 {
 	int		rlt;
 	char	**cmd;
 	t_redir	redir;
-	
+	bool	touch;
+
+	touch = false;
 	init_redirection(&redir);
-	cmd = create_cmd(node.av, &redir);
-	if (!cmd && redir.error)
+	cmd = create_cmd(node.av, &redir, &touch);
+	rlt = SUCCESS;
+	if (!cmd && !touch)
 		return (end_redirection(NULL, &redir, FAILURE));
-	if (is_buildin(cmd[0]))
-		rlt = run_builtin_cmd(cmd, set);
-	else
-		rlt = run_gnu_cmd(node);
+	else if (!touch)
+	{	
+		if (is_buildin(cmd[0]))
+			rlt = run_builtin_cmd(cmd, set);
+		else
+			rlt = run_gnu_cmd(cmd);
+	}	
 	if (has_redirection(node.av))
 		rlt = end_redirection(cmd, &redir, rlt);
 	return (rlt);
 }
-/*
- * when doing something like '1> filename' or and error like 'ls 999> filename'
- * we might immediately exit failure bcs we are trying to say
- * is_buildin(cmd[0]) on something that is NULL.. also in run_gnu_cmd
- * we are eventually trying to do the same thing... Needs to be made compatible
- * so that at some point, if !cmd because of malloc error, then cmd == NULL,
- * otherwise cmd[0] = ft_strdup(""), perhaps?
- * possibly in create_cmd here, and I'm not sure yet about in pipes
- */
 
 bool	execute_input(t_tree *l, t_set *set)
 {
-	int		rlt;
-
-	rlt = SUCCESS;
 	if (!l)
 		return (SUCCESS);
 	else if (l->node.flgs == PIPE)
-		rlt = execute_pipe(l, set);
+	{
+		if (execute_pipe(l, set) == FAILURE)
+			return (minishell_error());
+	}
 	else
 	{
 		execute_input(l->left, set);
 		if (l->node.av)
-			rlt = execute_cmd(l->node, set);
+		{
+			if (execute_cmd(l->node, set) == FAILURE)
+				return (minishell_error());
+		}
 		execute_input(l->right, set);
 	}
-	if (rlt == FAILURE)
-		return (minishell_error());
-	return (rlt);
+	return (SUCCESS);
 }
-/*change execute_input*/

@@ -36,7 +36,7 @@ static int	get_cmd_path(t_node node, char **cmd_path)
 		*cmd_path = NULL;
 	else
 	{
-		*cmd_path = create_cmd_path(node);
+		*cmd_path = create_cmd_path(node.av);
 		if (!*cmd_path)
 			return (FAILURE);
 	}

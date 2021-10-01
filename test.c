@@ -4,7 +4,7 @@
 int	main(void)
 {
 	struct stat	buf;
-	printf("%d\n", fstat(1, &buf));
+	printf("%d\n", fstat(4, &buf));
 	printf("%d\n", buf.st_mode & S_IFMT);
 	printf("%d\n", buf.st_mode & S_IFIFO);
 	printf("%d\n", buf.st_mode & S_IFCHR);

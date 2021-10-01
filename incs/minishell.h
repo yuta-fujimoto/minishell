@@ -49,8 +49,7 @@ typedef struct s_redir
 	int		status;
 	int		safe_fd;
 	int		new_fd;
-	int		old_fd;
-	bool	error;
+	int		stdio_fd;
 }				t_redir;
 
 # define SYS_ERROR -1
@@ -105,7 +104,7 @@ void	free_tree(t_tree *l);
 /* tree library */
 
 bool	wait_options(pid_t pid);
-char	*create_cmd_path(t_node node);
+char	*create_cmd_path(char **cmd);
 bool	execute_input(t_tree *l, t_set *set);
 /* execution */
 
@@ -145,8 +144,11 @@ t_node	decide_cmd_node(t_tree *parent, t_pipes *pipes);
 /* piping */
 
 bool	close_fd(int fd, int rlt);
-bool	reset_old_fd(t_redir *redir, int rlt);
-char	**set_redirection(char **cmd, t_redir *redir);
+bool	reset_stdio_fd(t_redir *redir, int rlt);
+char	**set_redirection(char **cmd, t_redir *redir, bool *touch);
+bool	is_rdir_out(char *av_i);
+bool	is_rdir_in(char *av_i);
+bool	is_open_fd(int fd);
 /* redirection */
 
 #endif
