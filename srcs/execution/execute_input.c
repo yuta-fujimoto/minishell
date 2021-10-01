@@ -39,6 +39,8 @@ static void	init_redirection(t_redir *redir)
 	redir->new_fd = -1;
 	redir->stdio_fd = -1;
 	redir->redirection = false;
+	redir->heredoc = true;
+	redir->heredoc_fd = -1;	
 	redir->r_flags = O_RDWR | O_CREAT | O_TRUNC | O_CLOEXEC;
 	redir->rr_flags = O_RDWR | O_CREAT | O_APPEND | O_CLOEXEC;
 	redir->l_flags = O_RDWR | O_CREAT | O_CLOEXEC;
@@ -124,12 +126,12 @@ static bool	execute_cmd(char **av, t_set *set)
 	if (!cmd && !touch)
 		return (end_redirection(NULL, &redir, FAILURE));
 	else if (!touch)
-	{	
+	{
 		if (is_buildin(cmd[0]))
 			rlt = run_builtin_cmd(cmd, set);
 		else
 			rlt = run_gnu_cmd(cmd);
-	}	
+	}
 	if (has_redirection(av))
 		rlt = end_redirection(cmd, &redir, rlt);
 	return (rlt);

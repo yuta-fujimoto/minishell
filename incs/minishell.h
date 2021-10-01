@@ -51,6 +51,8 @@ typedef struct s_redir
 	int		new_fd;
 	int		stdio_fd;
 	bool	redirection;
+	bool	heredoc;
+	int		heredoc_fd;
 	int		r_flags;
 	int		rr_flags;
 	int		l_flags;

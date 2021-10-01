@@ -1,17 +1,32 @@
 #include "../incs/minishell.h"
 
+/*static bool	check_for_heredock(t_redir *redir)
+{
+	if (redir->status != LLDIR)
+		return (true);
+	if (redir->heredoc_bkp != -1)
+	{
+		if (close(redir->heredoc_bkp) == SYS_ERROR)
+			return (false);
+	}
+	redir->heredoc_bkp = redir->new_fd;
+	redir->new_fd = -1;
+}*/
+
 static bool	reset_fds(t_redir *redir)
 {
 	bool	error;
 
 	error = false;
-	if (redir->status)
+	if  (redir->redirection)
 	{
+	//	if (!check_for_heredoc(redir))
+	//		error = true;
 		if (!reset_stdio_fd(redir, SUCCESS))
-			error = true;
-		redir->status = 0;
+			error = true;	
 		redir->redirection = false;
 	}
+	redir->status = 0;
 	redir->stdio_fd = -1;
 	if (!close_fd(redir->new_fd, SUCCESS))
 		error = true;
@@ -64,9 +79,31 @@ static bool	open_new_fd(char *filename, t_redir *redir)
 		redir->new_fd = open(filename, redir->rr_flags, redir->permissions);
 	else if (redir->status == LDIR)
 		redir->new_fd = open(filename, redir->l_flags, redir->permissions);
-	else
-		;
-	if (redir->new_fd == SYS_ERROR)
+	if (redir->new_fd == SYS_ERROR && redir->status != LLDIR)
+		return (false);
+	return (true);
+}
+
+static bool	ms_heredoc(char *delimiter, t_redir *redir)
+{
+	char	*line;
+	int		fds[2];
+
+	if (pipe(fds) == SYS_ERROR)
+		return (false);
+	redir->new_fd = fds[0];
+	while (1)
+	{
+		line = readline("> ");//if !line what do??
+		if (str_equal(delimiter, line, ft_strlen(delimiter) + 1))
+			break ;// need to add exception for when delimiter is in quotes
+		ft_putendl_fd(line, fds[1]);
+		free(line);
+		line = NULL;
+	}
+	free(line);
+	line = NULL;
+	if (close(fds[1]) == SYS_ERROR)
 		return (false);
 	return (true);
 }
@@ -76,7 +113,12 @@ static bool	set_redirection(char **cmd, int i, t_redir *redir)
 	set_status(cmd[i], redir);
 	decide_stdio_fd(redir);
 	if (!open_new_fd(cmd[i + 1], redir))
-		return (false);
+		return (false);	
+	if (redir->status == LLDIR)
+	{
+		if (!ms_heredoc(cmd[i + 1], redir))
+			return (false);
+	}
 	redir->safe_fd = dup(redir->stdio_fd);
 	if (redir->safe_fd == SYS_ERROR)
 		return (false);
@@ -128,6 +170,7 @@ static char	**create_new_cmd(char **cmd, bool *touch)
 			new_cmd[j++] = cmd[i++];
 	}
 	new_cmd[j] = NULL;
+	i = 0;
 	return (new_cmd);
 }
 

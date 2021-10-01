@@ -28,6 +28,14 @@ void	free_set(t_set *set)
 	}
 }
 
+void	sigquit_handler(int signal)
+{
+	(void)signal;
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
+
 int	main(int ac, char **av)
 {
 	t_set	set;
@@ -39,6 +47,7 @@ int	main(int ac, char **av)
 			| S_IWUSR | S_IRGRP | S_IROTH);
 	if (signal(SIGINT, sigint_handler) == SIG_ERR)
 		return (EXIT_SUCCESS);
+	signal(SIGQUIT, sigquit_handler);
 	while (1)
 	{
 		set.input = readline("minishell > ");
