@@ -83,7 +83,7 @@ bool	str_equal(char *s1, char *s2, size_t n);
 t_list	*lexar(char *line);
 /* lexar */
 
-int	expansion(t_list *lst);
+int	expansion(t_list **lst);
 /* expansion */
 
 t_tree	*command(t_list **lst);

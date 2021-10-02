@@ -4,6 +4,7 @@ int	fd;
 
 void	ft_printf(void *word)
 {
+	if (word)
 	dprintf(fd, "[%s]\n", (char *)word);
 }
 
@@ -49,14 +50,15 @@ int	main(int ac, char **av)
 			exit(EXIT_SUCCESS);
 		}
 		set.lst = lexar(set.input);
-		if (expansion(set.lst) == FAILURE)
+		if (expansion(&set.lst) == FAILURE)
 		{
 			free_set(&set);
 			exit(EXIT_FAILURE);
 		}
 		dprintf(fd, "\ninput >> %s\n", set.input);
 		dprintf(fd, "\n====result of lexar====\n");
-		ft_lstiter(set.lst, ft_printf);
+		if (set.lst)
+			ft_lstiter(set.lst, ft_printf);
 		dprintf(fd, "\n====result of parser====\n");
 		set.tree = parser(set.lst);
 		if (*set.input)

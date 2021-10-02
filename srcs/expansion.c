@@ -2,8 +2,8 @@
 
 int	update_word_with_char(char **word, char *new)
 {
-	char *new_word;
-	size_t word_len;
+	char	*new_word;
+	size_t	word_len;
 
 	if (!*word)
 	{
@@ -31,7 +31,9 @@ char	*get_var_name(char *s)
 	int	i;
 
 	i = 0;
-	while (s[i] && s[i] != '\'' && s[i] != '\"')
+	if (isdigit(s[0]) || s[0] == '?')
+		return (ft_substr(s, 0 ,1));
+	while (s[i] && s[i] != '\'' && s[i] != '\"' && s[i] != '+' && s[i] != '=' && s[i] != ' ')
 		i++;
 	return (ft_substr(s, 0, i));
 }
@@ -43,24 +45,32 @@ int	update_word_with_var(char **word, char *var_start, t_env *env, int *i)
 	t_env	*env_var;
 
 	var_name = get_var_name(var_start);
-	printf("%s\n", var_name);
 	if (!var_name)
 	{
 		if (*word)
 			free(*word);
 		return (FAILURE);
 	}
-	*i =  * i + ft_strlen(var_name) + 1;
+	if (str_equal(var_name, "", 2))
+	{
+		(*i)++;
+		free(var_name);
+		return (update_word_with_char(word, "$"));
+	}
+	*i = *i + ft_strlen(var_name) + 1;
 	env_var = ft_find_env_var(env, var_name);
 	free(var_name);
 	if (!env_var)
 		return (SUCCESS);
-	new_word = ft_strjoin(*word, env->value);
+	if (!*word)
+		new_word = ft_strdup(env->value);
+	else
+		new_word = ft_strjoin(*word, env->value);
 	if (*word)
 		free(*word);
+	if (!new_word)
+		return (FAILURE);
 	*word = new_word;
-	printf("%s\n", new_word);
-	fflush(NULL);
 	return (SUCCESS);
 }
 
@@ -77,9 +87,18 @@ int convert_word(t_list *lst, t_env *env)
 	word = NULL;
 	if (lst->flags != STR)
 		return (SUCCESS);
+	if (str_equal(lst->word, "\"\"", 3) || str_equal(lst->word, "\'\'", 3))
+	{
+		word = lst->word;
+		lst->word = ft_strdup("");
+		free(word);
+		if (!lst->word)
+			return (FAILURE);
+		return (SUCCESS);
+	}
 	while (lst->word[i])
 	{
-		if (lst->word[i] == '\'' && !in_dquote && !in_squote && lst->word[i + 1] != '\0')
+		if (lst->word[i] == '\\' && !in_squote && lst->word[i + 1] != '\0')
 		{
 			if (update_word_with_char(&word, &lst->word[i + 1]) == FAILURE)
 				return (FAILURE);
@@ -106,33 +125,68 @@ int convert_word(t_list *lst, t_env *env)
 				return (FAILURE);
 			i++;
 		}
-		
 	}
 	free(lst->word);
 	lst->word = word;
 	return (SUCCESS);
 }
 
-int	expansion(t_list *lst)
+void eliminate_null_node(t_list **lst)
 {
-	t_env		*env;
-	extern char		**environ;
+	t_list *tmp;
+	t_list *p;
+	t_list *prev;
 
+	p = *lst;
+	prev = NULL;
+	while (p)
+	{
+		if (!p->word && prev)
+		{
+			tmp = p;
+			prev->next = p->next;
+			p = p->next;
+			ft_lstdelone(tmp, free);
+		}
+		else if (!p->word)
+		{
+			tmp = *lst;
+			*lst = (*lst)->next;
+			p = p->next;
+			ft_lstdelone(tmp, free);
+		}
+		else
+		{
+			prev = p;
+			p = p->next;
+		}
+	}
+}
+
+int	expansion(t_list **lst)
+{
+	t_env	*env;
+	t_list	*tmp;
+
+	tmp = *lst;
 	env = environ_to_list();
 	if (!env)
 		return (FAILURE);
-	while (lst)
+	while (tmp)
 	{
-		if (convert_word(lst, env) == FAILURE)
+		if (convert_word(tmp, env) == FAILURE)
 		{
 			ft_envclear(&env, free);
 			return (FAILURE);
 		}
-		lst = lst->next;
+		tmp = tmp->next;
 	}
-	environ = list_to_environ(env);
-	ft_envclear(&env, free);
-	if (!environ)
+	eliminate_null_node(lst);
+	if (list_to_environ(env) == FAILURE)
+	{
+		ft_envclear(&env, free);
 		return (FAILURE);
+	}
+	ft_envclear(&env, free);
 	return (SUCCESS);
 }

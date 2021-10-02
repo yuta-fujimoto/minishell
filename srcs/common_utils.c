@@ -45,6 +45,8 @@ void	free_str_arr(char **str_arr)
 
 bool	str_equal(char *s1, char *s2, size_t n)
 {
+	if (!s1 || !s2)
+		return (false);
 	if (ft_strncmp(s1, s2, n) == 0)
 		return (true);
 	return (false);
