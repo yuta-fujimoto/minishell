@@ -32,15 +32,15 @@ static bool	run_gnu_cmd(char **cmd)
 	return (SUCCESS);
 }
 
-static void	init_redirection(t_redir *redir)
+void	init_redirection(t_redir *redir)
 {
 	redir->status = 0;
-	redir->safe_fd = -1;
-	redir->new_fd = -1;
-	redir->stdio_fd = -1;
-	redir->redirection = false;
-	redir->heredoc = true;
-	redir->heredoc_fd = -1;	
+	redir->in = false;
+	redir->out = false;
+	redir->safe_out = -1;
+	redir->new_out = -1;
+	redir->safe_in = -1;
+	redir->new_in = -1;
 	redir->r_flags = O_RDWR | O_CREAT | O_TRUNC | O_CLOEXEC;
 	redir->rr_flags = O_RDWR | O_CREAT | O_APPEND | O_CLOEXEC;
 	redir->l_flags = O_RDWR | O_CREAT | O_CLOEXEC;
@@ -69,17 +69,27 @@ static char	**create_cmd(char **av, t_redir *redir, bool *touch)
 		return (av);
 }
 
-bool	reset_stdio_fd(t_redir *redir, int rlt)
+/*bool	reset_stdio_fd(t_redir *redir, int rlt)
 {
 	int	ret;
 
 	ret = 0;
-	if (redir->redirection)
-		ret = dup2(redir->safe_fd, redir->stdio_fd);
+	if (redir->out)
+	{
+		ret = dup2(redir->safe_out, STDOUT_FILENO);
+		redir->safe_out = -1;
+		redir->out = false;
+	}
+	else if (redir->in)
+	{
+		ret = dup2(redir->safe_in, STDIN_FILENO);	
+		redir->safe_in = -1;
+		redir->in = false;
+	}
 	if (ret == SYS_ERROR || rlt == FAILURE)
 		return (false);
 	return (true);
-}
+}*/
 
 bool	close_fd(int fd, int rlt)
 {
@@ -93,21 +103,39 @@ bool	close_fd(int fd, int rlt)
 	return (true);
 }
 
-static bool	end_redirection(char **cmd, t_redir *redir, int rlt)
+bool	end_stdio_fd(t_redir *redir, int rlt)
+{
+	int	ret;
+
+	ret = 0;
+	if (is_open_fd(redir->safe_out))
+		ret = dup2(redir->safe_out, STDOUT_FILENO);
+	if (is_open_fd(redir->safe_in))
+		ret = dup2(redir->safe_in, STDIN_FILENO);	
+	if (ret == SYS_ERROR || rlt == FAILURE)
+		return (false);
+	return (true);
+}
+
+bool	end_redirection(char **cmd, t_redir *redir, int rlt)
 {
 	if (cmd)
 	{
 		free(cmd);
 		cmd = NULL;
 	}
-	if (!reset_stdio_fd(redir, rlt))
+	if (!end_stdio_fd(redir, rlt))
 		rlt = FAILURE;
-	if (is_open_fd(redir->new_fd))
+	if (is_open_fd(redir->new_in))
 	{
-		if (!close_fd(redir->new_fd, rlt))
+		if (!close_fd(redir->new_in, rlt))
 			rlt = FAILURE;
 	}
-	if (!close_fd(redir->safe_fd, rlt))
+	if (!close_fd(redir->new_out, rlt))
+		rlt = FAILURE;
+	if (!close_fd(redir->safe_in, rlt))
+		rlt = FAILURE;
+	if (!close_fd(redir->safe_out, rlt))
 		rlt = FAILURE;
 	return (rlt);
 }
@@ -126,11 +154,11 @@ static bool	execute_cmd(char **av, t_set *set)
 	if (!cmd && !touch)
 		return (end_redirection(NULL, &redir, FAILURE));
 	else if (!touch)
-	{
+	{	
 		if (is_buildin(cmd[0]))
 			rlt = run_builtin_cmd(cmd, set);
 		else
-			rlt = run_gnu_cmd(cmd);
+			rlt = run_gnu_cmd(cmd);	
 	}
 	if (has_redirection(av))
 		rlt = end_redirection(cmd, &redir, rlt);

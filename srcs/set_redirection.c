@@ -15,26 +15,28 @@
 
 static bool	reset_fds(t_redir *redir)
 {
-	bool	error;
+	int	rlt;
 
-	error = false;
-	if  (redir->redirection)
-	{
-	//	if (!check_for_heredoc(redir))
-	//		error = true;
-		if (!reset_stdio_fd(redir, SUCCESS))
-			error = true;	
-		redir->redirection = false;
-	}
-	redir->status = 0;
-	redir->stdio_fd = -1;
-	if (!close_fd(redir->new_fd, SUCCESS))
-		error = true;
-	redir->new_fd = -1;
-	if (!close_fd(redir->safe_fd, SUCCESS))
-		error = true;
-	redir->safe_fd = -1;
-	if (error)
+	rlt = 0;
+	if (redir->status == RDIR || redir->status == RRDIR)
+        { 
+//                rlt = dup2(redir->safe_out, STDOUT_FILENO);
+//                redir->safe_out = -1; 
+//                redir->out = false;
+		if (!close_fd(redir->new_out, SUCCESS))
+			rlt = -1 ;
+		redir->new_out = -1;
+        }   
+        else if ((redir->status == LDIR || redir->status == LLDIR))
+        {   
+//                rlt = dup2(redir->safe_in, STDIN_FILENO);    
+//                redir->safe_in = -1; 
+//                redir->in = false;
+		if (!close_fd(redir->new_in, SUCCESS))
+			rlt = true;
+		redir->new_in = -1;
+        }   
+	if (rlt == SYS_ERROR)
 		return (false);
 	return (true);
 }
@@ -63,35 +65,23 @@ static void	set_status(char *cmd_i, t_redir *redir)
 		redir->status = LDIR;
 }
 
-static void	decide_stdio_fd(t_redir *redir)
+/*static void	decide_stdio_fd(t_redir *redir)
 {
 	if (redir->status == RDIR || redir->status == RRDIR)
 		redir->stdio_fd = STDOUT_FILENO;
 	else
 		redir->stdio_fd = STDIN_FILENO;
-}
+}*/
 
-static bool	open_new_fd(char *filename, t_redir *redir)
-{
-	if (redir->status == RDIR)
-		redir->new_fd = open(filename, redir->r_flags, redir->permissions);
-	else if (redir->status == RRDIR)
-		redir->new_fd = open(filename, redir->rr_flags, redir->permissions);
-	else if (redir->status == LDIR)
-		redir->new_fd = open(filename, redir->l_flags, redir->permissions);
-	if (redir->new_fd == SYS_ERROR && redir->status != LLDIR)
-		return (false);
-	return (true);
-}
-
-static bool	ms_heredoc(char *delimiter, t_redir *redir)
+static int	open_heredoc(char *delimiter)
 {
 	char	*line;
+	int		new_in;
 	int		fds[2];
 
 	if (pipe(fds) == SYS_ERROR)
-		return (false);
-	redir->new_fd = fds[0];
+		return (SYS_ERROR);
+	new_in = fds[0];
 	while (1)
 	{
 		line = readline("> ");//if !line what do??
@@ -104,28 +94,60 @@ static bool	ms_heredoc(char *delimiter, t_redir *redir)
 	free(line);
 	line = NULL;
 	if (close(fds[1]) == SYS_ERROR)
-		return (false);
+		return (SYS_ERROR);
+	return (new_in);
+}
+
+static bool	open_new_fd(char *filename, t_redir *redir)
+{
+	if (redir->status == RDIR)
+		redir->new_out = open(filename, redir->r_flags, redir->permissions);
+	else if (redir->status == RRDIR)
+		redir->new_out = open(filename, redir->rr_flags, redir->permissions);
+	else if (redir->status == LDIR)
+		redir->new_in = open(filename, redir->l_flags, redir->permissions);
+	else
+		redir->new_in = open_heredoc(filename);
+	if ((redir->status == RDIR || redir->status == RRDIR) && redir->new_out == SYS_ERROR)
+			return (false);
+	if ((redir->status == LDIR || redir->status == LLDIR) && redir->new_in == SYS_ERROR)
+			return (false);
+	return (true);
+}
+
+static bool	redirect_fds(t_redir *redir)
+{
+	if (redir->new_out != -1)
+	{
+		redir->safe_out = dup(STDOUT_FILENO);
+		if (redir->safe_out == SYS_ERROR)
+			return (false);
+		if (dup2(redir->new_out, STDOUT_FILENO) == SYS_ERROR)
+			return (false);
+	}
+	if (redir->new_in != -1)
+	{
+		redir->safe_in = dup(STDIN_FILENO);
+		if (redir->safe_in == SYS_ERROR)
+			return (false);
+		if (dup2(redir->new_in, STDIN_FILENO) == SYS_ERROR)
+			return (false);
+	}
 	return (true);
 }
 
 static bool	set_redirection(char **cmd, int i, t_redir *redir)
 {
 	set_status(cmd[i], redir);
-	decide_stdio_fd(redir);
+	if (!reset_fds(redir))
+		return (false);
 	if (!open_new_fd(cmd[i + 1], redir))
-		return (false);	
-	if (redir->status == LLDIR)
-	{
-		if (!ms_heredoc(cmd[i + 1], redir))
-			return (false);
-	}
-	redir->safe_fd = dup(redir->stdio_fd);
-	if (redir->safe_fd == SYS_ERROR)
 		return (false);
-	if (dup2(redir->new_fd, redir->stdio_fd) == SYS_ERROR)
-		return (false);
-	redir->redirection = true;
 	return (true);
+/*	if (redir->status == RDIR || redir->status == RRDIR)
+		return (redirect_fds(redir, &redir->safe_out, &redir->new_out, STDOUT_FILENO));
+	else
+		return (redirect_fds(redir, &redir->safe_in, &redir->new_in, STDIN_FILENO));*/
 }
 
 static int	count_cmd_info(char **cmd)
@@ -183,11 +205,10 @@ char	**ms_redirection(char **cmd, t_redir *redir, bool *touch)
 	{
 		if (!is_rdir(cmd[i]))
 			continue ;
-		if (!reset_fds(redir))
-			return (NULL);
 		if (!set_redirection(cmd, i, redir))
 			return (NULL);
-		i++;
-	}
+	}	
+	if (!redirect_fds(redir))
+		return (NULL);
 	return (create_new_cmd(cmd, touch));
 }

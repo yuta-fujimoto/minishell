@@ -47,12 +47,12 @@ typedef struct s_pipes
 typedef struct s_redir
 {
 	int		status;
-	int		safe_fd;
-	int		new_fd;
-	int		stdio_fd;
-	bool	redirection;
-	bool	heredoc;
-	int		heredoc_fd;
+	bool	in;
+	bool	out;
+	int		safe_out;
+	int		new_out;
+	int		safe_in;
+	int		new_in;
 	int		r_flags;
 	int		rr_flags;
 	int		l_flags;
@@ -155,6 +155,8 @@ bool	reset_stdio_fd(t_redir *redir, int rlt);
 char	**ms_redirection(char **cmd, t_redir *redir, bool *touch);
 bool	is_rdir(char *av_i);
 bool	is_open_fd(int fd);
+bool	end_redirection(char **cmd, t_redir *redir, int rlt);
+void	init_redirection(t_redir *redir);
 /* redirection */
 
 #endif
