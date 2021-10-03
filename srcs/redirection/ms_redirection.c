@@ -3,8 +3,6 @@
 static void	init_redirection(t_redir *redir)
 {
 	redir->status = 0;
-	redir->in = false;
-	redir->out = false;
 	redir->safe_out = -1;
 	redir->new_out = -1;
 	redir->safe_in = -1;
@@ -52,7 +50,7 @@ static int	count_cmd_info(char **cmd)
 	return (len);
 }
 
-static char	**create_new_cmd(char **cmd, bool *touch)
+static char	**create_new_cmd(char **av, bool *touch)
 {
 	int		i;
 	int		j;
@@ -61,7 +59,7 @@ static char	**create_new_cmd(char **cmd, bool *touch)
 
 	i = 0;
 	j = 0;
-	new_cmd_len = count_cmd_info(cmd);
+	new_cmd_len = count_cmd_info(av);
 	if (!new_cmd_len)
 	{
 		*touch = true;
@@ -70,32 +68,31 @@ static char	**create_new_cmd(char **cmd, bool *touch)
 	new_cmd = malloc(sizeof(char **) * new_cmd_len + 1);
 	if (!new_cmd)
 		return (NULL);
-	while (cmd[i])
+	while (av[i])
 	{
-		if (is_rdir(cmd[i]))
+		if (is_rdir(av[i]))
 			i += 2;/*this could be trouble, ensure if > is not followed by anything, it is syntax error*/
 		else
-			new_cmd[j++] = cmd[i++];
+			new_cmd[j++] = av[i++];
 	}
 	new_cmd[j] = NULL;
-	i = 0;
 	return (new_cmd);
 }
 
-char	**ms_redirection(char **cmd, t_redir *redir, bool *touch)
+char	**ms_redirection(char **av, t_redir *redir, bool *touch)
 {
 	int		i;
 
 	i = -1;
 	init_redirection(redir);
-	while (cmd[++i])
+	while (av[++i])
 	{
-		if (!is_rdir(cmd[i]))
+		if (!is_rdir(av[i]))
 			continue ;
-		if (!set_redirection(cmd, i, redir))
+		if (!set_redirection(av, i, redir))
 			return (NULL);
 	}	
 	if (!redirect_fds(redir))
 		return (NULL);
-	return (create_new_cmd(cmd, touch));
+	return (create_new_cmd(av, touch));
 }

@@ -18,17 +18,17 @@ static bool	reset_fds(t_redir *redir)
 
 	rlt = 0;
 	if (redir->status == RDIR || redir->status == RRDIR)
-        { 
+	{
 		if (!close_fd(redir->new_out, SUCCESS))
 			rlt = -1 ;
 		redir->new_out = -1;
-        }   
-        else if ((redir->status == LDIR || redir->status == LLDIR))
-        {   
+	}
+	else if ((redir->status == LDIR || redir->status == LLDIR))
+	{
 		if (!close_fd(redir->new_in, SUCCESS))
 			rlt = true;
 		redir->new_in = -1;
-        }   
+	}
 	if (rlt == SYS_ERROR)
 		return (false);
 	return (true);
@@ -72,9 +72,11 @@ bool	set_redirection(char **cmd, int i, t_redir *redir)
 		redir->new_in = open(cmd[i + 1], redir->l_flags, redir->permissions);
 	else
 		redir->new_in = open_heredoc(cmd[i + 1]);
-	if ((redir->status == RDIR || redir->status == RRDIR) && redir->new_out == SYS_ERROR)
-			return (false);
-	if ((redir->status == LDIR || redir->status == LLDIR) && redir->new_in == SYS_ERROR)
-			return (false);
+	if ((redir->status == RDIR || redir->status == RRDIR)
+		&& redir->new_out == SYS_ERROR)
+		return (false);
+	if ((redir->status == LDIR || redir->status == LLDIR)
+		&& redir->new_in == SYS_ERROR)
+		return (false);
 	return (true);
 }

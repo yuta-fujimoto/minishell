@@ -20,7 +20,7 @@ bool	end_stdio_fd(t_redir *redir, int rlt)
 	if (is_open_fd(redir->safe_out))
 		ret = dup2(redir->safe_out, STDOUT_FILENO);
 	if (is_open_fd(redir->safe_in))
-		ret = dup2(redir->safe_in, STDIN_FILENO);	
+		ret = dup2(redir->safe_in, STDIN_FILENO);
 	if (ret == SYS_ERROR || rlt == FAILURE)
 		return (false);
 	return (true);

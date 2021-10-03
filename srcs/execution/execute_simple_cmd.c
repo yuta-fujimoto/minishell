@@ -42,7 +42,7 @@ bool	execute_simple_cmd(char **av, t_set *set)
 	bool	touch;
 
 	touch = false;
-	rlt = SUCCESS;	
+	rlt = SUCCESS;
 	cmd = create_cmd(av, &redir, &touch);
 	if (!cmd && !touch)
 		return (end_redirection(NULL, &redir, FAILURE));
@@ -51,7 +51,7 @@ bool	execute_simple_cmd(char **av, t_set *set)
 		if (is_buildin(cmd[0]))
 			rlt = run_builtin_cmd(cmd, set);
 		else
-			rlt = run_gnu_cmd(cmd);	
+			rlt = run_gnu_cmd(cmd);
 	}
 	if (has_redirection(av))
 		rlt = end_redirection(cmd, &redir, rlt);
