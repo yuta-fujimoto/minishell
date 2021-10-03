@@ -113,6 +113,7 @@ void	free_tree(t_tree *l);
 bool	wait_options(pid_t pid);
 char	*create_cmd_path(char **cmd);
 bool	execute_input(t_tree *l, t_set *set);
+bool	execute_simple_cmd(char **av, t_set *set);
 /* execution */
 
 void	ft_export_error(char *arg);
@@ -141,7 +142,7 @@ bool	is_buildin(char *cmd);
 int		run_builtin_cmd(char **av, t_set *set);
 /* builtin */
 
-bool	execute_pipe(t_tree *parent, t_set *set);
+bool	execute_pipeline(t_tree *parent, t_set *set);
 bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set);
 bool	pipe_exit_failure(t_pipes *pipes);
 void	update_pipes_status(t_node node, t_pipes *pipes);
@@ -156,7 +157,8 @@ char	**ms_redirection(char **cmd, t_redir *redir, bool *touch);
 bool	is_rdir(char *av_i);
 bool	is_open_fd(int fd);
 bool	end_redirection(char **cmd, t_redir *redir, int rlt);
-void	init_redirection(t_redir *redir);
+bool	has_redirection(char **av);
+bool	set_redirection(char **cmd, int i, t_redir *redir);
 /* redirection */
 
 #endif
