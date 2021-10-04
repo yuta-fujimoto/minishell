@@ -40,8 +40,11 @@ bool	end_redirection(char **cmd, t_redir *redir, int rlt)
 		if (!close_fd(redir->new_in, rlt))
 			rlt = FAILURE;
 	}
-	if (!close_fd(redir->new_out, rlt))
-		rlt = FAILURE;
+	if (is_open_fd(redir->new_out))
+	{
+		if (!close_fd(redir->new_out, rlt))
+			rlt = FAILURE;
+	}
 	if (!close_fd(redir->safe_in, rlt))
 		rlt = FAILURE;
 	if (!close_fd(redir->safe_out, rlt))
