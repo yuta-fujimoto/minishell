@@ -6,7 +6,6 @@ CDFLAGS := -lreadline -lhistory -L$(shell brew --prefix readline)/lib
 SRCS :=	srcs/main.c \
 		srcs/common_utils.c \
 		srcs/lexar.c \
-		srcs/expansion.c \
 		srcs/parser.c \
 		srcs/parser2.c \
 		srcs/tree.c \
@@ -25,6 +24,9 @@ SRCS :=	srcs/main.c \
 		srcs/builtin/ft_cd_utils.c \
 		srcs/builtin/ft_export_utils.c \
 		srcs/builtin/env_utils.c \
+		srcs/expansion/expansion.c \
+		srcs/expansion/add_to_word.c \
+		srcs/expansion/eliminate_null_node.c \
 		srcs/piping/execute_pipe.c \
 		srcs/piping/pipe_nodes_utils.c \
 		srcs/piping/run_pipe_cmd.c

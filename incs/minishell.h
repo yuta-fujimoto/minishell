@@ -83,7 +83,12 @@ bool	str_equal(char *s1, char *s2, size_t n);
 t_list	*lexar(char *line);
 /* lexar */
 
-int	expansion(t_list **lst);
+int		add_char_to_word(char **word, char *lst_word);
+int		add_str_in_quote_to_word(char **word, char *lst_word, bool in_quote[2], int *i);
+int		add_var_to_word(char **word, char *var_start, t_env *env, int *i);
+void	eliminate_null_node(t_list **lst);
+int		expansion(t_list **lst);
+int		expansion(t_list **lst);
 /* expansion */
 
 t_tree	*command(t_list **lst);
