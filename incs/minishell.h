@@ -55,6 +55,7 @@ typedef struct s_redir
 	int		rr_flags;
 	int		l_flags;
 	int		permissions;
+	bool	perror;
 }				t_redir;
 
 # define SYS_ERROR -1
@@ -111,7 +112,7 @@ void	free_tree(t_tree *l);
 bool	wait_options(pid_t pid);
 char	*create_cmd_path(char **cmd);
 bool	execute_input(t_tree *l, t_set *set);
-bool	execute_simple_cmd(char **av, t_set *set);
+bool	execute_simple_cmd(char **av, t_set *set, t_redir *redir);
 /* execution */
 
 void	ft_export_error(char *arg);

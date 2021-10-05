@@ -7,9 +7,9 @@ static void	init_redirection(t_redir *redir)
 	redir->new_out = -1;
 	redir->safe_in = -1;
 	redir->new_in = -1;
-	redir->r_flags = O_RDWR | O_CREAT | O_TRUNC | O_CLOEXEC;
-	redir->rr_flags = O_RDWR | O_CREAT | O_APPEND | O_CLOEXEC;
-	redir->l_flags = O_RDWR | O_CREAT | O_CLOEXEC;
+	redir->r_flags = O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC;
+	redir->rr_flags = O_WRONLY | O_CREAT | O_APPEND | O_CLOEXEC;
+	redir->l_flags = O_RDONLY | O_CREAT | O_CLOEXEC;
 	redir->permissions = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 }
 
@@ -65,7 +65,7 @@ static char	**create_new_cmd(char **av, bool *touch)
 		*touch = true;
 		return (NULL);
 	}
-	new_cmd = malloc(sizeof(char **) * new_cmd_len + 1);
+	new_cmd = malloc(sizeof(char **) * (new_cmd_len + 1));
 	if (!new_cmd)
 		return (NULL);
 	while (av[i])

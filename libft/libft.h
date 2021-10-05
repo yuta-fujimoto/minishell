@@ -6,7 +6,7 @@
 /*   By: fyuta <fyuta@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/08 22:39:12 by fyuta             #+#    #+#             */
-/*   Updated: 2021/10/01 22:10:50 by jthompso         ###   ########.fr       */
+/*   Updated: 2021/10/05 17:55:51 by jthompso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,4 +86,5 @@ t_env			*ft_envnew(char *name, char *value);
 int				ft_envsize(t_env *env);
 t_env			*ft_find_env_var(t_env *env, char *name);
 int				ft_str_arr_len(char **str_arr);
+void			ft_free_str_arr(char **str_arr);
 #endif

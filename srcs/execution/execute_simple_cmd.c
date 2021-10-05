@@ -34,18 +34,17 @@ static char	**create_cmd(char **av, t_redir *redir, bool *touch)
 		return (av);
 }
 
-bool	execute_simple_cmd(char **av, t_set *set)
+bool	execute_simple_cmd(char **av, t_set *set, t_redir *redir)
 {
 	int		rlt;
 	char	**cmd;
-	t_redir	redir;
 	bool	touch;
 
 	touch = false;
 	rlt = SUCCESS;
-	cmd = create_cmd(av, &redir, &touch);
+	cmd = create_cmd(av, redir, &touch);
 	if (!cmd && !touch)
-		return (end_redirection(NULL, &redir, FAILURE));
+		return (end_redirection(NULL, redir, FAILURE));
 	else if (!touch)
 	{	
 		if (is_buildin(cmd[0]))
@@ -54,6 +53,6 @@ bool	execute_simple_cmd(char **av, t_set *set)
 			rlt = run_gnu_cmd(cmd);
 	}
 	if (has_redirection(av))
-		rlt = end_redirection(cmd, &redir, rlt);
+		rlt = end_redirection(cmd, redir, rlt);
 	return (rlt);
 }
