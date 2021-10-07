@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 static void	set_status(char *cmd_i, t_redir *redir)
 {
 	if (str_equal(cmd_i, ">>", 3))
@@ -34,35 +36,6 @@ static bool	reset_fds(t_redir *redir)
 	return (true);
 }
 
-static int	open_heredoc(char *delimiter)
-{
-	char	*line;
-	int		new_in;
-	int		fds[2];
-
-	if (pipe(fds) == SYS_ERROR)
-		return (SYS_ERROR);
-	new_in = fds[0];
-	line = NULL;
-	while (1)
-	{
-		line = readline("> ");
-		if (!line)
-			break ;	
-		if (str_equal(delimiter, line, ft_strlen(delimiter) + 1))
-			break ;// need to add exception for when delimiter is in quotes
-		ft_putendl_fd(line, fds[1]);
-		free(line);
-		line = NULL;
-	}
-	if (line)
-		free(line);
-	line = NULL;
-	if (close(fds[1]) == SYS_ERROR)
-		return (SYS_ERROR);
-	return (new_in);
-}
-
 static bool	check_new_fd(char *filename, t_redir *redir)
 {
 
@@ -72,6 +45,8 @@ static bool	check_new_fd(char *filename, t_redir *redir)
 	if ((redir->status == LDIR || redir->status == LLDIR)
 		&& redir->new_in == SYS_ERROR)
 		redir->perror = true;
+	if (redir->new_in == SIGINT_CALL)
+		return (false);
 	if (!redir->perror)
 		return (true);
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
@@ -91,7 +66,7 @@ bool	set_redirection(char **cmd, int i, t_redir *redir)
 	else if (redir->status == RRDIR)
 		redir->new_out = open(cmd[i + 1], redir->rr_flags, redir->permissions);
 	else if (redir->status == LDIR)
-		redir->new_in = open(cmd[i + 1], redir->l_flags, redir->permissions);
+		redir->new_in = open(cmd[i + 1], redir->l_flags);
 	else
 		redir->new_in = open_heredoc(cmd[i + 1]);
 	return (check_new_fd(cmd[i + 1], redir));

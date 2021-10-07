@@ -58,6 +58,14 @@ typedef struct s_redir
 	bool	perror;
 }				t_redir;
 
+typedef struct s_sig_info
+{
+	int		signal;
+	bool	heredoc;
+	char	*term_stdin;
+}				t_sig_info;
+
+# define SIGINT_CALL -2
 # define SYS_ERROR -1
 # define SAME 0
 # define FAILURE 1
@@ -158,6 +166,7 @@ bool	is_open_fd(int fd);
 bool	end_redirection(char **cmd, t_redir *redir, int rlt);
 bool	has_redirection(char **av);
 bool	set_redirection(char **cmd, int i, t_redir *redir);
+int		open_heredoc(char *delimiter);	
 /* redirection */
 
 #endif

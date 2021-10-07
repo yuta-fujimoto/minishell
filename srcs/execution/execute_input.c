@@ -4,6 +4,8 @@ static bool	minishell_error(t_redir redir)
 {
 	if (redir.perror)
 		return (SUCCESS);
+	else if (redir.new_in == SIGINT_CALL)
+		return (FAILURE);
 	else
 		ft_putendl_fd("minishell:error", STDERR_FILENO);
 	return (FAILURE);

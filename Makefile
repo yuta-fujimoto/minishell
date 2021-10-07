@@ -31,7 +31,8 @@ SRCS :=	srcs/main.c \
 		srcs/redirection/ms_redirection.c \
 		srcs/redirection/set_redirection.c \
 		srcs/redirection/redirection_handling.c \
-		srcs/redirection/redirection_utils.c
+		srcs/redirection/redirection_utils.c \
+		srcs/redirection/open_heredoc.c
 OBJS := $(SRCS:.c=.o)
 INCS := ./incs
 LIB := libft

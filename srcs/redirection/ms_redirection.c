@@ -9,7 +9,7 @@ static void	init_redirection(t_redir *redir)
 	redir->new_in = -1;
 	redir->r_flags = O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC;
 	redir->rr_flags = O_WRONLY | O_CREAT | O_APPEND | O_CLOEXEC;
-	redir->l_flags = O_RDONLY | O_CREAT | O_CLOEXEC;
+	redir->l_flags = O_RDONLY | O_CLOEXEC;
 	redir->permissions = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 }
 
