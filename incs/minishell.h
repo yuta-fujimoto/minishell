@@ -13,6 +13,7 @@
 # include <sys/stat.h>
 # include <limits.h>
 # include <errno.h>
+# include <termios.h>
 # include "../libft/libft.h"
 
 typedef struct s_node
@@ -32,9 +33,12 @@ typedef struct s_tree
 
 typedef struct s_set
 {
-	t_tree	*tree;
-	char	*input;
-	t_list	*lst;
+	t_tree			*tree;
+	char			*input;
+	t_list			*lst;
+	struct termios	t;
+	unsigned int	safe_c_lflag;
+	int				safe_c_vquit;
 }	t_set;
 
 typedef struct s_pipes
@@ -63,6 +67,8 @@ typedef struct s_sig_info
 	int		signal;
 	bool	heredoc;
 	char	*term_stdin;
+	bool	heredoc_sigint;
+	bool	heredoc_sigeof;
 }				t_sig_info;
 
 # define SIGINT_CALL -2
@@ -94,6 +100,9 @@ typedef struct s_sig_info
 # define END_PIPE 20
 /* piping */
 
+# define C_LFLAGS 536872335
+/* TERMIOS FLAGS INCLUDING ECHOCTL */
+
 void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
 char	*create_path(char *cmd, char **paths);
@@ -121,6 +130,7 @@ bool	wait_options(pid_t pid);
 char	*create_cmd_path(char **cmd);
 bool	execute_input(t_tree *l, t_set *set);
 bool	execute_simple_cmd(char **av, t_set *set, t_redir *redir);
+void	mod_termios_attr(t_set *set, int init);
 /* execution */
 
 void	ft_export_error(char *arg);

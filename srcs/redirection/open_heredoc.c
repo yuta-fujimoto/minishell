@@ -4,7 +4,6 @@ extern t_sig_info	g_sig_info;
 
 static int	prepare_heredoc(int fds[2], int *new_in, char **line)
 {
-
 	if (pipe(fds) == SYS_ERROR)
 		return (false);
 	*new_in = fds[0];
@@ -20,7 +19,8 @@ static int	conclude_heredoc(int fds[2], int new_in)
 	if (close(fds[1]) == SYS_ERROR)
 		return (SYS_ERROR);
 	if (g_sig_info.signal)
-	{	
+	{
+		g_sig_info.heredoc_sigint = true;
 		if (close(fds[0]) == SYS_ERROR)
 			return (SYS_ERROR);
 		return (SIGINT_CALL);
@@ -41,7 +41,14 @@ int	open_heredoc(char *delimiter)
 	{
 		line = readline("> ");
 		if (!line || g_sig_info.signal)
+		{
+			if (!g_sig_info.signal)
+			{
+				write(STDOUT_FILENO, "\033[A\r> ", 6);
+				g_sig_info.heredoc_sigeof = true;
+			}
 			break ;
+		}
 		if (str_equal(delimiter, line, ft_strlen(delimiter) + 1))
 			break ;// need to add exception for when delimiter is in quotes
 		ft_putendl_fd(line, fds[1]);
