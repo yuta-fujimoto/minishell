@@ -38,7 +38,6 @@ static bool	reset_fds(t_redir *redir)
 
 static bool	check_new_fd(char *filename, t_redir *redir)
 {
-
 	if ((redir->status == RDIR || redir->status == RRDIR)
 		&& redir->new_out == SYS_ERROR)
 		redir->perror = true;

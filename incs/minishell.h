@@ -38,7 +38,7 @@ typedef struct s_set
 	t_list			*lst;
 	struct termios	t;
 	unsigned int	safe_c_lflag;
-	int				safe_c_vquit;
+	unsigned char	safe_c_vquit;
 }	t_set;
 
 typedef struct s_pipes

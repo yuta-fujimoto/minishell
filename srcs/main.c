@@ -28,19 +28,19 @@ void	sigint_handler(int sigint)
 		write(STDOUT_FILENO, "\n", 1);
 		g_sig_info.term_stdin = ttyname(STDIN_FILENO);
 		close(STDIN_FILENO);
-		g_sig_info.heredoc = false;	
+		g_sig_info.heredoc = false;
 	}
 	else
 	{
 		if (!g_sig_info.heredoc_sigint && !g_sig_info.heredoc_sigeof)
 			write(STDOUT_FILENO, "\n", 1);
 		rl_on_new_line();
-		rl_replace_line("", 0);	
+		rl_replace_line("", 0);
 		rl_redisplay();
 	}
 }
 
-static void	init_sig_handlers(void)
+static void	init_sig_handler(void)
 {
 	if (signal(SIGINT, sigint_handler) == SIG_ERR)
 		exit(EXIT_FAILURE);
@@ -63,7 +63,7 @@ static void	handle_sigint(t_set *set)
 void	mod_termios_attr(t_set *set, int init)
 {
 	unsigned int	lflag;
-	int				vquit;
+	unsigned char	vquit;
 
 	if (init)
 	{
@@ -105,7 +105,7 @@ int	main(int ac, char **av)
 	(void)av;
 	fd = open("result.log", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR
 			| S_IWUSR | S_IRGRP | S_IROTH);
-	init_sig_handlers();
+	init_sig_handler();
 	init_termios_attr(&set);
 	while (1)
 	{	
