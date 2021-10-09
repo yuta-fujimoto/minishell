@@ -63,7 +63,7 @@ static void	handle_sigint(t_set *set)
 void	mod_termios_attr(t_set *set, int init)
 {
 	unsigned int	lflag;
-	bool			vquit;
+	int				vquit;
 
 	if (init)
 	{
