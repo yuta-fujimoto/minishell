@@ -2,8 +2,8 @@
 
 static int	get_new_av_size(t_node *node)
 {
-	int i;
-	int size;
+	int	i;
+	int	size;
 
 	i = 0;
 	size = 0;

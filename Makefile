@@ -25,6 +25,7 @@ SRCS :=	srcs/main.c \
 		srcs/builtin/ft_export_utils.c \
 		srcs/builtin/env_utils.c \
 		srcs/expansion/expansion.c \
+		srcs/expansion/expansion_node.c \
 		srcs/expansion/add_to_word.c \
 		srcs/expansion/eliminate_null_node.c \
 		srcs/expansion/split_argv_by_blank.c \

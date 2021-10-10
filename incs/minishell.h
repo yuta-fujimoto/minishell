@@ -20,8 +20,8 @@ typedef struct	s_exp
 	bool	in_dquote;
 	bool	in_squote;
 	int		rlt_status;
-	char	*str;
-	char	*exp_str;
+	char	*word;
+	char	*exp_word;
 	int		i;
 }	t_exp;
 
@@ -97,10 +97,12 @@ t_list	*lexar(char *line);
 int		add_char_to_word(t_exp *exp, int pos);
 int		add_str_in_quote_to_word(t_exp *exp);
 int		add_var_to_word(t_exp *exp, t_env *env);
+void	add_to_word(t_exp *exp, bool *var_exp, t_env *env);
 int		eliminate_null_node(t_node *node);
 int		split_argv_by_blank(t_node *node);
 int		expansion_node(t_node *node);
 int		expansion(char **old_word, t_env *env, bool *var_expansion);
+int		expansion_conclude(t_env **env, char *free_s, int ret_status);
 void	expansion_node_conclude(t_node *node);
 /* expansion */
 
