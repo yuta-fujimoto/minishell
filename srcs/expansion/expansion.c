@@ -1,82 +1,101 @@
 #include "../../incs/minishell.h"
 
-static bool	update_in_quote(bool in_quote[2], char c, int *i)
+static int	expansion_conclude(t_env **env, char *free_s, int ret_status)
 {
-	if (c == '\'' && !in_quote[1])
-		in_quote[0] = !(in_quote[0]);
-	else if (c == '\"' && !in_quote[0])
-		in_quote[1] = !(in_quote[1]);
+	if (env)
+		ft_envclear(env, free);
+	if (free_s)
+		free(free_s);
+	return (ret_status);
+}
+
+static bool	update_in_quote(t_exp *exp)
+{
+	if (exp->str[exp->i] == '\'' && !exp->in_dquote)
+		exp->in_squote = !exp->in_squote;
+	else if (exp->str[exp->i] == '\"' && !exp->in_squote)
+		exp->in_dquote= !exp->in_dquote;
 	else
 		return (false);
-	(*i)++;
+	exp->i++;
 	return (true);
 }
 
-
-// need to refectering !!!!!
-static int	convert_word(char **old_word, t_env *env)
+static t_exp init_exp(char **str)
 {
-	char	*new_word;
-	int		i;
-	bool	in_quote[2];
-	int		rlt;
+	t_exp exp;
 
-	i = 0;
-	in_quote[0] = false;
-	in_quote[1] = false;
-	new_word = NULL;
-	while ((*old_word)[i])
+	exp.str = *str;
+	exp.in_dquote = false;
+	exp.in_squote = false;
+	exp.rlt_status = SUCCESS;
+	exp.exp_str = NULL;
+	exp.i = 0;
+	return (exp);
+}
+
+int	expansion(char **str, t_env *env, bool *var_expansion)
+{
+	t_exp	exp;
+
+	exp = init_exp(str);
+	while (exp.str[exp.i])
 	{
-		if (update_in_quote(in_quote, (*old_word)[i], &i) && !in_quote[0] && !in_quote[1])
+		if (update_in_quote(&exp) && !exp.in_squote && !exp.in_dquote)
 			continue ;
-		if (in_quote[0] || (in_quote[1] && (*old_word)[i] != '$' &&
-			!((*old_word)[i] == '\\' && ft_strchr("$\'\"\\", (*old_word)[i + 1]) != NULL)))
-			rlt = add_str_in_quote_to_word(&new_word, &(*old_word)[i], in_quote, &i);
-		else if ((*old_word)[i] == '\\' && !in_quote[0] && (*old_word)[i + 1] != '\0')
+		if (exp.in_squote || (exp.in_dquote && exp.str[exp.i] != '$' &&
+			!(exp.str[exp.i] == '\\' && ft_strchr("$\'\"\\", exp.str[exp.i + 1]) != NULL)))
+			exp.rlt_status = add_str_in_quote_to_word(&exp);
+		else if (exp.str[exp.i] == '\\' && !exp.in_squote && exp.str[exp.i + 1] != '\0')
+			exp.rlt_status = add_char_to_word(&exp, 2);
+		else if (exp.str[exp.i] == '$' && exp.str[exp.i + 1] && !exp.in_squote)
 		{
-			rlt = add_char_to_word(&new_word, &(*old_word)[i + 1]);
-			i += 2;
+			exp.rlt_status = add_var_to_word(&exp, env);
+			if (var_expansion != NULL && !exp.in_dquote)
+				*var_expansion = true;
 		}
-		else if ((*old_word)[i] == '$' && (*old_word)[i + 1] && !in_quote[0])
-			rlt = add_var_to_word(&new_word, &(*old_word)[i + 1], env, &i);
 		else
-			rlt = add_char_to_word(&new_word, &(*old_word)[i++]);
-		if (rlt == FAILURE)
-		{
-			if (new_word)
-				free(new_word);
-			return (FAILURE);
-		}
+			exp.rlt_status = add_char_to_word(&exp, 1);
+		if (exp.rlt_status == FAILURE)
+			return (expansion_conclude(NULL, exp.exp_str, FAILURE));
 	}
-	free(*old_word);
-	*old_word = new_word;
+	*str = exp.exp_str;
 	return (SUCCESS);
 }
 
-int	expansion(t_list **lst)
+int	expansion_node(t_node *node)
 {
+	bool	var_expansion;
 	t_env	*env;
-	t_list	*p;
+	int		i;
 
-	p = *lst;
 	env = environ_to_list();
 	if (!env)
 		return (FAILURE);
-	while (p)
+	i = 0;
+	var_expansion = false;
+	while (node->av[i])
 	{
-		if (p->flags == STR && p->word && convert_word(&p->word, env) == FAILURE)
-		{
-			ft_envclear(&env, free);
-			return (FAILURE);
-		}
-		p = p->next;
+		if (node->str_flgs[i] == STR && expansion(&node->av[i], env, &var_expansion) == FAILURE)
+			return (expansion_conclude(&env, NULL, FAILURE));
+		if (var_expansion)
+			node->str_flgs[i] = STR_VAL;
+		i++;
 	}
-	eliminate_null_node(lst);
-	if (list_to_environ(env) == FAILURE)
+	if (eliminate_null_node(node) == FAILURE || split_argv_by_blank(node) == FAILURE || list_to_environ(env) == FAILURE)
+		return (expansion_conclude(&env, NULL, FAILURE));
+	return (expansion_conclude(&env, NULL, SUCCESS));
+}
+
+void	expansion_node_conclude(t_node *node)
+{
+	int	i;
+
+	i = 0;
+	while (node->av[i])
 	{
-		ft_envclear(&env, free);
-		return (FAILURE);
+		free(node->av[i]);
+		i++;
 	}
-	ft_envclear(&env, free);
-	return (SUCCESS);
+	free(node->av);
 }

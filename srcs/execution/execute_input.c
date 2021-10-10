@@ -36,10 +36,15 @@ static bool	execute_cmd(t_node node, t_set *set)
 {
 	int	rlt;
 
+	if (expansion_node(&node) == FAILURE)
+		return (FAILURE);
+	if (node.av == NULL)
+		return (SUCCESS);
 	if (is_buildin(node.av[0]))
 		rlt = run_builtin_cmd(node.av, set);
 	else
 		rlt = run_gnu_cmd(node);
+	expansion_node_conclude(&node);
 	return (rlt);
 }
 

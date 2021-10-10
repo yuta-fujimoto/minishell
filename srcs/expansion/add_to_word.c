@@ -1,99 +1,101 @@
 #include "../../incs/minishell.h"
 
-int	add_char_to_word(char **word, char *lst_word)
+int	add_char_to_word(t_exp *exp, int pos)
 {
-	char	*new_word;
+	char	*new_str;
 	size_t	word_len;
 
-	if (!*word)
+	if (!exp->exp_str)
 	{
-		*word = ft_substr(lst_word, 0, 1);
-		if (!*word)
+		exp->exp_str = ft_substr(&exp->str[exp->i], pos - 1, pos);
+		if (!exp->exp_str)
 			return (FAILURE);
+		exp->i += pos;
 		return (SUCCESS);
 	}
-	word_len = ft_strlen(*word);
-	new_word = malloc(sizeof(char) * (word_len + 2));
-	if (!new_word)
+	word_len = ft_strlen(exp->exp_str);
+	new_str = malloc(sizeof(char) * (word_len + 2));
+	if (!new_str)
 		return (FAILURE);
-	ft_strlcpy(new_word, *word, word_len + 1);
-	ft_strlcat(new_word, lst_word, word_len + 2);
-	free(*word);
-	*word = new_word;
+	ft_strlcpy(new_str, exp->exp_str, word_len + 1);
+	ft_strlcat(new_str, &exp->str[exp->i + pos - 1], word_len + 2);
+	free(exp->exp_str);
+	exp->i += pos;
+	exp->exp_str = new_str;
 	return (SUCCESS);
 }
 
-int	add_str_in_quote_to_word(char **word, char *lst_word, bool in_quote[2], int *i)
+int	add_str_in_quote_to_word(t_exp *exp)
 {
 	char	*addition;
 	char	*tmp;
 	int		j;
 
 	j = 0;
-	if (in_quote[0])
-		while (lst_word[j] && lst_word[j] != '\'')
+	if (exp->in_squote)
+		while (exp->str[exp->i + j] && exp->str[exp->i + j] != '\'')
 			j++;
-	else if (in_quote[1])
-		while (lst_word[j] && lst_word[j] != '\"' && lst_word[j] != '$'
-			&& !(lst_word[j] == '\\' && ft_strchr("$\'\"\\", lst_word[j + 1]) != NULL))
+	else if (exp->in_dquote)
+		while (exp->str[exp->i + j] && exp->str[exp->i + j] != '\"' && exp->str[exp->i + j] != '$'
+			&& !(exp->str[exp->i + j] == '\\' && ft_strchr("$\'\"\\", exp->str[exp->i + j + 1]) != NULL))
 			j++;
-	*i += j;
-	addition = ft_substr(lst_word, 0, j);
+	addition = ft_substr(&exp->str[exp->i], 0, j);
+	exp->i += j;
 	if (!addition)
 		return (FAILURE);
-	tmp = *word;
-	*word = ft_strjoin(*word, addition);
+	tmp = exp->exp_str;
+	exp->exp_str = ft_strjoin(exp->exp_str, addition);
 	if (tmp)
 		free(tmp);
 	free(addition);
-	if (!*word)
+	if (!exp->exp_str)
 		return (FAILURE);
 	return (SUCCESS);
 }
 
-static char	*get_var_name(char *s, int *i)
+static char	*get_var_name(t_exp *exp)
 {
 	int		j;
 	char	*var_name;
 
-	j = 0;
-	if (isdigit(s[0]) || s[0] == '?')
-		var_name = ft_substr(s, 0 ,1);
+	j = 1;
+	if (isdigit(exp->str[exp->i]) || exp->str[exp->i] == '?')
+		var_name = ft_substr(&exp->str[exp->i], 0 ,1);
 	else
 	{
-		while (s[j] && ft_strchr("\'\"+= ", s[j]) == NULL)
+		while (exp->str[exp->i + j] && ft_strchr("\'\"+= $", exp->str[exp->i + j]) == NULL)
 			j++;
-		var_name = ft_substr(s, 0, j);
+		var_name = ft_substr(&exp->str[exp->i], 0, j);
 	}
 	if (!var_name)
 		return (NULL);
-	*i += ft_strlen(var_name) + 1;
+	exp->i += j;
 	return (var_name);
 }
 
-int	add_var_to_word(char **word, char *var_start, t_env *env, int *i)
+int	add_var_to_word(t_exp *exp, t_env *env)
 {
 	char	*var_name;
 	t_env	*env_var;
 	char	*tmp;
 
-	var_name = get_var_name(var_start, i);
+	var_name = get_var_name(exp);
 	if (!var_name)
 		return (FAILURE);
 	if (str_equal(var_name, "", 2))
 	{
 		free(var_name);
-		return (add_char_to_word(word, "$"));
+		return (add_char_to_word(exp, 1));
 	}
 	env_var = ft_find_env_var(env, var_name);
 	free(var_name);
 	if (!env_var)
 		return (SUCCESS);
-	tmp = *word;
-	*word = ft_strjoin(*word, env_var->value);
+	tmp = exp->exp_str;
+	exp->exp_str = ft_strjoin(exp->exp_str, env_var->value);
 	if (tmp)
 		free(tmp);
-	if (!*word)
+	if (!exp->exp_str)
 		return (FAILURE);
 	return (SUCCESS);
 }

@@ -27,6 +27,7 @@ SRCS :=	srcs/main.c \
 		srcs/expansion/expansion.c \
 		srcs/expansion/add_to_word.c \
 		srcs/expansion/eliminate_null_node.c \
+		srcs/expansion/split_argv_by_blank.c \
 		srcs/piping/execute_pipe.c \
 		srcs/piping/pipe_nodes_utils.c \
 		srcs/piping/run_pipe_cmd.c

@@ -152,10 +152,10 @@ EXPORT_SHOW="export | sort | grep -v SHLVL | grep -v _= | grep -v OLDPWD"
 # exec_test 'export TE+S=T="" ;' $ENV_SHOW
 # exec_test 'export TEST=LOL ; echo $TEST ;' $ENV_SHOW
 exec_test 'export TEST=LOL ; echo $TEST$TEST$TEST=lol$TEST'
-exec_test 'export TEST=LOL; export TEST+=LOL ; echo $TEST ;'
+exec_test 'export TEST=LOL; export TEST+=LOL ; echo $TEST'
 # exec_test $ENV_SHOW
 # exec_test $EXPORT_SHOW
-exec_test 'export TEST="ls       -l     - a" ; echo $TEST ; $LS ; '
+exec_test 'export TEST="ls       -l     - a" ; echo $TEST ; $LS  '
 
 # # REDIRECTIONS
 # exec_test 'echo test > ls ; cat ls'

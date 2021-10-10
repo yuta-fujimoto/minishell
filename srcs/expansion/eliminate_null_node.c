@@ -1,40 +1,46 @@
 #include "../../incs/minishell.h"
 
-static t_list *extract_null_node(t_list **lst, t_list *prev, t_list *p)
+static int	get_new_av_size(t_node *node)
 {
-	t_list *null_node;
+	int i;
+	int size;
 
-	if (prev)
+	i = 0;
+	size = 0;
+	while (i < node->ac)
 	{
-		null_node = p;
-		prev->next = p->next;
+		if (node->av[i] != NULL)
+			size++;
+		i++;
 	}
-	else
-	{
-		null_node = *lst;
-		*lst = (*lst)->next;
-	}
-	return (null_node);
+	return (size);
 }
 
-void	eliminate_null_node(t_list **lst)
+int	eliminate_null_node(t_node *node)
 {
-	t_list	*null_node;
-	t_list	*p;
-	t_list	*prev;
+	char	**new_av;
+	int		new_size;
+	int		i;
+	int		j;
 
-	p = *lst;
-	prev = NULL;
-	while (p)
+	i = 0;
+	j = 0;
+	new_size = get_new_av_size(node);
+	if (new_size == 0)
 	{
-		if (!p->word)
-		{
-			null_node = extract_null_node(lst, prev, p);
-			p = p->next;
-			ft_lstdelone(null_node, free);
-			continue ;
-		}
-		prev = p;
-		p = p->next;
+		node->av = NULL;
+		return (SUCCESS);
 	}
+	new_av = ft_calloc(sizeof(char *), new_size + 1);
+	if (!new_av)
+		return (FAILURE);
+	while (j < new_size)
+	{
+		if (node->av[i] != NULL)
+			new_av[j++] = node->av[i];
+		i++;
+	}
+	node->av = new_av;
+	node->ac = new_size;
+	return (SUCCESS);
 }

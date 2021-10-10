@@ -63,6 +63,10 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set)
 	pid_t		c_pid;
 	char		*cmd_path;
 
+	if (expansion_node(&node) == FAILURE)
+		return (FAILURE);
+	if (!node.av)
+		return (SUCCESS);
 	if (get_cmd_path(node, &cmd_path) == FAILURE)
 		return (FAILURE);
 	c_pid = fork();
@@ -77,5 +81,6 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set)
 		if (cmd_path)
 			free(cmd_path);
 	}
+	expansion_node_conclude(&node);
 	return (SUCCESS);
 }

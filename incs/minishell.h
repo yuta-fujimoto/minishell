@@ -15,6 +15,16 @@
 # include <errno.h>
 # include "../libft/libft.h"
 
+typedef struct	s_exp
+{
+	bool	in_dquote;
+	bool	in_squote;
+	int		rlt_status;
+	char	*str;
+	char	*exp_str;
+	int		i;
+}	t_exp;
+
 typedef struct s_node
 {
 	int		ac;
@@ -60,6 +70,7 @@ typedef struct s_pipes
 # define AND 11
 # define DAND 12
 # define SCOLON 13
+# define STR_VAL 14
 
 # define ADD 14
 # define UPDATE 15
@@ -83,12 +94,14 @@ bool	str_equal(char *s1, char *s2, size_t n);
 t_list	*lexar(char *line);
 /* lexar */
 
-int		add_char_to_word(char **word, char *lst_word);
-int		add_str_in_quote_to_word(char **word, char *lst_word, bool in_quote[2], int *i);
-int		add_var_to_word(char **word, char *var_start, t_env *env, int *i);
-void	eliminate_null_node(t_list **lst);
-int		expansion(t_list **lst);
-int		expansion(t_list **lst);
+int		add_char_to_word(t_exp *exp, int pos);
+int		add_str_in_quote_to_word(t_exp *exp);
+int		add_var_to_word(t_exp *exp, t_env *env);
+int		eliminate_null_node(t_node *node);
+int		split_argv_by_blank(t_node *node);
+int		expansion_node(t_node *node);
+int		expansion(char **old_word, t_env *env, bool *var_expansion);
+void	expansion_node_conclude(t_node *node);
 /* expansion */
 
 t_tree	*command(t_list **lst);
