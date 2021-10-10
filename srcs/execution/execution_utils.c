@@ -16,6 +16,6 @@ bool	wait_options(pid_t pid)
 
 	waitpid(pid, &wstatus, 0);
 	if (!WIFEXITED(wstatus))
-		return (FAILURE);
-	return (SUCCESS);
+		return (false);
+	return (true);
 }

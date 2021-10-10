@@ -34,7 +34,7 @@ static bool	pipe_next_node(t_tree *parent, t_pipes *pipes, t_set *set)
 		return (pipe_next_node(parent, pipes, set));
 }
 
-bool	execute_pipe(t_tree *parent, t_set *set)
+bool	execute_pipeline(t_tree *parent, t_set *set)
 {
 	t_pipes	pipes;
 
