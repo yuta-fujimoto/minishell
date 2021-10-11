@@ -136,6 +136,7 @@ exec_test 'echo "$?TEST"'
 exec_test 'echo $TEST $TEST'
 exec_test 'echo "$1TEST"'
 exec_test 'echo "$T1TEST"'
+exec_test 'echo "''''"'
 
 # # ENV EXPANSIONS
 # ENV_SHOW="env | sort | grep -v SHLVL | grep -v _="
@@ -147,6 +148,7 @@ exec_test 'echo "$T1TEST"'
 # exec_test 'export TES=T="" ;' $ENV_SHOW
 # exec_test 'export TE+S=T="" ;' $ENV_SHOW
 # exec_test 'export TEST=LOL ; echo $TEST ;' $ENV_SHOW
+exec_test '$NO'
 exec_test 'export TEST=LOL ; echo $TEST$TEST$TEST=lol$TEST'
 # exec_test 'export TEST=LOL; export TEST+=LOL ; echo $TEST ;' $ENV_SHOW
 # exec_test $ENV_SHOW

@@ -48,14 +48,14 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 		return (end_redirection(NULL, redir, FAILURE));
 	if (expansion_node(&node) == FAILURE)
 		return (end_redirection(NULL, redir, FAILURE));
-	else if (!touch)
+	else if (!touch && node.av)
 	{
 		if (is_buildin(node.av[0]))
 			rlt = run_builtin_cmd(node.av, set);
 		else
 			rlt = run_gnu_cmd(node.av);
 	}
-	if (has_redirection(node.av))
+	if (has_redirection(tmp))
 		rlt = end_redirection(tmp, redir, rlt);
 	expansion_node_conclude(&node);
 	return (rlt);

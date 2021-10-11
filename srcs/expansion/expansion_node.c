@@ -5,6 +5,8 @@ void	expansion_node_conclude(t_node *node)
 	int	i;
 
 	i = 0;
+	if (!node->av)
+		return ;
 	while (node->av[i])
 	{
 		free(node->av[i]);
