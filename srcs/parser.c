@@ -1,7 +1,5 @@
 #include "../incs/minishell.h"
 
-extern int	fd;
-
 t_tree	*pipeline(t_list **lst)
 {
 	t_tree	*tree;

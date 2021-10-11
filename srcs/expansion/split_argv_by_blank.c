@@ -11,7 +11,7 @@ static bool	add_lst_by_splited(t_list **t, char **split_rlt)
 	{
 		if (!ft_lstadd_back(t, ft_lstnew(split_rlt[i], STR)))
 		{
-			free_str_arr(split_rlt);
+			ft_free_str_arr(split_rlt);
 			return (false);
 		}
 		i++;
@@ -72,7 +72,7 @@ int	split_argv_by_blank(t_node *node)
 		if (rlt == FAILURE)
 			return (FAILURE);
 	}
-	free_str_arr(node->av);
+	ft_free_str_arr(node->av);
 	node->av = list_to_argv(lst);
 	ft_lstclear(&lst, NULL);
 	if (!node->av)

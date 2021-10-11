@@ -11,6 +11,7 @@ SRCS :=	srcs/main.c \
 		srcs/tree.c \
 		srcs/syntax_error.c \
 		srcs/execution/execute_input.c \
+		srcs/execution/execute_simple_cmd.c \
 		srcs/execution/create_cmd_path.c \
 		srcs/execution/run_builtin_cmd.c \
 		srcs/execution/execution_utils.c \
@@ -29,9 +30,14 @@ SRCS :=	srcs/main.c \
 		srcs/expansion/add_to_word.c \
 		srcs/expansion/eliminate_null_node.c \
 		srcs/expansion/split_argv_by_blank.c \
-		srcs/piping/execute_pipe.c \
-		srcs/piping/pipe_nodes_utils.c \
-		srcs/piping/run_pipe_cmd.c
+		srcs/pipeline/execute_pipeline.c \
+		srcs/pipeline/pipeline_utils.c \
+		srcs/pipeline/run_pipe_cmd.c \
+		srcs/redirection/ms_redirection.c \
+		srcs/redirection/set_redirection.c \
+		srcs/redirection/redirection_handling.c \
+		srcs/redirection/redirection_utils.c \
+		srcs/redirection/open_heredoc.c
 OBJS := $(SRCS:.c=.o)
 INCS := ./incs
 LIB := libft

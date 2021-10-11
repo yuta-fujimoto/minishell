@@ -116,7 +116,7 @@ exec_test 'echo test | cat -e | cat -e '
 # exec_test 'head -n 10 /dev/urandom  | wc ; wc -c'
 exec_test 'ls|ls|ls|ls|ls|ls|ls'
 
-# # ENV EXPANSIONS + ESCAPE
+# ENV EXPANSIONS + ESCAPE
 exec_test 'echo test     \    test'
 exec_test 'echo \"test'
 exec_test 'echo $TEST'
@@ -136,14 +136,10 @@ exec_test 'echo "$?TEST"'
 exec_test 'echo $TEST $TEST'
 exec_test 'echo "$1TEST"'
 exec_test 'echo "$T1TEST"'
-exec_test 'echo '''
-exec_test 'echo """"'
-exec_test 'echo "''"'
-exec_test 'echo "$KKKK"'
 
 # # ENV EXPANSIONS
-ENV_SHOW="env | sort | grep -v SHLVL | grep -v _="
-EXPORT_SHOW="export | sort | grep -v SHLVL | grep -v _= | grep -v OLDPWD"
+# ENV_SHOW="env | sort | grep -v SHLVL | grep -v _="
+# EXPORT_SHOW="export | sort | grep -v SHLVL | grep -v _= | grep -v OLDPWD"
 # exec_test 'export ='
 # exec_test 'export 1TEST= ;' $ENV_SHOW
 # exec_test 'export TEST ;' $EXPORT_SHOW
@@ -152,10 +148,10 @@ EXPORT_SHOW="export | sort | grep -v SHLVL | grep -v _= | grep -v OLDPWD"
 # exec_test 'export TE+S=T="" ;' $ENV_SHOW
 # exec_test 'export TEST=LOL ; echo $TEST ;' $ENV_SHOW
 exec_test 'export TEST=LOL ; echo $TEST$TEST$TEST=lol$TEST'
-exec_test 'export TEST=LOL; export TEST+=LOL ; echo $TEST'
+# exec_test 'export TEST=LOL; export TEST+=LOL ; echo $TEST ;' $ENV_SHOW
 # exec_test $ENV_SHOW
 # exec_test $EXPORT_SHOW
-exec_test 'export TEST="ls       -l     - a" ; echo $TEST ; $LS  '
+exec_test 'export TEST="ls       -l     - a" ; echo $TEST '
 
 # # REDIRECTIONS
 # exec_test 'echo test > ls ; cat ls'
