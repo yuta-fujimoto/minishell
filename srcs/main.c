@@ -118,7 +118,8 @@ int	main(int ac, char **av)
 		if (!set.input)
 		{
 			mod_termios_attr(&set, false);
-			write(STDOUT_FILENO, "exit\n", 5);
+			ft_putstr_fd("\033[Aminishell > ", STDOUT_FILENO);
+			ft_putendl_fd("exit", STDERR_FILENO);
 			exit(EXIT_SUCCESS);
 		}
 		set.lst = lexar(set.input);
