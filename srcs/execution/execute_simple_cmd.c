@@ -38,14 +38,15 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 {
 	int		rlt;
 	bool	touch;
-	char	**tmp;
+	char	**old_av;
 
 	touch = false;
 	rlt = SUCCESS;
-	tmp = node.av;
+	old_av = node.av;
 	node.av = create_cmd(node.av, redir, &touch);
 	if (!node.av && !touch)
 		return (end_redirection(NULL, redir, FAILURE));
+	node.ac = ft_str_arr_len(node.av);
 	if (expansion_node(&node) == FAILURE)
 		return (end_redirection(NULL, redir, FAILURE));
 	else if (!touch && node.av)
@@ -55,8 +56,9 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 		else
 			rlt = run_gnu_cmd(node.av);
 	}
-	if (has_redirection(tmp))
-		rlt = end_redirection(tmp, redir, rlt);
-	expansion_node_conclude(&node);
+	if (has_redirection(old_av))
+		rlt = end_redirection(node.av, redir, rlt);
+	else
+		expansion_node_conclude(&node);
 	return (rlt);
 }

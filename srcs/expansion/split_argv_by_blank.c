@@ -72,7 +72,6 @@ int	split_argv_by_blank(t_node *node)
 		if (rlt == FAILURE)
 			return (FAILURE);
 	}
-	ft_free_str_arr(node->av);
 	node->av = list_to_argv(lst);
 	ft_lstclear(&lst, NULL);
 	if (!node->av)

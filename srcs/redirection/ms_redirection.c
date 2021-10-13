@@ -65,7 +65,7 @@ static char	**create_new_cmd(char **av, bool *touch)
 		*touch = true;
 		return (NULL);
 	}
-	new_cmd = malloc(sizeof(char **) * (new_cmd_len + 1));
+	new_cmd = malloc(sizeof(char *) * (new_cmd_len + 1));
 	if (!new_cmd)
 		return (NULL);
 	while (av[i])
