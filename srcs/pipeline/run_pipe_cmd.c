@@ -51,11 +51,11 @@ static void	run_child(t_node node, t_pipes *pipes, t_set *set, char *cmd_path)
 	if (is_buildin(node.av[0]))
 	{
 		if (run_builtin_cmd(node.av, set) == FAILURE)
-			exit(exec_cmd_error(node.av[0], cmd_path));
+			exit(exec_cmd_error(node.av[0], cmd_path, true));
 		exit(EXIT_SUCCESS);
 	}
 	else if (execve(cmd_path, node.av, environ) == -1)
-		exit(exec_cmd_error(node.av[0], cmd_path));
+		exit(exec_cmd_error(node.av[0], cmd_path, false));
 }
 
 bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set)

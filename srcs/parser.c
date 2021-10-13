@@ -1,5 +1,7 @@
 #include "../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 t_tree	*pipeline(t_list **lst)
 {
 	t_tree	*tree;
@@ -31,6 +33,9 @@ t_tree	*parser(t_list *lst)
 	tree = list(&lst);
 	traverse_tree(tree, 0);
 	if (syntax_error(tree))
-		write(2, "syntax error\n", 13);
+	{
+		ft_putendl_fd("minishell: syntax error", STDOUT_FILENO);
+		g_sig_info.exit_status = 2;
+	}
 	return (tree);
 }

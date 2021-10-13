@@ -27,12 +27,13 @@ function exec_test()
 {
 	echo "command : "$@ >> test_error.log
 	echo ">>> MINISHELL" >>test_error.log
-	TEST1=$(echo $@ "; exit" | ./minishell 2>>test_error.log | grep -v "minishell >")
+	echo $@ "; exit" | ./minishell 2>>test_error.log > test_stdout
 	ES_1=$?
+	TEST1=$(cat test_stdout | grep -v "minishell >")
 	echo ">>> BASH" >>test_error.log
 	TEST2=$(echo $@ "; exit" | bash 2>>test_error.log)
-	echo >>test_error.log
 	ES_2=$?
+	echo >>test_error.log
 	if [ "$TEST1" == "$TEST2" ] && [ "$ES_1" == "$ES_2" ]; then
 		printf " $BOLDGREEN%s$RESET" "✓ "
 	else
@@ -174,19 +175,20 @@ exec_test 'export TEST="ls       -l     - a" ; echo $TEST '
 # exec_test '<'
 
 # # EXIT
-# exec_test "exit 42"
-# exec_test "exit 42 53 68"
-# exec_test "exit 259"
-# exec_test "exit 9223372036854775807"
-# exec_test "exit -9223372036854775808"
-# exec_test "exit 9223372036854775808"
-# exec_test "exit -9223372036854775810"
-# exec_test "exit -4"
-# exec_test "exit wrong"
-# exec_test "exit wrong_command"
-# exec_test "gdagadgag"
-# exec_test "ls -Z"
-# exec_test "cd gdhahahad"
-# exec_test "ls -la | wtf"
+exec_test "exit 42"
+exec_test "exit 42 53 68"
+exec_test "exit 259"
+exec_test "exit 9223372036854775807"
+exec_test "exit -9223372036854775808"
+exec_test "exit 9223372036854775808"
+exec_test "exit -9223372036854775810"
+exec_test "exit -4"
+exec_test "exit wrong"
+exec_test "exit wrong_command"
+exec_test "gdagadgag"
+exec_test "ls -Z"
+exec_test "cd gdhahahad"
+exec_test "ls -la | wtf"
 
+rm test_stdout
 #rm lol ls test

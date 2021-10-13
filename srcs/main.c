@@ -1,7 +1,7 @@
 #include "../incs/minishell.h"
 
 int			fd;
-t_sig_info	g_sig_info = {0, false, NULL, false, false};
+t_sig_info	g_sig_info = {0, false, NULL, false, false, 0};
 
 void	ft_printf(void *word)
 {
@@ -23,6 +23,7 @@ void	free_set(t_set *set)
 
 void	sigint_handler(int sigint)
 {
+	g_sig_info.exit_status = sigint + 128;
 	g_sig_info.signal = sigint;
 	if (g_sig_info.heredoc)
 	{	
@@ -42,8 +43,15 @@ void	sigint_handler(int sigint)
 	}
 }
 
+void	sigquit_handler(int sigquit)
+{
+	g_sig_info.exit_status = 128 + sigquit;
+}
+
 static void	init_sig_handler(void)
 {
+	if (signal(SIGQUIT, sigquit_handler) == SIG_ERR)
+		exit(EXIT_FAILURE);
 	if (signal(SIGINT, sigint_handler) == SIG_ERR)
 		exit(EXIT_FAILURE);
 }
@@ -65,20 +73,12 @@ static void	handle_sigint(t_set *set)
 void	mod_termios_attr(t_set *set, int init)
 {
 	unsigned int	lflag;
-	unsigned char	vquit;
 
 	if (init)
-	{
 		lflag = C_LFLAGS;
-		vquit = false;
-	}
 	else
-	{
 		lflag = set->safe_c_lflag;
-		vquit = set->safe_c_vquit;
-	}
 	set->t.c_lflag = lflag;
-	set->t.c_cc[VQUIT] = vquit;
 	if (isatty(STDIN_FILENO) && tcsetattr(STDIN_FILENO, TCSANOW, &set->t) == SYS_ERROR)
 	{
 		perror(NULL);
@@ -88,6 +88,7 @@ void	mod_termios_attr(t_set *set, int init)
 
 static void	init_termios_attr(t_set *set)
 {
+	g_sig_info.exit_status = EXIT_SUCCESS;
 	if (isatty(STDIN_FILENO) && tcgetattr(STDIN_FILENO, &set->t) == SYS_ERROR)
 	{
 		perror(NULL);
@@ -110,7 +111,9 @@ int	main(int ac, char **av)
 	init_sig_handler();
 	init_termios_attr(&set);
 	while (1)
-	{	
+	{
+		if (g_sig_info.exit_status == 2)
+			g_sig_info.exit_status = EXIT_SUCCESS;
 		handle_sigint(&set);
 		set.input = readline("minishell > ");
 		g_sig_info.heredoc_sigint = false;
@@ -120,7 +123,7 @@ int	main(int ac, char **av)
 			mod_termios_attr(&set, false);
 			ft_putstr_fd("\033[Aminishell > ", STDOUT_FILENO);
 			ft_putendl_fd("exit", STDERR_FILENO);
-			exit(EXIT_SUCCESS);
+			exit(g_sig_info.exit_status);
 		}
 		set.lst = lexar(set.input);
 		dprintf(fd, "\ninput >> %s\n", set.input);
@@ -129,14 +132,19 @@ int	main(int ac, char **av)
 			ft_lstiter(set.lst, ft_printf);
 		dprintf(fd, "\n====result of parser====\n");
 		set.tree = parser(set.lst);
-		if (*set.input)
-			add_history(set.input);
-		ret = execute_input(set.tree, &set);
-		free_set(&set);
-		if (ret == FAILURE && !g_sig_info.signal)
+		if (g_sig_info.exit_status != 2)
 		{
-			mod_termios_attr(&set, false);
-			exit(EXIT_FAILURE);
+			if (*set.input)
+				add_history(set.input);
+			ret = execute_input(set.tree, &set);
+			free_set(&set);
+			if (ret == FAILURE && !g_sig_info.signal)
+			{
+				mod_termios_attr(&set, false);
+				exit(EXIT_FAILURE);
+			}
 		}
+		else
+			free_set(&set);
 	}
 }

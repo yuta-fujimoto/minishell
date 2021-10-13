@@ -74,6 +74,7 @@ typedef struct s_redir
 
 typedef struct s_sig_info
 {
+	int		exit_status;
 	int		signal;
 	bool	heredoc;
 	char	*term_stdin;
@@ -83,6 +84,7 @@ typedef struct s_sig_info
 
 # define SIGINT_CALL -2
 # define SYS_ERROR -1
+# define CHILD_FAILURE -1
 # define SAME 0
 # define FAILURE 1
 # define SUCCESS 0
@@ -117,7 +119,7 @@ typedef struct s_sig_info
 void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
 char	*create_path(char *cmd, char **paths);
-bool	exec_cmd_error(char *cmd, char *cmd_path);
+int	exec_cmd_error(char *cmd, char *cmd_path, bool malloc_failure);
 bool	free_cmd_path(char *cmd_path);
 bool	str_equal(char *s1, char *s2, size_t n);
 /* utils */

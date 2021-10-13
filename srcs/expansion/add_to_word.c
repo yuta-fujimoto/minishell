@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 int	add_char_to_word(t_exp *exp, int pos)
 {
 	char	*new_word;
@@ -75,6 +77,24 @@ static char	*get_var_name(t_exp *exp)
 	return (var_name);
 }
 
+static int	add_exit_status_to_word(t_exp *exp, char *var_name)
+{
+	char	*s_exit_status;
+	char	*tmp;
+
+	free(var_name);
+	s_exit_status = ft_itoa(g_sig_info.exit_status);
+	if (!s_exit_status)
+		return (FAILURE);
+	tmp = exp->exp_word;
+	exp->exp_word = ft_strjoin(exp->exp_word, s_exit_status);
+	free(s_exit_status);
+	if (!exp->exp_word)
+		return (FAILURE);
+	free(tmp);
+	return (SUCCESS);
+}
+
 int	add_var_to_word(t_exp *exp, t_env *env)
 {
 	char	*var_name;
@@ -89,6 +109,8 @@ int	add_var_to_word(t_exp *exp, t_env *env)
 		free(var_name);
 		return (add_char_to_word(exp, 0));
 	}
+	if (str_equal(var_name, "?", 2))
+		return (add_exit_status_to_word(exp, var_name));
 	env_var = ft_find_env_var(env, var_name);
 	free(var_name);
 	if (!env_var)
