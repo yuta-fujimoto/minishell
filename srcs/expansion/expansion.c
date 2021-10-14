@@ -1,14 +1,5 @@
 #include "../../incs/minishell.h"
 
-int	expansion_conclude(t_env **env, char *free_s, int ret_status)
-{
-	if (env)
-		ft_envclear(env, free);
-	if (free_s)
-		free(free_s);
-	return (ret_status);
-}
-
 static bool	update_in_quote(t_exp *exp)
 {
 	if (exp->word[exp->i] == '\'' && !exp->in_dquote)
@@ -34,7 +25,7 @@ static t_exp	init_exp(char **word)
 	return (exp);
 }
 
-int	expansion(char **word, t_env *env, bool *var_exp)
+int	expansion(char **exp_word, char **word, t_env *env, bool *var_exp)
 {
 	t_exp	exp;
 
@@ -45,8 +36,11 @@ int	expansion(char **word, t_env *env, bool *var_exp)
 			continue ;
 		add_to_word(&exp, var_exp, env);
 		if (exp.rlt_status == FAILURE)
-			return (expansion_conclude(NULL, exp.exp_word, FAILURE));
+		{
+			free(exp.exp_word);
+			return (FAILURE);
+		}
 	}
-	*word = exp.exp_word;
+	*exp_word = exp.exp_word;
 	return (SUCCESS);
 }

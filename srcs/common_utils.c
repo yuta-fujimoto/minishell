@@ -36,3 +36,8 @@ bool	str_equal(char *s1, char *s2, size_t n)
 		return (true);
 	return (false);
 }
+
+void	print_str(unsigned int i, char *s)
+{
+	printf("[%d, %s]",i ,s);
+}

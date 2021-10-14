@@ -34,23 +34,23 @@ static bool	redirect_fds(t_redir *redir)
 	return (true);
 }
 
-static int	count_cmd_info(char **cmd)
+static int	count_cmd_info(t_node *node)
 {
 	int	i;
 	int	len;
 
 	i = 0;
-	len = ft_str_arr_len(cmd);
-	while (cmd[i])
+	len = ft_str_arr_len(node->av);
+	while (node->av[i])
 	{
-		if (is_rdir(cmd[i]))
+		if (is_rdir(node->str_flgs[i]))
 			len -= 2;
 		i++;
 	}
 	return (len);
 }
 
-static char	**create_new_cmd(char **av, bool *touch)
+static char	**create_new_cmd(t_node *node, bool *touch)
 {
 	int		i;
 	int		j;
@@ -59,7 +59,7 @@ static char	**create_new_cmd(char **av, bool *touch)
 
 	i = 0;
 	j = 0;
-	new_cmd_len = count_cmd_info(av);
+	new_cmd_len = count_cmd_info(node);
 	if (!new_cmd_len)
 	{
 		*touch = true;
@@ -68,31 +68,31 @@ static char	**create_new_cmd(char **av, bool *touch)
 	new_cmd = malloc(sizeof(char *) * (new_cmd_len + 1));
 	if (!new_cmd)
 		return (NULL);
-	while (av[i])
+	while (node->av[i])
 	{
-		if (is_rdir(av[i]))
+		if (is_rdir(node->str_flgs[i]))
 			i += 2;/*this could be trouble, ensure if > is not followed by anything, it is syntax error*/
 		else
-			new_cmd[j++] = av[i++];
+			new_cmd[j++] = node->av[i++];
 	}
 	new_cmd[j] = NULL;
 	return (new_cmd);
 }
 
-char	**ms_redirection(char **av, t_redir *redir, bool *touch)
+char	**ms_redirection(t_node *node, t_redir *redir, bool *touch)
 {
 	int		i;
 
 	i = -1;
 	init_redirection(redir);
-	while (av[++i])
+	while (node->av[++i])
 	{
-		if (!is_rdir(av[i]))
+		if (!is_rdir(node->str_flgs[i]))
 			continue ;
-		if (!set_redirection(av, i, redir))
+		if (!set_redirection(node->av, i, redir))
 			return (NULL);
-	}	
+	}
 	if (!redirect_fds(redir))
 		return (NULL);
-	return (create_new_cmd(av, touch));
+	return (create_new_cmd(node, touch));
 }
