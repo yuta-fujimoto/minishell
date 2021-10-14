@@ -51,7 +51,7 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 		return (end_redirection(NULL, redir, FAILURE));
 	else if (!touch)
 	{
-		if (is_buildin(node.av[0]))
+		if (is_buildin(cmd[0]))
 			rlt = run_builtin_cmd(cmd, set);
 		else
 			rlt = run_gnu_cmd(cmd);
