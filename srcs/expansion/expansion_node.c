@@ -1,11 +1,13 @@
 #include "../../incs/minishell.h"
 
-void	expansion_node_conclude(t_node *node)
+int	expansion_node_conclude(t_node *node, int rlt)
 {
-	free(node->str_flgs);
+	if (node->str_flgs)
+		free(node->str_flgs);
 	if (node->av)
 		ft_free_str_arr(node->av);
 	free(node);
+	return (rlt);
 }
 
 static t_node	*finish_expansion_node(t_env **env, t_node *exp_node, int ret)

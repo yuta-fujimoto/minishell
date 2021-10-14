@@ -130,12 +130,12 @@ int		add_char_to_word(t_exp *exp, int pos);
 int		add_str_in_quote_to_word(t_exp *exp);
 int		add_var_to_word(t_exp *exp, t_env *env);
 void	add_to_word(t_exp *exp, bool *var_exp, t_env *env);
-int	eliminate_null_node(t_node *exp_node, t_node *node);
+int		eliminate_null_node(t_node *exp_node, t_node *node);
 int		split_argv_by_blank(t_node *node);
 t_node	*expansion_node(t_node *node);
 int		expansion(char **exp_word, char **word, t_env *env, bool *var_expansion);
 t_node	*expansion_conclude(t_env **env, char *free_s, t_node *exp_node);
-void	expansion_node_conclude(t_node *node);
+int		expansion_node_conclude(t_node *node, int rlt);
 /* expansion */
 
 t_tree	*command(t_list **lst);

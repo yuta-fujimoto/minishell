@@ -45,14 +45,11 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 	rlt = SUCCESS;
 	exp_node = expansion_node(&node);
 	if (!exp_node->av)
-	{
-		expansion_node_conclude(exp_node);
-		return (SUCCESS);
-	}
+		return (expansion_node_conclude(exp_node, SUCCESS));
 	cmd = create_cmd(exp_node, redir, &touch);
-	if (!node.av && !touch)
+	if (!cmd && !touch)
 		return (end_redirection(NULL, redir, FAILURE));
-	else if (!touch && node.av)
+	else if (!touch)
 	{
 		if (is_buildin(node.av[0]))
 			rlt = run_builtin_cmd(cmd, set);
@@ -61,6 +58,5 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 	}
 	if (has_redirection(exp_node))
 		rlt = end_redirection(cmd, redir, rlt);
-	expansion_node_conclude(exp_node);
-	return (rlt);
+	return (expansion_node_conclude(exp_node, rlt));
 }
