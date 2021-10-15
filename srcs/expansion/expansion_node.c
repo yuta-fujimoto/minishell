@@ -88,6 +88,7 @@ t_node	*expansion_node(t_node *node)
 			return (finish_expansion_node(&env, exp_node, FAILURE));
 		if (var_exp)
 			exp_node->str_flgs[i] = STR_VAL;
+		var_exp = false;
 		i++;
 	}
 	if (eliminate_null_node(exp_node, node) == FAILURE
