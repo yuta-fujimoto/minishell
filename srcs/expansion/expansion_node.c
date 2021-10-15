@@ -2,6 +2,8 @@
 
 int	expansion_node_conclude(t_node *node, int rlt)
 {
+	if (!node)
+		return (rlt);
 	if (node->str_flgs)
 		free(node->str_flgs);
 	if (node->av)
@@ -70,7 +72,7 @@ t_node	*expansion_node(t_node *node)
 
 	env = environ_to_list();
 	if (!env || init_exp_node(&exp_node, node) == FAILURE)
-		finish_expansion_node(&env, exp_node, FAILURE);
+		return (finish_expansion_node(&env, exp_node, FAILURE));
 	i = 0;
 	var_exp = false;
 	while (node->av[i])

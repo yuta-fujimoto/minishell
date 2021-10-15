@@ -44,6 +44,8 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 	touch = false;
 	rlt = SUCCESS;
 	exp_node = expansion_node(&node);
+	if (!exp_node)
+		return (expansion_node_conclude(NULL, FAILURE));
 	if (!exp_node->av)
 		return (expansion_node_conclude(exp_node, SUCCESS));
 	cmd = create_cmd(exp_node, redir, &touch);

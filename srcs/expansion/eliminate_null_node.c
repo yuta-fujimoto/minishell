@@ -1,5 +1,19 @@
 #include "../../incs/minishell.h"
 
+static void	free_node_av(t_node *node)
+{
+	int i;
+
+	i = 0;
+	while (i < node->ac)
+	{
+		if (node->av[i])
+			free(node->av[i]);
+		i++;
+	}
+	free(node->av);
+}
+
 static int	get_new_av_size(t_node *node)
 {
 	int	i;
@@ -63,7 +77,7 @@ int	eliminate_null_node(t_node *exp_node, t_node *node)
 	new_size = get_new_av_size(exp_node);
 	if (new_size == 0 || has_ambiguous_redirect(exp_node, node))
 	{
-		ft_free_str_arr(exp_node->av);
+		free_node_av(exp_node);
 		exp_node->av = NULL;
 		return (SUCCESS);
 	}
