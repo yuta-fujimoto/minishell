@@ -70,6 +70,7 @@ t_node	*expansion_node(t_node *node)
 	int		i;
 	t_node	*exp_node;
 
+	exp_node = NULL;
 	env = environ_to_list();
 	if (!env || init_exp_node(&exp_node, node) == FAILURE)
 		return (finish_expansion_node(&env, exp_node, FAILURE));
