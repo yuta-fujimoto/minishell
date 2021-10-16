@@ -26,7 +26,7 @@ static bool	run_gnu_cmd(char **cmd)
 	return (SUCCESS);
 }
 
-static char	**create_cmd(t_node *node, t_redir *redir, bool *touch)
+char	**create_cmd(t_node *node, t_redir *redir, bool *touch)
 {
 	if (has_redirection(node))
 		return (ms_redirection(node, redir, touch));

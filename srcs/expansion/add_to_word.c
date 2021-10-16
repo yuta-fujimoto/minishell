@@ -60,7 +60,7 @@ static char	*get_var_name(t_exp *exp)
 	char	*var_name;
 
 	j = 1;
-	if (isdigit(exp->word[exp->i + 1]) || exp->word[exp->i + 1] == '?')
+	if (ft_isdigit(exp->word[exp->i + 1]) || exp->word[exp->i + 1] == '?')
 		var_name = ft_substr(exp->word, exp->i + 1, 1);
 	else
 	{

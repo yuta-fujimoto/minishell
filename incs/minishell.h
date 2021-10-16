@@ -81,6 +81,13 @@ typedef struct s_sig_info
 	bool	heredoc_sigeof;
 }				t_sig_info;
 
+typedef struct	s_pipe_info
+{
+	t_redir	*rdr;
+	char	**cmd;
+	char	*cmd_path;
+}				t_pipe_info;
+
 # define SIGINT_CALL -2
 # define SYS_ERROR -1
 # define SAME 0
@@ -185,8 +192,8 @@ bool	is_buildin(char *cmd);
 int		run_builtin_cmd(char **av, t_set *set);
 /* builtin */
 
-bool	execute_pipeline(t_tree *parent, t_set *set);
-bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set);
+bool	execute_pipeline(t_tree *parent, t_set *set, t_redir *redir);
+bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir);
 bool	pipe_exit_failure(t_pipes *pipes);
 void	update_pipes_status(t_node node, t_pipes *pipes);
 void	swap_fds(t_pipes *pipes);
@@ -203,6 +210,7 @@ bool	end_redirection(char **cmd, t_redir *redir, int rlt);
 bool	has_redirection(t_node *node);
 bool	set_redirection(char **cmd, int i, t_redir *redir);
 int		open_heredoc(char *delimiter);
+char	**create_cmd(t_node *node, t_redir *redir, bool *touch);
 /* redirection */
 
 #endif

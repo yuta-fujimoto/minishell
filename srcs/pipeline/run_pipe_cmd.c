@@ -43,45 +43,58 @@ static int	get_cmd_path(t_node *node, char **cmd_path)
 	return (SUCCESS);
 }
 
-static void	run_child(t_node *node, t_pipes *pipes, t_set *set, char *cmd_path)
+static void	run_child(t_node *node, t_pipes *pipes, t_set *set, t_pipe_info *p_info)
 {
 	extern char	**environ;
+	bool		touch;
 
-	update_pipes(pipes);
-	if (is_buildin(node->av[0]))
+	touch = false;
+	p_info->cmd = create_cmd(node, p_info->rdr, &touch);
+	if (!p_info->cmd && !touch && has_redirection(node))
+		exit(EXIT_FAILURE);
+	else
+		update_pipes(pipes);
+	if (touch)
+		exit(EXIT_SUCCESS);
+	if (is_buildin(p_info->cmd[0]))
 	{
-		if (run_builtin_cmd(node->av, set) == FAILURE)
-			exit(exec_cmd_error(node->av[0], cmd_path));
+		if (run_builtin_cmd(p_info->cmd, set) == FAILURE)
+			exit(exec_cmd_error(p_info->cmd[0], p_info->cmd_path));
 		exit(EXIT_SUCCESS);
 	}
-	else if (execve(cmd_path, node->av, environ) == -1)
-		exit(exec_cmd_error(node->av[0], cmd_path));
+	else if (execve(p_info->cmd_path, p_info->cmd, environ) == -1)
+		exit(exec_cmd_error(p_info->cmd[0], p_info->cmd_path));
 }
 
-bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set)
+bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 {
 	pid_t		c_pid;
 	t_node		*exp_node;
-	char		*cmd_path;
+	t_pipe_info	p_info;
+	int			rlt;
 
+	p_info.rdr = redir;
+	p_info.cmd = NULL;
 	exp_node = expansion_node(&node);
 	if (exp_node == NULL)
 		return (FAILURE);
 	if (!exp_node->av)
 		return (expansion_node_conclude(exp_node, SUCCESS));
-	if (get_cmd_path(exp_node, &cmd_path) == FAILURE)
-		return (FAILURE);
+	if (get_cmd_path(exp_node, &p_info.cmd_path) == FAILURE)
+		return (FAILURE);// need to return expansion node conclude?
 	c_pid = fork();
 	if (c_pid < 0)
-		return (free_cmd_path(cmd_path));
+		return (free_cmd_path(p_info.cmd_path));// need to return expansion node conclude?
 	else if (c_pid == 0)
-		run_child(exp_node, pipes, set, cmd_path);
+		run_child(exp_node, pipes, set, &p_info);
 	else
 	{
 		if (!wait_options(c_pid))
-			return (free_cmd_path(cmd_path));
-		if (cmd_path)
-			free(cmd_path);
+			return (free_cmd_path(p_info.cmd_path));//need to do end redirection here?// need to return expansion node conclude?
+		if (p_info.cmd_path)
+			free(p_info.cmd_path);
 	}
-	return (expansion_node_conclude(exp_node, SUCCESS));
+	if (has_redirection(&node))
+		rlt = end_redirection(p_info.cmd, redir, SUCCESS);//should be entering rlt instead of success? I think I might need to use exit status here.. if there is malloc error in child process, I need to be able to put rlt in here.. or I can just separate create_new_cmd from redirection.	
+	return (expansion_node_conclude(exp_node, SUCCESS));//should enter rlt isntead of success
 }
