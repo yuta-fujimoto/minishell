@@ -122,21 +122,24 @@ char	*create_path(char *cmd, char **paths);
 int	exec_cmd_error(char *cmd, char *cmd_path, bool malloc_failure);
 bool	free_cmd_path(char *cmd_path);
 bool	str_equal(char *s1, char *s2, size_t n);
+void	print_str(unsigned int i, char *s);
 /* utils */
 
 t_list	*lexar(char *line);
 /* lexar */
 
+bool	is_word_in_dquote(t_exp *exp);
+bool	is_valid(t_exp *exp);
 int		add_char_to_word(t_exp *exp, int pos);
 int		add_str_in_quote_to_word(t_exp *exp);
 int		add_var_to_word(t_exp *exp, t_env *env);
 void	add_to_word(t_exp *exp, bool *var_exp, t_env *env);
-int		eliminate_null_node(t_node *node);
+int		eliminate_null_node(t_node *exp_node, t_node *node);
 int		split_argv_by_blank(t_node *node);
-int		expansion_node(t_node *node);
-int		expansion(char **old_word, t_env *env, bool *var_expansion);
-int		expansion_conclude(t_env **env, char *free_s, int ret_status);
-void	expansion_node_conclude(t_node *node);
+t_node	*expansion_node(t_node *node);
+int		expansion(char **exp_word, char **word, t_env *env, bool *var_expansion);
+t_node	*expansion_conclude(t_env **env, char *free_s, t_node *exp_node);
+int		expansion_node_conclude(t_node *node, int rlt);
 /* expansion */
 
 t_tree	*command(t_list **lst);
@@ -195,13 +198,13 @@ t_node	decide_cmd_node(t_tree *parent, t_pipes *pipes);
 
 bool	close_fd(int fd, int rlt);
 bool	reset_stdio_fd(t_redir *redir, int rlt);
-char	**ms_redirection(char **av, t_redir *redir, bool *touch);
-bool	is_rdir(char *av_i);
+char	**ms_redirection(t_node *node, t_redir *redir, bool *touch);
+bool	is_rdir(int str_flg);
 bool	is_open_fd(int fd);
 bool	end_redirection(char **cmd, t_redir *redir, int rlt);
-bool	has_redirection(char **av);
+bool	has_redirection(t_node *node);
 bool	set_redirection(char **cmd, int i, t_redir *redir);
-int		open_heredoc(char *delimiter);	
+int		open_heredoc(char *delimiter);
 /* redirection */
 
 #endif

@@ -28,37 +28,39 @@ static bool	run_gnu_cmd(char **cmd)
 	return (SUCCESS);
 }
 
-static char	**create_cmd(char **av, t_redir *redir, bool *touch)
+static char	**create_cmd(t_node *node, t_redir *redir, bool *touch)
 {
-	if (has_redirection(av))
-		return (ms_redirection(av, redir, touch));
+	if (has_redirection(node))
+		return (ms_redirection(node, redir, touch));
 	else
-		return (av);
+		return (node->av);
 }
 
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 {
 	int		rlt;
 	bool	touch;
-	char	**tmp;
+	char	**cmd;
+	t_node	*exp_node;
 
 	touch = false;
 	rlt = SUCCESS;
-	tmp = node.av;
-	node.av = create_cmd(node.av, redir, &touch);
-	if (!node.av && !touch)
+	exp_node = expansion_node(&node);
+	if (!exp_node)
+		return (expansion_node_conclude(NULL, FAILURE));
+	if (!exp_node->av)
+		return (expansion_node_conclude(exp_node, SUCCESS));
+	cmd = create_cmd(exp_node, redir, &touch);
+	if (!cmd && !touch)
 		return (end_redirection(NULL, redir, FAILURE));
-	if (expansion_node(&node) == FAILURE)
-		return (end_redirection(NULL, redir, FAILURE));
-	else if (!touch && node.av)
+	else if (!touch)
 	{
-		if (is_buildin(node.av[0]))
-			rlt = run_builtin_cmd(node.av, set);
+		if (is_buildin(cmd[0]))
+			rlt = run_builtin_cmd(cmd, set);
 		else
-			rlt = run_gnu_cmd(node.av);
+			rlt = run_gnu_cmd(cmd);
 	}
-	if (has_redirection(tmp))
-		rlt = end_redirection(tmp, redir, rlt);
-	expansion_node_conclude(&node);
-	return (rlt);
+	if (has_redirection(exp_node))
+		rlt = end_redirection(cmd, redir, rlt);
+	return (expansion_node_conclude(exp_node, rlt));
 }

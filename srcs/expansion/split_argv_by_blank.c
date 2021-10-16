@@ -20,6 +20,22 @@ static bool	add_lst_by_splited(t_list **t, char **split_rlt)
 	return (true);
 }
 
+static int	add_lst(t_node *node, int i, t_list **lst)
+{
+	int	rlt;
+
+	if (node->str_flgs[i] == STR_VAL)
+		rlt = add_lst_by_splited(lst, ft_split(node->av[i], ' '));
+	else
+		rlt = ft_lstadd_back(lst, ft_lstnew(ft_strdup(node->av[i]), node->str_flgs[i]));
+	if (!rlt)
+	{
+		ft_lstclear(lst, free);
+		return (FAILURE);
+	}
+	return (SUCCESS);
+}
+
 static char	**list_to_argv(t_list *lst)
 {
 	int		size;
@@ -40,18 +56,20 @@ static char	**list_to_argv(t_list *lst)
 	return (av);
 }
 
-static int	add_lst(t_node *node, int i, t_list **lst)
+static int	reset_str_flgs(t_node *node, t_list *lst)
 {
-	int	rlt;
+	int i;
 
-	if (node->str_flgs[i] == STR_VAL && ft_strchr(node->av[i], ' ') != NULL)
-		rlt = add_lst_by_splited(lst, ft_split(node->av[i], ' '));
-	else
-		rlt = ft_lstadd_back(lst, ft_lstnew(ft_strdup(node->av[i]), STR));
-	if (!rlt)
-	{
-		ft_lstclear(lst, free);
+	i = 0;
+	free(node->str_flgs);
+	node->str_flgs = ft_calloc(sizeof(int), ft_lstsize(lst));
+	if (!node->str_flgs)
 		return (FAILURE);
+	while (lst)
+	{
+		node->str_flgs[i] = lst->flags;
+		lst = lst->next;
+		i++;
 	}
 	return (SUCCESS);
 }
@@ -72,6 +90,8 @@ int	split_argv_by_blank(t_node *node)
 		if (rlt == FAILURE)
 			return (FAILURE);
 	}
+	if (reset_str_flgs(node, lst) == FAILURE)
+		return (FAILURE);
 	ft_free_str_arr(node->av);
 	node->av = list_to_argv(lst);
 	ft_lstclear(&lst, NULL);
