@@ -95,7 +95,5 @@ t_node	*expansion_node(t_node *node)
 	if (eliminate_null_node(exp_node, node) == FAILURE
 		|| split_argv_by_blank(exp_node) == FAILURE)
 		return (finish_expansion_node(&env, exp_node, FAILURE));
-	if (list_to_environ(env) == FAILURE)
-		return (finish_expansion_node(&env, exp_node, FAILURE));
 	return (finish_expansion_node(&env, exp_node, SUCCESS));
 }
