@@ -106,12 +106,12 @@ void	add_to_word(t_exp *exp, bool *var_exp, t_env *env)
 {
 	if (exp->in_squote || (exp->in_dquote && is_word_in_dquote(exp)))
 		exp->rlt_status = add_word_in_quote_to_word(exp);
-	else if (exp->word[exp->i] == '\\' && needs_removal(exp))
+	else if (exp->word[exp->i] == '\\' && is_valid(exp))
 		exp->rlt_status = add_char_to_word(exp, 2);
-	else if (exp->word[exp->i] == '$' && needs_removal(exp))
+	else if (exp->word[exp->i] == '$' && is_valid(exp))
 	{
 		exp->rlt_status = add_var_to_word(exp, env);
-		if (var_exp != NULL && !exp->in_dquote)
+		if (exp->word != NULL && !exp->in_dquote)
 			*var_exp = true;
 	}
 	else

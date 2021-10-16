@@ -1,6 +1,6 @@
 #include "../../incs/minishell.h"
 
-bool	needs_removal(t_exp *exp)
+bool	is_valid(t_exp *exp)
 {
 	return (!exp->in_squote && exp->word[exp->i + 1]);
 }

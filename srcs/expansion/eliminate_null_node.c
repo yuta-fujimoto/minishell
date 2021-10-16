@@ -85,6 +85,6 @@ int	eliminate_null_node(t_node *exp_node, t_node *node)
 	if (!new_av)
 		return (FAILURE);
 	set_new_av_strflgs(exp_node, new_av, new_size);
-	node->ac = new_size;
+	exp_node->ac = new_size;
 	return (SUCCESS);
 }

@@ -127,7 +127,7 @@ t_list	*lexar(char *line);
 /* lexar */
 
 bool	is_word_in_dquote(t_exp *exp);
-bool	needs_removal(t_exp *exp);
+bool	is_valid(t_exp *exp);
 int		add_char_to_word(t_exp *exp, int pos);
 int		add_str_in_quote_to_word(t_exp *exp);
 int		add_var_to_word(t_exp *exp, t_env *env);
