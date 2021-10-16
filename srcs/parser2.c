@@ -39,7 +39,10 @@ t_tree	*command(t_list **lst)
 		return (NULL);
 	if (!get_new_node(*lst, &node))
 		return (NULL);
-	node.flgs = (*lst)->flags;
+	if ((*lst)->flags >= STR && (*lst)->flags <= LLDIR)
+		node.flgs = STR;
+	else
+		node.flgs = (*lst)->flags;
 	i = -1;
 	while (node.ac > ++i)
 	{

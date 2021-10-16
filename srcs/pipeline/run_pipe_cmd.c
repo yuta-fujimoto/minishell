@@ -30,46 +30,52 @@ static void	update_pipes(t_pipes *pipes)
 	}
 }
 
-static int	get_cmd_path(t_node node, char **cmd_path)
+static int	get_cmd_path(t_node *node, char **cmd_path)
 {
-	if (is_buildin(node.av[0]))
+	if (is_buildin(node->av[0]))
 		*cmd_path = NULL;
 	else
 	{
-		*cmd_path = create_cmd_path(node.av);
+		*cmd_path = create_cmd_path(node->av);
 		if (!*cmd_path)
 			return (FAILURE);
 	}
 	return (SUCCESS);
 }
 
-static void	run_child(t_node node, t_pipes *pipes, t_set *set, char *cmd_path)
+static void	run_child(t_node *node, t_pipes *pipes, t_set *set, char *cmd_path)
 {
 	extern char	**environ;
 
 	update_pipes(pipes);
-	if (is_buildin(node.av[0]))
+	if (is_buildin(node->av[0]))
 	{
-		if (run_builtin_cmd(node.av, set) == FAILURE)
-			exit(exec_cmd_error(node.av[0], cmd_path));
+		if (run_builtin_cmd(node->av, set) == FAILURE)
+			exit(exec_cmd_error(node->av[0], cmd_path));
 		exit(EXIT_SUCCESS);
 	}
-	else if (execve(cmd_path, node.av, environ) == -1)
-		exit(exec_cmd_error(node.av[0], cmd_path));
+	else if (execve(cmd_path, node->av, environ) == -1)
+		exit(exec_cmd_error(node->av[0], cmd_path));
 }
 
 bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set)
 {
 	pid_t		c_pid;
+	t_node		*exp_node;
 	char		*cmd_path;
 
-	if (get_cmd_path(node, &cmd_path) == FAILURE)
+	exp_node = expansion_node(&node);
+	if (exp_node == NULL)
+		return (FAILURE);
+	if (!exp_node->av)
+		return (expansion_node_conclude(exp_node, SUCCESS));
+	if (get_cmd_path(exp_node, &cmd_path) == FAILURE)
 		return (FAILURE);
 	c_pid = fork();
 	if (c_pid < 0)
 		return (free_cmd_path(cmd_path));
 	else if (c_pid == 0)
-		run_child(node, pipes, set, cmd_path);
+		run_child(exp_node, pipes, set, cmd_path);
 	else
 	{
 		if (!wait_options(c_pid))
@@ -77,5 +83,5 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set)
 		if (cmd_path)
 			free(cmd_path);
 	}
-	return (SUCCESS);
+	return (expansion_node_conclude(exp_node, SUCCESS));
 }

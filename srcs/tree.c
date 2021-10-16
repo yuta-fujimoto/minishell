@@ -56,7 +56,7 @@ void	free_tree(t_tree *l)
 	{
 		free_tree(l->left);
 		free_tree(l->right);
-		if (l->node.flgs == STR)
+		if (l->node.flgs == STR && l->node.av)
 			free(l->node.av);
 		if (l->node.str_flgs)
 			free(l->node.str_flgs);

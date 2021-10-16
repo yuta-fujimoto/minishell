@@ -4,3 +4,4 @@ minishell
 a.out
 .vscode/*
 result.log
+test_error.log

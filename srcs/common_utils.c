@@ -30,7 +30,14 @@ char	*create_path(char *cmd, char **paths)
 
 bool	str_equal(char *s1, char *s2, size_t n)
 {
+	if (!s1 || !s2)
+		return (false);
 	if (ft_strncmp(s1, s2, n) == 0)
 		return (true);
 	return (false);
+}
+
+void	print_str(unsigned int i, char *s)
+{
+	printf("[%d, %s]",i ,s);
 }

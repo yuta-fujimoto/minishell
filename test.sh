@@ -116,26 +116,27 @@ exec_test 'echo test | cat -e | cat -e '
 # exec_test 'head -n 10 /dev/urandom  | wc ; wc -c'
 exec_test 'ls|ls|ls|ls|ls|ls|ls'
 
-# # ENV EXPANSIONS + ESCAPE
-# exec_test 'echo test     \    test'
-# exec_test 'echo \"test'
-# exec_test 'echo $TEST'
-# exec_test 'echo "$TEST"'
-# exec_test "echo '$TEST'"
-# exec_test 'echo "$TEST$TEST$TEST"'
-# exec_test 'echo "$TEST$TEST=lol$TEST"'
-# exec_test 'echo "   $TEST lol $TEST"'
-# exec_test 'echo $TEST$TEST$TEST'
-# exec_test 'echo $TEST$TEST=lol$TEST""lol'
-# exec_test 'echo    $TEST lol $TEST'
-# exec_test 'echo test "" test "" test'
-# exec_test 'echo "\$TEST"'
-# exec_test 'echo "$=TEST"'
-# exec_test 'echo "$"'
-# exec_test 'echo "$?TEST"'
-# exec_test 'echo $TEST $TEST'
-# exec_test 'echo "$1TEST"'
-# exec_test 'echo "$T1TEST"'
+# ENV EXPANSIONS + ESCAPE
+exec_test 'echo test     \    test'
+exec_test 'echo \"test'
+exec_test 'echo $TEST'
+exec_test 'echo "$TEST"'
+exec_test "echo '$TEST'"
+exec_test 'echo "$TEST$TEST$TEST"'
+exec_test 'echo "$TEST$TEST=lol$TEST"'
+exec_test 'echo "   $TEST lol $TEST"'
+exec_test 'echo $TEST$TEST$TEST'
+exec_test 'echo $TEST$TEST=lol$TEST""lol'
+exec_test 'echo    $TEST lol $TEST'
+exec_test 'echo test "" test "" test'
+exec_test 'echo "\$TEST"'
+exec_test 'echo "$=TEST"'
+exec_test 'echo "$"'
+exec_test 'echo "$?TEST"'
+exec_test 'echo $TEST $TEST'
+exec_test 'echo "$1TEST"'
+exec_test 'echo "$T1TEST"'
+exec_test 'echo "''''"'
 
 # # ENV EXPANSIONS
 # ENV_SHOW="env | sort | grep -v SHLVL | grep -v _="
@@ -147,19 +148,28 @@ exec_test 'ls|ls|ls|ls|ls|ls|ls'
 # exec_test 'export TES=T="" ;' $ENV_SHOW
 # exec_test 'export TE+S=T="" ;' $ENV_SHOW
 # exec_test 'export TEST=LOL ; echo $TEST ;' $ENV_SHOW
-# exec_test 'export TEST=LOL ; echo $TEST$TEST$TEST=lol$TEST'
+exec_test '$NO'
+exec_test 'export TEST=LOL ; echo $TEST$TEST$TEST=lol$TEST'
 # exec_test 'export TEST=LOL; export TEST+=LOL ; echo $TEST ;' $ENV_SHOW
 # exec_test $ENV_SHOW
 # exec_test $EXPORT_SHOW
-# exec_test 'export TEST="ls       -l     - a" ; echo $TEST ; $LS ; ' $ENV_SHOW
+exec_test 'export TEST="ls       -l     - a" ; echo $TEST '
 
 # # REDIRECTIONS
-# exec_test 'echo test > ls ; cat ls'
-# exec_test 'echo test > ls >> ls >> ls ; echo test >> ls; cat ls'
-# exec_test '> lol echo test lol; cat lol'
-# exec_test '>lol echo > test>lol>test>>lol>test mdr >lol test >test; cat test'
-# exec_test 'cat < ls'
-# exec_test 'cat < ls > ls'
+exec_test 'echo test > ls ; cat ls'
+exec_test 'echo test > ls >> ls >> ls ; echo test >> ls; cat ls'
+exec_test '> lol echo test lol; cat lol'
+exec_test '>lol echo > test>lol>test>>lol>test mdr >lol test >test; cat test'
+exec_test 'cat < ls'
+exec_test 'cat < ls > ls'
+
+# REDIRECTIONS + EXPANSIONS
+exec_test 'echo $HOME > test; cat test'
+exec_test 'echo a b c d e f g > test; < test cat'
+exec_test 'echo test > $NO'
+exec_test 'cat < $NO'
+exec_test '> test echo $HOME'
+exec_test '> $NO echo test'
 
 # # MULTI TESTS
 # exec_test 'echo testing multi ; echo "test 1 ; | and 2" ; cat tests/lorem.txt | grep Lorem'
@@ -187,4 +197,4 @@ exec_test 'ls|ls|ls|ls|ls|ls|ls'
 # exec_test "cd gdhahahad"
 # exec_test "ls -la | wtf"
 
-#rm lol ls test
+rm lol ls test

@@ -28,7 +28,7 @@ bool	execute_input(t_tree *l, t_set *set)
 		execute_input(l->left, set);
 		if (l->node.av)
 		{
-			if (execute_simple_cmd(l->node.av, set, &redir) == FAILURE)
+			if (execute_simple_cmd(l->node, set, &redir) == FAILURE)
 				return (minishell_error(redir));
 		}
 		execute_input(l->right, set);

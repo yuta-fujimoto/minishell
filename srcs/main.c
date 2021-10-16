@@ -5,6 +5,7 @@ t_sig_info	g_sig_info = {0, false, NULL, false, false};
 
 void	ft_printf(void *word)
 {
+	if (word)
 	dprintf(fd, "[%s]\n", (char *)word);
 }
 
@@ -26,7 +27,8 @@ void	sigint_handler(int sigint)
 	if (g_sig_info.heredoc)
 	{	
 		write(STDOUT_FILENO, "\n", 1);
-		g_sig_info.term_stdin = ttyname(STDIN_FILENO);
+		if (isatty(STDIN_FILENO))
+			g_sig_info.term_stdin = ttyname(STDIN_FILENO);
 		close(STDIN_FILENO);
 		g_sig_info.heredoc = false;
 	}
@@ -77,7 +79,7 @@ void	mod_termios_attr(t_set *set, int init)
 	}
 	set->t.c_lflag = lflag;
 	set->t.c_cc[VQUIT] = vquit;
-	if (tcsetattr(STDIN_FILENO, TCSANOW, &set->t) == SYS_ERROR)
+	if (isatty(STDIN_FILENO) && tcsetattr(STDIN_FILENO, TCSANOW, &set->t) == SYS_ERROR)
 	{
 		perror(NULL);
 		exit(EXIT_FAILURE);
@@ -86,7 +88,7 @@ void	mod_termios_attr(t_set *set, int init)
 
 static void	init_termios_attr(t_set *set)
 {
-	if (tcgetattr(STDIN_FILENO, &set->t) == SYS_ERROR)
+	if (isatty(STDIN_FILENO) && tcgetattr(STDIN_FILENO, &set->t) == SYS_ERROR)
 	{
 		perror(NULL);
 		exit(EXIT_FAILURE);
@@ -116,13 +118,15 @@ int	main(int ac, char **av)
 		if (!set.input)
 		{
 			mod_termios_attr(&set, false);
-			write(STDOUT_FILENO, "exit\n", 5);
+			ft_putstr_fd("\033[Aminishell > ", STDOUT_FILENO);
+			ft_putendl_fd("exit", STDERR_FILENO);
 			exit(EXIT_SUCCESS);
 		}
 		set.lst = lexar(set.input);
 		dprintf(fd, "\ninput >> %s\n", set.input);
 		dprintf(fd, "\n====result of lexar====\n");
-		ft_lstiter(set.lst, ft_printf);
+		if (set.lst)
+			ft_lstiter(set.lst, ft_printf);
 		dprintf(fd, "\n====result of parser====\n");
 		set.tree = parser(set.lst);
 		if (*set.input)
