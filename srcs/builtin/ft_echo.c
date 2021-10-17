@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 bool	is_nflg(char *s)
 {
 	int	i;
@@ -23,6 +25,7 @@ int	ft_echo(char **av)
 
 	i = 1;
 	nflag = false;
+	g_sig_info.exit_status = EXIT_SUCCESS;
 	while (is_nflg(av[i]))
 	{
 		nflag = true;

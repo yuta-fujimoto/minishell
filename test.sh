@@ -184,7 +184,7 @@ exec_test '> $NO echo test'
 
 # # EXIT
 exec_test "exit 42"
-exec_test "exit 42 53 68"
+# exec_test "exit 42 53 68"
 exec_test "exit 259"
 exec_test "exit 9223372036854775807"
 exec_test "exit -9223372036854775808"
@@ -198,5 +198,4 @@ exec_test "ls -Z"
 exec_test "cd gdhahahad"
 exec_test "ls -la | wtf"
 
-rm test_stdout
-#rm lol ls test
+rm lol ls test test_stdout

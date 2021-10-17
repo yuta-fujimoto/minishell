@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 char	*get_available_path(char *pathname, bool *print_path)
 {
 	char	*newpath;
@@ -97,6 +99,7 @@ int	ft_cd(char **av)
 	bool	malloc_success;
 
 	malloc_success = false;
+	g_sig_info.exit_status = EXIT_SUCCESS;
 	if (!av[1])
 		return (ft_cd_env("HOME"));
 	if (av[2])

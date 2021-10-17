@@ -102,7 +102,7 @@ static void	init_termios_attr(t_set *set)
 int	main(int ac, char **av)
 {
 	t_set	set;
-	int		ret;	
+	int		ret;
 
 	(void)ac;
 	(void)av;

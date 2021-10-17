@@ -38,7 +38,7 @@ int	ft_export_print(t_env *env)
 		i++;
 	}
 	print_name_value(tmp);
-	return (ft_export_end(env, SUCCESS));
+	return (ft_export_end(env, SUCCESS, NOTHING));
 }
 
 int	ft_export_update(char *s, t_env **env)
@@ -47,7 +47,6 @@ int	ft_export_update(char *s, t_env **env)
 	char	*value;
 	t_env	*env_var;
 
-	g
 	name = get_name(s);
 	if (!name)
 		return (FAILURE);
@@ -107,10 +106,10 @@ int	ft_export(char **av)
 		if (type == ERROR)
 			ft_export_error(*av);
 		else if (type == UPDATE && ft_export_update(*av, &env) == FAILURE)
-			return (ft_export_end(env, FAILURE));
+			return (ft_export_end(env, FAILURE, type));
 		else if (type == ADD && ft_export_add(*av, &env) == FAILURE)
-			return (ft_export_end(env, FAILURE));
+			return (ft_export_end(env, FAILURE, type));
 		av++;
 	}
-	return (ft_export_end(env, SUCCESS));
+	return (ft_export_end(env, SUCCESS, type));
 }

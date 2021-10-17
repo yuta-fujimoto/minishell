@@ -34,12 +34,12 @@ int	run_builtin_cmd(char **av, t_set *set)
 	if (str_equal(av[0], "pwd", 4))
 		rlt = ft_pwd();
 	if (str_equal(av[0], "exit", 5))
-		ft_exit(av, set);
+		rlt = ft_exit(av, set);
 	if (str_equal(av[0], "cd", 3))
 		rlt = ft_cd(av);
 	if (str_equal(av[0], "echo", 5))
 		rlt = ft_echo(av);
-	if (rlt != FAILURE)
-		g_sig_info.exit_status = EXIT_SUCCESS;
+	if (rlt == FAILURE)
+		g_sig_info.exit_status = EXIT_FAILURE;
 	return (rlt);
 }
