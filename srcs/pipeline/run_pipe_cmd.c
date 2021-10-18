@@ -35,8 +35,8 @@ static bool	end_pipe(t_node *n, t_pipe_info *p_info, bool chld_end, int rlt)
 		free(p_info->cmd);
 	if (chld_end)
 	{
-		if (has_redirection(&n))
-			rlt = end_redirection(NULL, redir, rlt);
+		if (has_redirection(n))
+			rlt = end_redirection(NULL, p_info->rdr, rlt);
 	}
 	return (expansion_node_conclude(n, rlt));
 }
@@ -52,13 +52,13 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 		return (FAILURE);
 	if (!exp_node->av)
 		return (expansion_node_conclude(exp_node, SUCCESS));
-	if (init_pipe_cmd(exp_node, &p_info, redir, &rlt) == FAILURE)
+	if (init_pipe_cmd(exp_node, &p_info, redir) == FAILURE)
 		return (end_pipe(exp_node, &p_info, false, FAILURE));
 	c_pid = fork();
 	if (c_pid < 0)
 		return (end_pipe(exp_node, &p_info, false, FAILURE));
 	else if (c_pid == 0)
-		run_child(exp_node, pipes, set, &p_info);
+		run_chld(exp_node, pipes, set, &p_info);
 	else
 	{
 		if (!wait_options(c_pid))
