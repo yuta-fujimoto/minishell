@@ -20,7 +20,7 @@ bool	ft_exit(char **av, t_set *set)
 	ft_putendl_fd("exit", STDERR_FILENO);
 	if (!av[1])
 	{
-		free_set(set);	
+		free_set(set);
 		exit(EXIT_SUCCESS);
 	}
 	status = ft_atol(av[1], &flg) % 256;

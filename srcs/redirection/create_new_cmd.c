@@ -44,4 +44,3 @@ char	**create_new_cmd(t_node *node, bool *touch)
 	new_cmd[j] = NULL;
 	return (new_cmd);
 }
-

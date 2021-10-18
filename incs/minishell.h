@@ -126,7 +126,6 @@ void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
 char	*create_path(char *cmd, char **paths);
 bool	exec_cmd_error(char *cmd, char *cmd_path);
-bool	free_cmd_path(char *cmd_path);
 bool	str_equal(char *s1, char *s2, size_t n);
 void	print_str(unsigned int i, char *s);
 /* utils */
@@ -200,6 +199,7 @@ void	update_pipes_status(t_node node, t_pipes *pipes);
 void	swap_fds(t_pipes *pipes);
 void	close_pipes(t_pipes *pipes);
 t_node	decide_cmd_node(t_tree *parent, t_pipes *pipes);
+void	run_chld(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info);
 /* piping */
 
 bool	close_fd(int fd, int rlt);

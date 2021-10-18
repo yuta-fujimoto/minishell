@@ -15,7 +15,7 @@ bool	wait_options(pid_t pid)
 	int	wstatus;
 
 	waitpid(pid, &wstatus, 0);
-	if (!WIFEXITED(wstatus))
+	if (!WIFEXITED(wstatus) || WEXISTATUS(wstatus) != EXIT_SUCCESS)
 		return (false);
 	return (true);
 }

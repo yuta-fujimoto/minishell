@@ -1,5 +1,12 @@
 #include "../../incs/minishell.h"
 
+static bool	free_cmd_path(char *cmd_path)
+{
+	free(cmd_path);
+	cmd_path = NULL;
+	return (FAILURE);
+}
+
 static bool	run_gnu_cmd(char **cmd)
 {
 	pid_t		c_pid;
