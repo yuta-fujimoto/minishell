@@ -26,10 +26,14 @@ static bool	run_gnu_cmd(char **cmd)
 	return (SUCCESS);
 }
 
-char	**create_cmd(t_node *node, t_redir *redir, bool *touch)
+char	**get_cmd(t_node *node, t_redir *redir, bool *touch)
 {
 	if (has_redirection(node))
-		return (ms_redirection(node, redir, touch));
+	{
+		if (!ms_redirection(node, redir))
+			return (NULL);
+		return (create_new_cmd(node, touch));
+	}
 	else
 		return (node->av);
 }
@@ -48,7 +52,7 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 		return (expansion_node_conclude(NULL, FAILURE));
 	if (!exp_node->av)
 		return (expansion_node_conclude(exp_node, SUCCESS));
-	cmd = create_cmd(exp_node, redir, &touch);
+	cmd = get_cmd(exp_node, redir, &touch);
 	if (!cmd && !touch)
 		return (end_redirection(NULL, redir, FAILURE));
 	else if (!touch)

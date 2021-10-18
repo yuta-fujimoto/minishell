@@ -86,6 +86,7 @@ typedef struct	s_pipe_info
 	t_redir	*rdr;
 	char	**cmd;
 	char	*cmd_path;
+	bool	touch;
 }				t_pipe_info;
 
 # define SIGINT_CALL -2
@@ -203,14 +204,15 @@ t_node	decide_cmd_node(t_tree *parent, t_pipes *pipes);
 
 bool	close_fd(int fd, int rlt);
 bool	reset_stdio_fd(t_redir *redir, int rlt);
-char	**ms_redirection(t_node *node, t_redir *redir, bool *touch);
+bool	ms_redirection(t_node *node, t_redir *redir);
 bool	is_rdir(int str_flg);
 bool	is_open_fd(int fd);
 bool	end_redirection(char **cmd, t_redir *redir, int rlt);
 bool	has_redirection(t_node *node);
 bool	set_redirection(char **cmd, int i, t_redir *redir);
 int		open_heredoc(char *delimiter);
-char	**create_cmd(t_node *node, t_redir *redir, bool *touch);
+char	**get_cmd(t_node *node, t_redir *redir, bool *touch);
+char	**create_new_cmd(t_node *node, bool *touch);
 /* redirection */
 
 #endif

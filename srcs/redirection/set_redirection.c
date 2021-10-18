@@ -22,13 +22,13 @@ static bool	reset_fds(t_redir *redir)
 	if (redir->status == RDIR || redir->status == RRDIR)
 	{
 		if (!close_fd(redir->new_out, SUCCESS))
-			rlt = -1 ;
+			rlt = SYS_ERROR;
 		redir->new_out = -1;
 	}
 	else if ((redir->status == LDIR || redir->status == LLDIR))
 	{
 		if (!close_fd(redir->new_in, SUCCESS))
-			rlt = -1;
+			rlt = SYS_ERROR;
 		redir->new_in = -1;
 	}
 	if (rlt == SYS_ERROR)

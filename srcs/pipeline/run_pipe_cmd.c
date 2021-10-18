@@ -46,15 +46,15 @@ static int	get_cmd_path(t_node *node, char **cmd_path)
 static void	run_child(t_node *node, t_pipes *pipes, t_set *set, t_pipe_info *p_info)
 {
 	extern char	**environ;
-	bool		touch;
 
-	touch = false;
-	p_info->cmd = create_cmd(node, p_info->rdr, &touch);
-	if (!p_info->cmd && !touch && has_redirection(node))
-		exit(EXIT_FAILURE);
+	if (has_redirection(node))
+	{
+		if (!ms_redirection(node, p_info->rdr))
+			exit(EXIT_FAILURE);
+	}
 	else
 		update_pipes(pipes);
-	if (touch)
+	if (p_info->touch)
 		exit(EXIT_SUCCESS);
 	if (is_buildin(p_info->cmd[0]))
 	{
@@ -64,6 +64,29 @@ static void	run_child(t_node *node, t_pipes *pipes, t_set *set, t_pipe_info *p_i
 	}
 	else if (execve(p_info->cmd_path, p_info->cmd, environ) == -1)
 		exit(exec_cmd_error(p_info->cmd[0], p_info->cmd_path));
+}//need to end redirection in here somehow?? in update pipes, I close all pipes after changing direction.. maybe the same should be done (in if has redirection.. just redirect and then close);
+
+static bool	init_pipe_cmd(t_node *exp_node, t_pipe_info *p_info, t_redir *redir)
+{
+	p_info->rdr = redir;
+	p_info->touch = false;
+	p_info->cmd = NULL;
+	p_info->cmd_path = NULL;
+	if (get_cmd_path(exp_node, &p_info->cmd_path) == FAILURE)
+		return (FAILURE);
+	p_info->cmd = get_cmd(exp_node, redir, &p_info->touch);
+	if (!p_info->cmd && !p_info->touch && has_redirection(exp_node))
+		return (FAILURE);
+	return (SUCCESS);
+}
+
+static bool conclude_pipe_section(t_node *exp_node, t_pipe_info *p_info, int rlt)
+{
+	if (p_info->cmd_path)
+		free(p_info->cmd_path);
+	if (p_info->cmd && has_redirection(exp_node))
+		free(p_info->cmd);
+	return (expansion_node_conclude(exp_node, rlt));
 }
 
 bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
@@ -73,28 +96,25 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 	t_pipe_info	p_info;
 	int			rlt;
 
-	p_info.rdr = redir;
-	p_info.cmd = NULL;
+	rlt = SUCCESS;
 	exp_node = expansion_node(&node);
 	if (exp_node == NULL)
 		return (FAILURE);
 	if (!exp_node->av)
 		return (expansion_node_conclude(exp_node, SUCCESS));
-	if (get_cmd_path(exp_node, &p_info.cmd_path) == FAILURE)
-		return (FAILURE);// need to return expansion node conclude?
+	if (init_pipe_cmd(exp_node, &p_info, redir) == FAILURE)
+		return (conclude_pipe_section(exp_node, &p_info, FAILURE));
 	c_pid = fork();
 	if (c_pid < 0)
-		return (free_cmd_path(p_info.cmd_path));// need to return expansion node conclude?
+		return (conclude_pipe_section(exp_node, &p_info, FAILURE));
 	else if (c_pid == 0)
 		run_child(exp_node, pipes, set, &p_info);
 	else
 	{
 		if (!wait_options(c_pid))
-			return (free_cmd_path(p_info.cmd_path));//need to do end redirection here?// need to return expansion node conclude?
-		if (p_info.cmd_path)
-			free(p_info.cmd_path);
+			return (conclude_pipe_section(exp_node, &p_info, FAILURE));
 	}
-	if (has_redirection(&node))
-		rlt = end_redirection(p_info.cmd, redir, SUCCESS);//should be entering rlt instead of success? I think I might need to use exit status here.. if there is malloc error in child process, I need to be able to put rlt in here.. or I can just separate create_new_cmd from redirection.	
-	return (expansion_node_conclude(exp_node, SUCCESS));//should enter rlt isntead of success
+	if (has_redirection(&node))//do I even need to end redirection?? here?? redirection only happens in child procss
+		rlt = end_redirection(NULL, redir, SUCCESS);
+	return (conclude_pipe_section(exp_node, &p_info, rlt));
 }
