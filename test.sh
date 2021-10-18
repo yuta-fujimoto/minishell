@@ -171,6 +171,22 @@ exec_test 'cat < $NO'
 exec_test '> test echo $HOME'
 exec_test '> $NO echo test'
 
+# PIPING + REDIRECTIONS
+exec_test 'ls -la | grep 2 | sort | head -1'
+exec_test 'ls "-la" | grep 2 | "sort" | head "-1"'
+exec_test 'ls | grep abcdefg'
+exec_test 'echo $PATH | wc -l'
+exec_test 'echo $PATH | wc -l | cat'
+exec_test 'echo "$PATH" | wc -l'
+exec_test 'echo "$PATH" | wc -l | cat'
+exec_test 'echo ''$PATH\'' | wc -l'
+exec_test 'echo ''$PATH\'' | wc -l | cat'
+exec_test 'cat result.log | wc -l'
+exec_test 'cat result.log | wc -l | cat'
+exec_test 'env | grep 2 | sort | head -1'
+exec_test '"env" | grep 2 | "sort" | head "-1"'
+exec_test 'env | grep abcdefg'
+
 # # MULTI TESTS
 # exec_test 'echo testing multi ; echo "test 1 ; | and 2" ; cat tests/lorem.txt | grep Lorem'
 
