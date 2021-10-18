@@ -119,6 +119,9 @@ typedef struct	s_pipe_info
 # define END_PIPE 20
 /* piping */
 
+# define REDIRECTION_FAILURE 21
+/* custom exit statuses */
+
 # define C_LFLAGS 536872335
 /* TERMIOS FLAGS INCLUDING ECHOCTL */
 
