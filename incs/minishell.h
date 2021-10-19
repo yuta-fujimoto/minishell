@@ -16,7 +16,7 @@
 # include <termios.h>
 # include "../libft/libft.h"
 
-typedef struct	s_exp
+typedef struct s_exp
 {
 	bool	in_dquote;
 	bool	in_squote;
@@ -81,7 +81,7 @@ typedef struct s_sig_info
 	bool	heredoc_sigeof;
 }				t_sig_info;
 
-typedef struct	s_pipe_info
+typedef struct s_pipe_info
 {
 	t_redir	*rdr;
 	char	**cmd;
@@ -145,7 +145,8 @@ void	add_to_word(t_exp *exp, bool *var_exp, t_env *env);
 int		eliminate_null_node(t_node *exp_node, t_node *node);
 int		split_argv_by_blank(t_node *node);
 t_node	*expansion_node(t_node *node);
-int		expansion(char **exp_word, char **word, t_env *env, bool *var_expansion);
+int		expansion(char **exp_word, char **word, t_env *env,
+			bool *var_expansion);
 t_node	*expansion_conclude(t_env **env, char *free_s, t_node *exp_node);
 int		expansion_node_conclude(t_node *node, int rlt);
 /* expansion */
@@ -202,7 +203,7 @@ void	update_pipes_status(t_node node, t_pipes *pipes);
 void	swap_fds(t_pipes *pipes);
 void	close_pipes(t_pipes *pipes);
 t_node	decide_cmd_node(t_tree *parent, t_pipes *pipes);
-void	run_chld(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info);
+void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info);
 /* piping */
 
 bool	close_fd(int fd, int rlt);

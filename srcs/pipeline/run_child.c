@@ -23,7 +23,7 @@ static void	update_pipes(t_pipes *pipes)
 	}
 }
 
-void	run_chld(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info)
+void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info)
 {
 	extern char	**environ;
 

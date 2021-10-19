@@ -158,10 +158,25 @@ exec_test 'export TEST="ls       -l     - a" ; echo $TEST '
 # # REDIRECTIONS
 exec_test 'echo test > ls ; cat ls'
 exec_test 'echo test > ls >> ls >> ls ; echo test >> ls; cat ls'
-exec_test '> lol echo test lol; cat lol'
-exec_test '>lol echo > test>lol>test>>lol>test mdr >lol test >test; cat test'
+exec_test 'echo test > ls >> lol > f1 ; cat ls lol f1'
+exec_test '> lol echo test lol; cat lol test'
+exec_test '>lol echo > test>lol>test>>lol>test mdr >lol test >test; cat test lol'
 exec_test 'cat < ls'
 exec_test 'cat < ls > ls'
+exec_test '< ls cat'
+exec_test '< ls > ls cat'
+exec_test 'echo test > ls < result.log >> lol > f1 ; cat ls lol f1'
+
+# REDIRECTION + PIPING
+exec_test 'ls -la > f1 | grep 2 | echo hey; cat f1'
+exec_test 'ls -la | grep 2 > f1 | echo hey; cat f1'
+exec_test 'echo aaa > a; < a cat | cat'
+exec_test 'echo aaa > a; cat < a | cat'
+exec_test 'echo aaa > a; cat a | cat'
+exec_test 'echo aaa > a; < a cat | grep a'
+exec_test 'echo aaa > a; cat < a | grep a'
+exec_test 'echo aaa > a; cat a | grep a'
+exec_test 'ls -la > f1 | echo hello > lol; cat f1 lol'
 
 # REDIRECTIONS + EXPANSIONS
 exec_test 'echo $HOME > test; cat test'
@@ -171,7 +186,7 @@ exec_test 'cat < $NO'
 exec_test '> test echo $HOME'
 exec_test '> $NO echo test'
 
-# PIPING + REDIRECTIONS
+# PIPING + EXPANSION
 exec_test 'ls -la | grep 2 | sort | head -1'
 exec_test 'ls "-la" | grep 2 | "sort" | head "-1"'
 exec_test 'ls | grep abcdefg'
@@ -183,9 +198,13 @@ exec_test 'echo ''$PATH\'' | wc -l'
 exec_test 'echo ''$PATH\'' | wc -l | cat'
 exec_test 'cat result.log | wc -l'
 exec_test 'cat result.log | wc -l | cat'
-exec_test 'env | grep 2 | sort | head -1'
-exec_test '"env" | grep 2 | "sort" | head "-1"'
-exec_test 'env | grep abcdefg'
+exec_test 'echo result.log | grep 2 | sort | head -1'
+exec_test '"echo" result.log | grep 2 | "sort" | head "-1"'
+exec_test 'echo result.log | grep abcdefg'
+exec_test 'ls | ls | ls'
+exec_test 'ls | cat'
+exec_test 'cat | cat | cat'
+exec_test 'cat | ls'
 
 # # MULTI TESTS
 # exec_test 'echo testing multi ; echo "test 1 ; | and 2" ; cat tests/lorem.txt | grep Lorem'
@@ -213,4 +232,4 @@ exec_test 'env | grep abcdefg'
 # exec_test "cd gdhahahad"
 # exec_test "ls -la | wtf"
 
-rm lol ls test
+rm lol ls a f1 test
