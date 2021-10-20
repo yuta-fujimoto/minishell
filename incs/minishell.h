@@ -53,9 +53,10 @@ typedef struct s_set
 
 typedef struct s_pipes
 {
-	int	status;
-	int	fd_a[2];
-	int	fd_b[2];
+	int			status;
+	int			fd_a[2];
+	int			fd_b[2];
+	t_pidlist	*pidlst;
 }				t_pipes;
 
 typedef struct s_redir

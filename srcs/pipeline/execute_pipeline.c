@@ -34,14 +34,37 @@ static bool	pipe_next_node(t_tree *prnt, t_pipes *pps, t_set *set, t_redir *rdr)
 		return (pipe_next_node(prnt, pps, set, rdr));
 }
 
+static bool	conclude_pipeline(t_pidlist *pidlst)
+{
+//	t_pidlist	*tmp;//change later once working
+
+//	tmp = *pidlst;
+	while (pidlst)
+	{
+		if (!wait_options(pidlst->pid))
+			return (false);
+		pidlst = pidlst->next;
+	}
+	return (true);
+}
+
+static bool	free_pidlst(t_pidlist **pidlst, int rlt)
+{
+	ft_pidlstclear(pidlst);
+	return (rlt);
+}
+
 bool	execute_pipeline(t_tree *parent, t_set *set, t_redir *redir)
 {
 	t_pipes	pipes;
 
+	pipes.status = FIRST_PIPE;
+	pipes.pidlst = NULL;
 	if (pipe(pipes.fd_a) == -1)
 		return (FAILURE);
-	pipes.status = FIRST_PIPE;
 	if (pipe_next_node(parent, &pipes, set, redir) == FAILURE)
-		return (FAILURE);
-	return (SUCCESS);
+		return (free_pidlst(&pipes.pidlst, FAILURE));
+	if (!conclude_pipeline(pipes.pidlst))
+		return (free_pidlst(&pipes.pidlst, FAILURE));
+	return (free_pidlst(&pipes.pidlst, SUCCESS));
 }

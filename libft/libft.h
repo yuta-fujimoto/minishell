@@ -6,7 +6,7 @@
 /*   By: fyuta <fyuta@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/08 22:39:12 by fyuta             #+#    #+#             */
-/*   Updated: 2021/10/05 17:55:51 by jthompso         ###   ########.fr       */
+/*   Updated: 2021/10/20 16:08:04 by jthompso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,12 @@ typedef struct s_env
 	char			*value;
 	struct s_env	*next;
 }	t_env;
+
+typedef struct s_pidlist
+{
+	pid_t				pid;
+	struct s_pidlist	*next;
+}				t_pidlist;
 
 int				ft_atoi(const char *nptr);
 long			ft_atol(const char *nptr, int *flg);
@@ -88,4 +94,10 @@ int				ft_envsize(t_env *env);
 t_env			*ft_find_env_var(t_env *env, char *name);
 int				ft_str_arr_len(char **str_arr);
 void			ft_free_str_arr(char **str_arr);
+t_pidlist		*ft_pidlstnew(pid_t pid);
+int				ft_pidlstsize(t_pidlist *pidlst);
+t_pidlist		*ft_pidlstlast(t_pidlist *pidlst);
+void			ft_pidlstclear(t_pidlist **pidlst);
+bool			ft_pidlstadd_back(t_pidlist **pidlst, t_pidlist *new);
+
 #endif
