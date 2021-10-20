@@ -169,15 +169,15 @@ exec_test '< ls > ls cat'
 exec_test 'echo test > ls < result.log >> lol > f1 ; cat ls lol f1'
 
 # REDIRECTION + PIPING
-exec_test 'ls -la > f1 | grep 2 | echo hey; cat f1'
-exec_test 'ls -la | grep 2 > f1 | echo hey; cat f1'
+exec_test 'ls > i1 | grep i | echo hey; cat i1'
+exec_test 'ls -la | grep i > i1 | echo hey; cat i1'
 exec_test 'echo aaa > a; < a cat | cat'
 exec_test 'echo aaa > a; cat < a | cat'
 exec_test 'echo aaa > a; cat a | cat'
 exec_test 'echo aaa > a; < a cat | grep a'
 exec_test 'echo aaa > a; cat < a | grep a'
 exec_test 'echo aaa > a; cat a | grep a'
-exec_test 'ls -la > f1 | echo hello > lol; cat f1 lol'
+exec_test 'ls > i1 | echo hello > lol; cat i1 lol'
 
 # REDIRECTIONS + EXPANSIONS
 exec_test 'echo $HOME > test; cat test'

@@ -24,12 +24,13 @@ int	exec_cmd_error(char *cmd, char *cmd_path, bool malloc_failure)
 	return (EXIT_FAILURE);
 }
 
-bool	wait_options(pid_t pid)
+bool	wait_options(pid_t pid, bool pipeline)
 {
 	int	wstatus;
 
 	waitpid(pid, &wstatus, 0);
-	if (!WIFEXITED(wstatus) || WEXITSTATUS(wstatus) == REDIRECTION_FAILURE
+	if ((!WIFEXITED(wstatus) && !pipeline)
+		|| WEXITSTATUS(wstatus) == REDIRECTION_FAILURE
 		|| WEXITSTATUS(wstatus) == CHILD_FAILURE)
 		return (false);
 	g_sig_info.exit_status = WEXITSTATUS(wstatus);
