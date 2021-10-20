@@ -30,7 +30,7 @@ bool	ft_exit(char **av, t_set *set)
 	{
 		exit_error(av[1], "numeric argument required");
 		free_set(set);
-		exit(2);
+		exit(255);
 	}
 	if (av[2])
 	{

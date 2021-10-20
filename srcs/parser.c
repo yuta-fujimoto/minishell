@@ -34,7 +34,7 @@ bool	parser(t_tree **set_tree, t_list *lst)
 	if (syntax_error(*set_tree))
 	{
 		ft_putendl_fd("minishell: syntax error", STDERR_FILENO);
-		g_sig_info.exit_status = 2;
+		g_sig_info.exit_status = 258;
 		return (false);
 	}
 	return (true);
