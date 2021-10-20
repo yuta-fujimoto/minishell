@@ -34,11 +34,13 @@ SRCS :=	srcs/main.c \
 		srcs/pipeline/execute_pipeline.c \
 		srcs/pipeline/pipeline_utils.c \
 		srcs/pipeline/run_pipe_cmd.c \
+		srcs/pipeline/run_child.c \
 		srcs/redirection/ms_redirection.c \
 		srcs/redirection/set_redirection.c \
 		srcs/redirection/redirection_handling.c \
 		srcs/redirection/redirection_utils.c \
-		srcs/redirection/open_heredoc.c
+		srcs/redirection/open_heredoc.c \
+		srcs/redirection/create_new_cmd.c
 OBJS := $(SRCS:.c=.o)
 INCS := ./incs
 LIB := libft

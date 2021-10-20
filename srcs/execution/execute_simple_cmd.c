@@ -2,6 +2,13 @@
 
 extern t_sig_info	g_sig_info;
 
+static bool	free_cmd_path(char *cmd_path)
+{
+	free(cmd_path);
+	cmd_path = NULL;
+	return (FAILURE);
+}
+
 static bool	run_gnu_cmd(char **cmd)
 {
 	pid_t		c_pid;
@@ -28,10 +35,14 @@ static bool	run_gnu_cmd(char **cmd)
 	return (SUCCESS);
 }
 
-static char	**create_cmd(t_node *node, t_redir *redir, bool *touch)
+char	**get_cmd(t_node *node, t_redir *redir, bool *touch)
 {
 	if (has_redirection(node))
-		return (ms_redirection(node, redir, touch));
+	{
+		if (!ms_redirection(node, redir))
+			return (NULL);
+		return (create_new_cmd(node, touch));
+	}
 	else
 		return (node->av);
 }
@@ -50,7 +61,7 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 		return (expansion_node_conclude(NULL, FAILURE));
 	if (!exp_node->av)
 		return (expansion_node_conclude(exp_node, SUCCESS));
-	cmd = create_cmd(exp_node, redir, &touch);
+	cmd = get_cmd(exp_node, redir, &touch);
 	if (!cmd && !touch)
 		return (end_redirection(NULL, redir, FAILURE));
 	else if (!touch)
