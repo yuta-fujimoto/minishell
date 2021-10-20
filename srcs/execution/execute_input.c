@@ -16,6 +16,7 @@ bool	execute_input(t_tree *l, t_set *set)
 	t_redir	redir;
 
 	redir.perror = false;
+	redir.new_in = 0;
 	if (!l)
 		return (SUCCESS);
 	else if (l->node.flgs == PIPE)

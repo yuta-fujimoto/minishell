@@ -36,12 +36,9 @@ static bool	pipe_next_node(t_tree *prnt, t_pipes *pps, t_set *set, t_redir *rdr)
 
 static bool	conclude_pipeline(t_pidlist *pidlst)
 {
-//	t_pidlist	*tmp;//change later once working
-
-//	tmp = *pidlst;
 	while (pidlst)
 	{
-		if (!wait_options(pidlst->pid))
+		if (!wait_options(pidlst->pid, true))
 			return (false);
 		pidlst = pidlst->next;
 	}

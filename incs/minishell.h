@@ -164,7 +164,7 @@ void	traverse_tree(t_tree *l, int h);
 void	free_tree(t_tree *l);
 /* tree library */
 
-bool	wait_options(pid_t pid);
+bool	wait_options(pid_t pid, bool pipeline);
 char	*create_cmd_path(char **cmd);
 bool	execute_input(t_tree *l, t_set *set);
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir);

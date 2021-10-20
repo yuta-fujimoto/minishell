@@ -10,12 +10,13 @@ bool	exec_cmd_error(char *cmd, char *cmd_path)
 	return (EXIT_FAILURE);
 }
 
-bool	wait_options(pid_t pid)
+bool	wait_options(pid_t pid, bool pipeline)
 {
 	int	wstatus;
 
 	waitpid(pid, &wstatus, 0);
-	if (!WIFEXITED(wstatus) || WEXITSTATUS(wstatus) == REDIRECTION_FAILURE)
+	if ((!WIFEXITED(wstatus) && !pipeline)
+		|| WEXITSTATUS(wstatus) == REDIRECTION_FAILURE)
 		return (false);
 	return (true);
 }
