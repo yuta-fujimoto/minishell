@@ -26,7 +26,7 @@ static bool	run_gnu_cmd(char **cmd)
 	}
 	else
 	{
-		if (!wait_options(c_pid))
+		if (!wait_options(c_pid, false))
 			return (free_cmd_path(cmd_path));
 		free(cmd_path);
 	}
