@@ -244,6 +244,7 @@ exec_test "export 1AA=A"
 exec_test "export AAA-=A"
 exec_test "export AAA+=A"
 exec_test "cd"
+exec_test "cd ./a b"
 exec_test "cd a b"
 
 rm lol ls a f1 test perm_a perm_b perm_c test_stdout

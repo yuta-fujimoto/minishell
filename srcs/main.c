@@ -23,7 +23,7 @@ void	free_set(t_set *set)
 
 void	sigint_handler(int sigint)
 {
-	g_sig_info.exit_status = sigint + 128;
+	g_sig_info.exit_status = 1;
 	g_sig_info.signal = sigint;
 	if (g_sig_info.heredoc)
 	{
@@ -43,15 +43,8 @@ void	sigint_handler(int sigint)
 	}
 }
 
-void	sigquit_handler(int sigquit)
-{
-	g_sig_info.exit_status = sigquit + 128;
-}
-
 static void	init_sig_handler(void)
 {
-	if (signal(SIGQUIT, sigquit_handler) == SIG_ERR)
-		exit(EXIT_FAILURE);
 	if (signal(SIGINT, sigint_handler) == SIG_ERR)
 		exit(EXIT_FAILURE);
 }
@@ -73,12 +66,20 @@ static void	handle_sigint(t_set *set)
 void	mod_termios_attr(t_set *set, int init)
 {
 	unsigned int	lflag;
+	unsigned char	vquit;
 
 	if (init)
+	{
 		lflag = C_LFLAGS;
+		vquit = false;
+	}
 	else
+	{
 		lflag = set->safe_c_lflag;
+		vquit = set->safe_c_vquit;
+	}
 	set->t.c_lflag = lflag;
+	set->t.c_cc[VQUIT] = vquit;
 	if (isatty(STDIN_FILENO) && tcsetattr(STDIN_FILENO, TCSANOW, &set->t) == SYS_ERROR)
 	{
 		perror(NULL);

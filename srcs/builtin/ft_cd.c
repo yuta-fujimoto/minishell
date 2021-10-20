@@ -102,12 +102,6 @@ int	ft_cd(char **av)
 	g_sig_info.exit_status = EXIT_SUCCESS;
 	if (!av[1])
 		return (ft_cd_env("HOME"));
-	if (av[2])
-	{
-		g_sig_info.exit_status = EXIT_FAILURE;
-		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
-		return (SUCCESS);
-	}
 	if (str_equal(av[1], "-", 2))
 		return (ft_cd_env("OLDPWD"));
 	if (try_absolute_path(av[1], &malloc_success) == SUCCESS)
