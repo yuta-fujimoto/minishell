@@ -1,7 +1,5 @@
 #include "../../incs/minishell.h"
 
-extern t_sig_info	g_sig_info;
-
 bool	is_buildin(char *cmd)
 {
 	if (str_equal(cmd, "export", 7))
@@ -39,7 +37,5 @@ int	run_builtin_cmd(char **av, t_set *set)
 		rlt = ft_cd(av);
 	if (str_equal(av[0], "echo", 5))
 		rlt = ft_echo(av);
-	if (rlt == FAILURE)
-		g_sig_info.exit_status = EXIT_FAILURE;
 	return (rlt);
 }

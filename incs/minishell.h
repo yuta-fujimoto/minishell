@@ -144,6 +144,7 @@ int		add_char_to_word(t_exp *exp, int pos);
 int		add_str_in_quote_to_word(t_exp *exp);
 int		add_var_to_word(t_exp *exp, t_env *env);
 void	add_to_word(t_exp *exp, bool *var_exp, t_env *env);
+char	*get_var_name(t_exp *exp);
 int		eliminate_null_node(t_node *exp_node, t_node *node);
 int		split_argv_by_blank(t_node *node);
 t_node	*expansion_node(t_node *node);

@@ -104,6 +104,7 @@ int	ft_cd(char **av)
 		return (ft_cd_env("HOME"));
 	if (av[2])
 	{
+		g_sig_info.exit_status = EXIT_FAILURE;
 		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
 		return (SUCCESS);
 	}

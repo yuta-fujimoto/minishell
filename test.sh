@@ -91,7 +91,7 @@ fi
 #	exec_test 'export CDPATH=/home:/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD | sort'
 # replace with your minishell path!!
 
-exec_test 'cd'
+
 
 # export TESTS
 exec_test 'export AAA=BBB; env | grep AAA'
@@ -234,13 +234,15 @@ exec_test "cd gdhahahad"
 exec_test "touch perm_a; chmod 355 perm_a; cat perm_a"
 exec_test "touch perm_b; chmod 355 perm_b; < perm_b cat"
 exec_test "touch perm_c; chmod 355 perm_c; perm_c"
-exec_test "ls -la | wtf"
-exec_test "wtf | ls -la"
+exec_test "pwd | wtf"
+exec_test "wtf | pwd"
 exec_test "export AAA"
 exec_test "export AAA=A"
 exec_test "export 1AA"
 exec_test "export 1AA=A"
 exec_test "export AAA-=A"
 exec_test "export AAA+=A"
+exec_test "cd"
+exec_test "cd a b"
 
 rm lol ls a f1 test perm_a perm_b perm_c test_stdout

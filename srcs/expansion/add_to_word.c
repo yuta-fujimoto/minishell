@@ -56,27 +56,6 @@ int	add_word_in_quote_to_word(t_exp *exp)
 	return (SUCCESS);
 }
 
-static char	*get_var_name(t_exp *exp)
-{
-	int		j;
-	char	*var_name;
-
-	j = 1;
-	if (ft_isdigit(exp->word[exp->i + 1]) || exp->word[exp->i + 1] == '?')
-		var_name = ft_substr(exp->word, exp->i + 1, 1);
-	else
-	{
-		while (exp->word[exp->i + j]
-			&& ft_strchr("\'\"+= $", exp->word[exp->i + j]) == NULL)
-			j++;
-		var_name = ft_substr(exp->word, exp->i + 1, j - 1);
-	}
-	if (!var_name)
-		return (NULL);
-	exp->i += ft_strlen(var_name) + 1;
-	return (var_name);
-}
-
 static int	add_exit_status_to_word(t_exp *exp, char *var_name)
 {
 	char	*s_exit_status;

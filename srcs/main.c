@@ -26,7 +26,7 @@ void	sigint_handler(int sigint)
 	g_sig_info.exit_status = sigint + 128;
 	g_sig_info.signal = sigint;
 	if (g_sig_info.heredoc)
-	{	
+	{
 		write(STDOUT_FILENO, "\n", 1);
 		if (isatty(STDIN_FILENO))
 			g_sig_info.term_stdin = ttyname(STDIN_FILENO);
@@ -45,7 +45,7 @@ void	sigint_handler(int sigint)
 
 void	sigquit_handler(int sigquit)
 {
-	g_sig_info.exit_status = 128 + sigquit;
+	g_sig_info.exit_status = sigquit + 128;
 }
 
 static void	init_sig_handler(void)
