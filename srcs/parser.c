@@ -26,16 +26,16 @@ t_tree	*list(t_list **lst)
 	return (tree);
 }
 
-t_tree	*parser(t_list *lst)
+bool	parser(t_tree **set_tree, t_list *lst)
 {
-	t_tree	*tree;
 
-	tree = list(&lst);
-	traverse_tree(tree, 0);
-	if (syntax_error(tree))
+	*set_tree = list(&lst);
+	traverse_tree(*set_tree, 0);
+	if (syntax_error(*set_tree))
 	{
-		ft_putendl_fd("minishell: syntax error", STDOUT_FILENO);
+		ft_putendl_fd("minishell: syntax error", STDERR_FILENO);
 		g_sig_info.exit_status = 2;
+		return (false);
 	}
-	return (tree);
+	return (true);
 }

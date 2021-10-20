@@ -103,6 +103,7 @@ int	main(int ac, char **av)
 {
 	t_set	set;
 	int		ret;
+	bool	is_not_syntax_error;
 
 	(void)ac;
 	(void)av;
@@ -112,8 +113,6 @@ int	main(int ac, char **av)
 	init_termios_attr(&set);
 	while (1)
 	{
-		if (g_sig_info.exit_status == 2)
-			g_sig_info.exit_status = EXIT_SUCCESS;
 		handle_sigint(&set);
 		set.input = readline("minishell > ");
 		g_sig_info.heredoc_sigint = false;
@@ -131,11 +130,11 @@ int	main(int ac, char **av)
 		if (set.lst)
 			ft_lstiter(set.lst, ft_printf);
 		dprintf(fd, "\n====result of parser====\n");
-		set.tree = parser(set.lst);
-		if (g_sig_info.exit_status != 2)
+		is_not_syntax_error = parser(&set.tree, set.lst);
+		if (*set.input)
+			add_history(set.input);
+		if (is_not_syntax_error)
 		{
-			if (*set.input)
-				add_history(set.input);
 			ret = execute_input(set.tree, &set);
 			free_set(&set);
 			if (ret == FAILURE && !g_sig_info.signal)

@@ -131,7 +131,6 @@ void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
 char	*create_path(char *cmd, char **paths);
 int	exec_cmd_error(char *cmd, char *cmd_path, bool malloc_failure);
-bool	free_cmd_path(char *cmd_path);
 bool	str_equal(char *s1, char *s2, size_t n);
 void	print_str(unsigned int i, char *s);
 /* utils */
@@ -156,7 +155,7 @@ int		expansion_node_conclude(t_node *node, int rlt);
 
 t_tree	*command(t_list **lst);
 int		consume(int flgs, t_list **lst);
-t_tree	*parser(t_list *lst);
+bool	parser(t_tree **set_tree, t_list *lst);
 bool	syntax_error(t_tree *tree);
 /* parser */
 

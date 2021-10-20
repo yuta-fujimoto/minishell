@@ -10,7 +10,7 @@ int	exec_cmd_error(char *cmd, char *cmd_path, bool malloc_failure)
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(cmd, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);	
-	if (errno == ENOENT)
+	if (errno == ENOENT || errno == ENOEXEC)
 	{
 		ft_putendl_fd("command not found", STDERR_FILENO);
 		free(cmd_path);
@@ -29,7 +29,8 @@ bool	wait_options(pid_t pid)
 	int	wstatus;
 
 	waitpid(pid, &wstatus, 0);
-	if (!WIFEXITED(wstatus) || WEXITSTATUS(wstatus) == REDIRECTION_FAILURE)
+	if (!WIFEXITED(wstatus) || WEXITSTATUS(wstatus) == REDIRECTION_FAILURE
+		|| WEXITSTATUS(wstatus) == CHILD_FAILURE)
 		return (false);
 	g_sig_info.exit_status = WEXITSTATUS(wstatus);
 	return (true);

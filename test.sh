@@ -211,29 +211,36 @@ exec_test 'cat | ls'
 # exec_test 'echo testing multi ; echo "test 1 ; | and 2" ; cat tests/lorem.txt | grep Lorem'
 
 # # SYNTAX ERROR
-# exec_test ';; test'
-# exec_test '| test'
-# exec_test 'echo > <'
-# exec_test 'echo | |'
-# exec_test '<'
+exec_test ';; test'
+exec_test '| test'
+exec_test 'echo > <'
+exec_test 'echo | |'
+exec_test '<'
 
-# # EXIT
-# exec_test "exit 42"
-# # exec_test "exit 42 53 68"
-# exec_test "exit 259"
-# exec_test "exit 9223372036854775807"
-# exec_test "exit -9223372036854775808"
-# exec_test "exit 9223372036854775808"
-# exec_test "exit -9223372036854775810"
-# exec_test "exit -4"
-# exec_test "exit wrong"
-# exec_test "exit wrong_command"
-# exec_test "gdagadgag"
-# exec_test "ls -Z"
-# exec_test "cd gdhahahad"
-# exec_test "ls -la | wtf"
-exec_test "touch a; chmod 355 a; cat a"
-exec_test "touch b; chmod 355 b; < b cat"
-exec_test "touch c; chmod 355 c; c"
+# EXIT STATUS
+exec_test "exit 42"
+# exec_test "exit 42 53 68"
+exec_test "exit 259"
+exec_test "exit 9223372036854775807"
+exec_test "exit -9223372036854775808"
+exec_test "exit 9223372036854775808"
+exec_test "exit -9223372036854775810"
+exec_test "exit -4"
+exec_test "exit wrong"
+exec_test "exit wrong_command"
+exec_test "gdagadgag"
+exec_test "ls -Z"
+exec_test "cd gdhahahad"
+exec_test "touch perm_a; chmod 355 perm_a; cat perm_a"
+exec_test "touch perm_b; chmod 355 perm_b; < perm_b cat"
+exec_test "touch perm_c; chmod 355 perm_c; perm_c"
+exec_test "ls -la | wtf"
+exec_test "wtf | ls -la"
+exec_test "export AAA"
+exec_test "export AAA=A"
+exec_test "export 1AA"
+exec_test "export 1AA=A"
+exec_test "export AAA-=A"
+exec_test "export AAA+=A"
 
-rm lol ls a f1 test
+rm lol ls a f1 test perm_a perm_b perm_c test_stdout

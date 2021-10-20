@@ -36,6 +36,7 @@ bool	ft_exit(char **av, t_set *set)
 	{
 		exit_error(NULL, "too many arguments");
 		free_set(set);
+		g_sig_info.exit_status = EXIT_FAILURE;
 		return (SUCCESS);
 	}
 	exit(status);
