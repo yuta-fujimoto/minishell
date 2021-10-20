@@ -16,7 +16,7 @@ char	*create_path(char *cmd, char **paths)
 			ft_free_str_arr(paths);
 			return (NULL);
 		}
-		if (stat(abs_path, &ss) == 0)
+		if (stat(abs_path, &ss) == 0 && (ss.st_mode & S_IXUSR))
 			break ;
 		free(abs_path);
 		abs_path = NULL;
