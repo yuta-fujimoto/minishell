@@ -16,7 +16,7 @@
 # include <termios.h>
 # include "../libft/libft.h"
 
-typedef struct	s_exp
+typedef struct s_exp
 {
 	bool	in_dquote;
 	bool	in_squote;
@@ -81,6 +81,14 @@ typedef struct s_sig_info
 	bool	heredoc_sigeof;
 }				t_sig_info;
 
+typedef struct s_pipe_info
+{
+	t_redir	*rdr;
+	char	**cmd;
+	char	*cmd_path;
+	bool	touch;
+}				t_pipe_info;
+
 # define SIGINT_CALL -2
 # define SYS_ERROR -1
 # define SAME 0
@@ -111,6 +119,9 @@ typedef struct s_sig_info
 # define END_PIPE 20
 /* piping */
 
+# define REDIRECTION_FAILURE 21
+/* custom exit statuses */
+
 # define C_LFLAGS 536872335
 /* TERMIOS FLAGS INCLUDING ECHOCTL */
 
@@ -118,7 +129,6 @@ void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
 char	*create_path(char *cmd, char **paths);
 bool	exec_cmd_error(char *cmd, char *cmd_path);
-bool	free_cmd_path(char *cmd_path);
 bool	str_equal(char *s1, char *s2, size_t n);
 void	print_str(unsigned int i, char *s);
 /* utils */
@@ -135,7 +145,8 @@ void	add_to_word(t_exp *exp, bool *var_exp, t_env *env);
 int		eliminate_null_node(t_node *exp_node, t_node *node);
 int		split_argv_by_blank(t_node *node);
 t_node	*expansion_node(t_node *node);
-int		expansion(char **exp_word, char **word, t_env *env, bool *var_expansion);
+int		expansion(char **exp_word, char **word, t_env *env,
+			bool *var_expansion);
 t_node	*expansion_conclude(t_env **env, char *free_s, t_node *exp_node);
 int		expansion_node_conclude(t_node *node, int rlt);
 /* expansion */
@@ -185,24 +196,27 @@ bool	is_buildin(char *cmd);
 int		run_builtin_cmd(char **av, t_set *set);
 /* builtin */
 
-bool	execute_pipeline(t_tree *parent, t_set *set);
-bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set);
+bool	execute_pipeline(t_tree *parent, t_set *set, t_redir *redir);
+bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir);
 bool	pipe_exit_failure(t_pipes *pipes);
 void	update_pipes_status(t_node node, t_pipes *pipes);
 void	swap_fds(t_pipes *pipes);
 void	close_pipes(t_pipes *pipes);
 t_node	decide_cmd_node(t_tree *parent, t_pipes *pipes);
+void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info);
 /* piping */
 
 bool	close_fd(int fd, int rlt);
 bool	reset_stdio_fd(t_redir *redir, int rlt);
-char	**ms_redirection(t_node *node, t_redir *redir, bool *touch);
+bool	ms_redirection(t_node *node, t_redir *redir);
 bool	is_rdir(int str_flg);
 bool	is_open_fd(int fd);
 bool	end_redirection(char **cmd, t_redir *redir, int rlt);
 bool	has_redirection(t_node *node);
 bool	set_redirection(char **cmd, int i, t_redir *redir);
 int		open_heredoc(char *delimiter);
+char	**get_cmd(t_node *node, t_redir *redir, bool *touch);
+char	**create_new_cmd(t_node *node, bool *touch);
 /* redirection */
 
 #endif

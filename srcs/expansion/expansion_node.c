@@ -32,7 +32,7 @@ static t_node	*finish_expansion_node(t_env **env, t_node *exp_node, int ret)
 
 static int	init_exp_node(t_node **exp_node, t_node *node)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	*exp_node = malloc(sizeof(t_node));

@@ -2,7 +2,7 @@
 
 static void	free_node_av(t_node *node)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < node->ac)
@@ -30,7 +30,7 @@ static int	get_new_av_size(t_node *node)
 	return (size);
 }
 
-static bool has_ambiguous_redirect(t_node *exp_node, t_node *node)
+static bool	has_ambiguous_redirect(t_node *exp_node, t_node *node)
 {
 	int	i;
 
@@ -51,8 +51,8 @@ static bool has_ambiguous_redirect(t_node *exp_node, t_node *node)
 
 static void	set_new_av_strflgs(t_node *node, char **new_av, int new_size)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	j = 0;
