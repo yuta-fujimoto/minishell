@@ -69,7 +69,10 @@ static int	add_exit_status_to_word(t_exp *exp, char *var_name)
 	exp->exp_word = ft_strjoin(exp->exp_word, s_exit_status);
 	free(s_exit_status);
 	if (!exp->exp_word)
+	{
+		exp->exp_word = tmp;
 		return (FAILURE);
+	}
 	free(tmp);
 	return (SUCCESS);
 }
