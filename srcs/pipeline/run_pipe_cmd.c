@@ -1,13 +1,34 @@
 #include "../../incs/minishell.h"
 
+static bool	end_pipe(t_node *n, t_pipe_info *p_info, bool aftr_chld, int rlt)
+{
+	if (p_info->cmd_path)
+		free(p_info->cmd_path);
+	if (p_info->cmd && has_redirection(n))
+		free(p_info->cmd);
+	if (aftr_chld)
+	{
+		if (has_redirection(n))
+			rlt = end_redirection(NULL, p_info->rdr, rlt);
+	}
+	return (expansion_node_conclude(n, rlt));
+}
+
+static int	pipe_command_not_found(t_node *n, t_pipe_info *p_info)
+{
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(n->av[0], STDERR_FILENO);
+	ft_putendl_fd(": command not found" , STDERR_FILENO);
+	return (end_pipe(n, p_info, false, SUCCESS));
+}
+
 static int	get_cmd_path(char **new_cmd, char **cmd_path)
 {
 	if (is_buildin(new_cmd[0]))
 		*cmd_path = NULL;
 	else
 	{
-		*cmd_path = create_cmd_path(new_cmd);
-		if (!*cmd_path)
+		if (create_cmd_path(new_cmd, cmd_path) == FAILURE)
 			return (FAILURE);
 	}
 	return (SUCCESS);
@@ -27,20 +48,6 @@ static bool	init_pipe_cmd(t_node *exp_node, t_pipe_info *p_info, t_redir *redir)
 	return (SUCCESS);
 }
 
-static bool	end_pipe(t_node *n, t_pipe_info *p_info, bool aftr_chld, int rlt)
-{
-	if (p_info->cmd_path)
-		free(p_info->cmd_path);
-	if (p_info->cmd && has_redirection(n))
-		free(p_info->cmd);
-	if (aftr_chld)
-	{
-		if (has_redirection(n))
-			rlt = end_redirection(NULL, p_info->rdr, rlt);
-	}
-	return (expansion_node_conclude(n, rlt));
-}
-
 bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 {
 	pid_t		c_pid;
@@ -54,6 +61,8 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 		return (expansion_node_conclude(exp_node, SUCCESS));
 	if (init_pipe_cmd(exp_node, &p_info, redir) == FAILURE)
 		return (end_pipe(exp_node, &p_info, false, FAILURE));
+	if (!p_info.cmd_path && !is_buildin(node.av[0]))
+		return (pipe_command_not_found(exp_node, &p_info));
 	c_pid = fork();
 	if (c_pid < 0)
 		return (end_pipe(exp_node, &p_info, false, FAILURE));

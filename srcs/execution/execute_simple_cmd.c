@@ -7,15 +7,24 @@ static bool	free_cmd_path(char *cmd_path)
 	return (FAILURE);
 }
 
+static int	command_not_found(char *cmd)
+{
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(cmd, STDERR_FILENO);
+	ft_putendl_fd(": command not found" , STDERR_FILENO);
+	return (SUCCESS);
+}
+
 static bool	run_gnu_cmd(char **cmd)
 {
 	pid_t		c_pid;
 	char		*cmd_path;
 	extern char	**environ;
 
-	cmd_path = create_cmd_path(cmd);
-	if (!cmd_path)
+	if (create_cmd_path(cmd, &cmd_path) == FAILURE)
 		return (FAILURE);
+	if (!cmd_path)
+		return (command_not_found(cmd[0]));
 	c_pid = fork();
 	if (c_pid == SYS_ERROR)
 		return (free_cmd_path(cmd_path));
@@ -61,7 +70,10 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 		return (expansion_node_conclude(exp_node, SUCCESS));
 	cmd = get_cmd(exp_node, redir, &touch);
 	if (!cmd && !touch)
+	{
+		expansion_node_conclude(exp_node, FAILURE);
 		return (end_redirection(NULL, redir, FAILURE));
+	}
 	else if (!touch)
 	{
 		if (is_buildin(cmd[0]))

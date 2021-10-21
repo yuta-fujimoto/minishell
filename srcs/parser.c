@@ -31,6 +31,6 @@ t_tree	*parser(t_list *lst)
 	tree = list(&lst);
 	traverse_tree(tree, 0);
 	if (syntax_error(tree))
-		write(2, "syntax error\n", 13);
+		ft_putendl_fd("syntax error", STDERR_FILENO);
 	return (tree);
 }
