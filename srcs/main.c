@@ -1,7 +1,7 @@
 #include "../incs/minishell.h"
 
 int			fd;
-t_sig_info	g_sig_info = {0, false, NULL, false, false};
+t_sig_info	g_sig_info = {0, false, NULL, false, false, 0};
 
 void	ft_printf(void *word)
 {
@@ -23,9 +23,10 @@ void	free_set(t_set *set)
 
 void	sigint_handler(int sigint)
 {
+	g_sig_info.exit_status = 1;
 	g_sig_info.signal = sigint;
 	if (g_sig_info.heredoc)
-	{	
+	{
 		write(STDOUT_FILENO, "\n", 1);
 		if (isatty(STDIN_FILENO))
 			g_sig_info.term_stdin = ttyname(STDIN_FILENO);
@@ -88,6 +89,7 @@ void	mod_termios_attr(t_set *set, int init)
 
 static void	init_termios_attr(t_set *set)
 {
+	g_sig_info.exit_status = EXIT_SUCCESS;
 	if (isatty(STDIN_FILENO) && tcgetattr(STDIN_FILENO, &set->t) == SYS_ERROR)
 	{
 		perror(NULL);
@@ -101,7 +103,8 @@ static void	init_termios_attr(t_set *set)
 int	main(int ac, char **av)
 {
 	t_set	set;
-	int		ret;	
+	int		ret;
+	bool	is_not_syntax_error;
 
 	(void)ac;
 	(void)av;
@@ -110,7 +113,7 @@ int	main(int ac, char **av)
 	init_sig_handler();
 	init_termios_attr(&set);
 	while (1)
-	{	
+	{
 		handle_sigint(&set);
 		set.input = readline("minishell > ");
 		g_sig_info.heredoc_sigint = false;
@@ -120,7 +123,7 @@ int	main(int ac, char **av)
 			mod_termios_attr(&set, false);
 			ft_putstr_fd("\033[Aminishell > ", STDOUT_FILENO);
 			ft_putendl_fd("exit", STDERR_FILENO);
-			exit(EXIT_SUCCESS);
+			exit(g_sig_info.exit_status);
 		}
 		set.lst = lexar(set.input);
 		dprintf(fd, "\ninput >> %s\n", set.input);
@@ -128,15 +131,20 @@ int	main(int ac, char **av)
 		if (set.lst)
 			ft_lstiter(set.lst, ft_printf);
 		dprintf(fd, "\n====result of parser====\n");
-		set.tree = parser(set.lst);
+		is_not_syntax_error = parser(&set.tree, set.lst);
 		if (*set.input)
 			add_history(set.input);
-		ret = execute_input(set.tree, &set);
-		free_set(&set);
-		if (ret == FAILURE && !g_sig_info.signal)
+		if (is_not_syntax_error)
 		{
-			mod_termios_attr(&set, false);
-			exit(EXIT_FAILURE);
+			ret = execute_input(set.tree, &set);
+			free_set(&set);
+			if (ret == FAILURE && !g_sig_info.signal)
+			{
+				mod_termios_attr(&set, false);
+				exit(EXIT_FAILURE);
+			}
 		}
+		else
+			free_set(&set);
 	}
 }

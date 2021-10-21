@@ -51,6 +51,7 @@ static bool	check_new_fd(char *filename, t_redir *redir)
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(filename, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
+	g_sig_info.exit_status = EXIT_FAILURE;
 	perror(NULL);
 	return (false);
 }

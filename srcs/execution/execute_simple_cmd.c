@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 static bool	free_cmd_path(char *cmd_path)
 {
 	free(cmd_path);
@@ -22,7 +24,7 @@ static bool	run_gnu_cmd(char **cmd)
 	else if (c_pid == 0)
 	{
 		if (execve(cmd_path, cmd, environ) == SYS_ERROR)
-			exit(exec_cmd_error(cmd[0], cmd_path));
+			exit(exec_cmd_error(cmd[0], cmd_path, false));
 	}
 	else
 	{

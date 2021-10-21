@@ -75,6 +75,7 @@ typedef struct s_redir
 
 typedef struct s_sig_info
 {
+	int		exit_status;
 	int		signal;
 	bool	heredoc;
 	char	*term_stdin;
@@ -92,6 +93,7 @@ typedef struct s_pipe_info
 
 # define SIGINT_CALL -2
 # define SYS_ERROR -1
+# define CHILD_FAILURE -1
 # define SAME 0
 # define FAILURE 1
 # define SUCCESS 0
@@ -129,7 +131,7 @@ typedef struct s_pipe_info
 void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
 char	*create_path(char *cmd, char **paths);
-bool	exec_cmd_error(char *cmd, char *cmd_path);
+int	exec_cmd_error(char *cmd, char *cmd_path, bool malloc_failure);
 bool	str_equal(char *s1, char *s2, size_t n);
 void	print_str(unsigned int i, char *s);
 /* utils */
@@ -143,6 +145,7 @@ int		add_char_to_word(t_exp *exp, int pos);
 int		add_str_in_quote_to_word(t_exp *exp);
 int		add_var_to_word(t_exp *exp, t_env *env);
 void	add_to_word(t_exp *exp, bool *var_exp, t_env *env);
+char	*get_var_name(t_exp *exp);
 int		eliminate_null_node(t_node *exp_node, t_node *node);
 int		split_argv_by_blank(t_node *node);
 t_node	*expansion_node(t_node *node);
@@ -154,7 +157,7 @@ int		expansion_node_conclude(t_node *node, int rlt);
 
 t_tree	*command(t_list **lst);
 int		consume(int flgs, t_list **lst);
-t_tree	*parser(t_list *lst);
+bool	parser(t_tree **set_tree, t_list *lst);
 bool	syntax_error(t_tree *tree);
 /* parser */
 
