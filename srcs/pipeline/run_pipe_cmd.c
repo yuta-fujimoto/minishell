@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 static bool	end_pipe(t_node *n, t_pipe_info *p_info, bool aftr_chld, int rlt)
 {
 	if (p_info->cmd_path)
@@ -19,6 +21,7 @@ static int	pipe_command_not_found(t_node *n, t_pipe_info *p_info)
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(n->av[0], STDERR_FILENO);
 	ft_putendl_fd(": command not found" , STDERR_FILENO);
+	g_sig_info.exit_status = 127;
 	return (end_pipe(n, p_info, false, SUCCESS));
 }
 

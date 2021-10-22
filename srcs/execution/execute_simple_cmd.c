@@ -14,6 +14,7 @@ static int	command_not_found(char *cmd)
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(cmd, STDERR_FILENO);
 	ft_putendl_fd(": command not found" , STDERR_FILENO);
+	g_sig_info.exit_status = 127;
 	return (SUCCESS);
 }
 
