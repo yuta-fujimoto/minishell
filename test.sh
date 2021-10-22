@@ -89,8 +89,7 @@ fi
 #	exec_test 'export CDPATH=/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD | sort' 
 #	exec_test 'export CDPATH=/home:/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD | sort'
 # replace with your minishell path!!
-
-exec_test 'cd'
+exec_test 'mkdir dir; ln -s dir sdir; cd sdir; pwd; cd ..; rmdir dir; rm sdir'
 
 # export TESTS
 exec_test 'export AAA=BBB; env | grep AAA'

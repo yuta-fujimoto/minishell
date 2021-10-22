@@ -11,10 +11,10 @@ char	*get_available_path(char *pathname, bool *print_path)
 	if (str_equal(pathname, ".", 2) || str_equal(pathname, "./", 2)
 		|| str_equal(pathname, "../", 3)
 		|| str_equal(pathname, "..", 3))
-		return (absolute_path(pathname));
+		return (canonical_path(absolute_path(pathname)));
 	env_cdpath = getenv("CDPATH");
 	if (!env_cdpath)
-		return (absolute_path(pathname));
+		return (canonical_path(absolute_path(pathname)));
 	cdpaths = ft_split(env_cdpath, ':');
 	if (!cdpaths)
 		return (NULL);
@@ -33,7 +33,7 @@ int	try_absolute_path(char *input, bool *malloc_success)
 
 	print_path = false;
 	pathname = get_available_path(input, &print_path);
-	if (!pathname)
+	if (!pathname && errno != ENOENT)
 		return (FAILURE);
 	if (chdir(pathname) == SYS_ERROR)
 	{
@@ -43,8 +43,7 @@ int	try_absolute_path(char *input, bool *malloc_success)
 	}
 	if (print_path)
 		ft_putendl_fd(pathname, STDOUT_FILENO);
-	free(pathname);
-	return (set_working_directory(get_current_directory()));
+	return (set_working_directory(pathname));
 }
 
 int	try_verbatim_path(char *input, bool *malloc_success)
@@ -89,7 +88,7 @@ int	ft_cd_env(char *env)
 		return (cd_error(pathname));
 	if (str_equal(env, "OLDPWD", 7))
 		ft_putendl_fd(pathname, STDOUT_FILENO);
-	return (set_working_directory(get_current_directory()));
+	return (set_working_directory(canonical_path(ft_strdup(pathname))));
 }
 
 int	ft_cd(char **av)

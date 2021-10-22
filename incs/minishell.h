@@ -185,6 +185,7 @@ char	*get_name(char *s);
 int		set_working_directory(char *pathname);
 char	*absolute_path(char *pathname);
 int		cd_error(char *pathname);
+char	*canonical_path(char *pathname);
 char	*update_environ_value(t_env *env, char *value);
 int		ft_cd(char **av);
 int		ft_echo(char **av);
