@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 static bool	pipe_node(t_tree *prnt, t_pipes *pps, t_set *set, t_redir *rdr)
 {
 	t_node	node;
@@ -38,7 +40,9 @@ static bool	conclude_pipeline(t_pidlist *pidlst)
 {
 	while (pidlst)
 	{
-		if (!wait_options(pidlst->pid, true))
+		if (pidlst->pid == 0)
+			g_sig_info.exit_status = 127;
+		else if (!wait_options(pidlst->pid, true))
 			return (false);
 		pidlst = pidlst->next;
 	}
