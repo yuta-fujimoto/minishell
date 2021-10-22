@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 int	add_char_to_word(t_exp *exp, int pos)
 {
 	char	*new_word;
@@ -54,25 +56,25 @@ int	add_word_in_quote_to_word(t_exp *exp)
 	return (SUCCESS);
 }
 
-static char	*get_var_name(t_exp *exp)
+static int	add_exit_status_to_word(t_exp *exp, char *var_name)
 {
-	int		j;
-	char	*var_name;
+	char	*s_exit_status;
+	char	*tmp;
 
-	j = 1;
-	if (ft_isdigit(exp->word[exp->i + 1]) || exp->word[exp->i + 1] == '?')
-		var_name = ft_substr(exp->word, exp->i + 1, 1);
-	else
+	free(var_name);
+	s_exit_status = ft_itoa(g_sig_info.exit_status);
+	if (!s_exit_status)
+		return (FAILURE);
+	tmp = exp->exp_word;
+	exp->exp_word = ft_strjoin(exp->exp_word, s_exit_status);
+	free(s_exit_status);
+	if (!exp->exp_word)
 	{
-		while (exp->word[exp->i + j]
-			&& ft_strchr("\'\"+= $", exp->word[exp->i + j]) == NULL)
-			j++;
-		var_name = ft_substr(exp->word, exp->i + 1, j - 1);
+		exp->exp_word = tmp;
+		return (FAILURE);
 	}
-	if (!var_name)
-		return (NULL);
-	exp->i += ft_strlen(var_name) + 1;
-	return (var_name);
+	free(tmp);
+	return (SUCCESS);
 }
 
 int	add_var_to_word(t_exp *exp, t_env *env)
@@ -89,6 +91,8 @@ int	add_var_to_word(t_exp *exp, t_env *env)
 		free(var_name);
 		return (add_char_to_word(exp, 0));
 	}
+	if (str_equal(var_name, "?", 2))
+		return (add_exit_status_to_word(exp, var_name));
 	env_var = ft_find_env_var(env, var_name);
 	free(var_name);
 	if (!env_var)

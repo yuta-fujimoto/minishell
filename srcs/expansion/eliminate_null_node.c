@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 static void	free_node_av(t_node *node)
 {
 	int	i;
@@ -39,6 +41,7 @@ static bool	has_ambiguous_redirect(t_node *exp_node, t_node *node)
 	{
 		if (exp_node->av[i] == NULL && is_rdir(exp_node->str_flgs[i - 1]))
 		{
+			g_sig_info.exit_status = EXIT_FAILURE;
 			ft_putstr_fd("minishell: ", STDERR_FILENO);
 			ft_putstr_fd(node->av[i], STDERR_FILENO);
 			ft_putendl_fd(": ambiguous redirect", STDERR_FILENO);

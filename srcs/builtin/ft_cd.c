@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 char	*get_available_path(char *pathname, bool *print_path)
 {
 	char	*newpath;
@@ -98,13 +100,9 @@ int	ft_cd(char **av)
 	bool	malloc_success;
 
 	malloc_success = false;
+	g_sig_info.exit_status = EXIT_SUCCESS;
 	if (!av[1])
 		return (ft_cd_env("HOME"));
-	if (av[2])
-	{
-		ft_putendl_fd("minishell: cd: too many arguments", STDERR_FILENO);
-		return (SUCCESS);
-	}
 	if (str_equal(av[1], "-", 2))
 		return (ft_cd_env("OLDPWD"));
 	if (try_absolute_path(av[1], &malloc_success) == SUCCESS)

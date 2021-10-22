@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 char	*get_current_directory(void)
 {
 	char	*p;
@@ -18,6 +20,7 @@ int	ft_pwd(void)
 {
 	char	*pathname;
 
+	g_sig_info.exit_status = EXIT_SUCCESS;
 	pathname = get_current_directory();
 	if (pathname)
 	{
@@ -25,6 +28,7 @@ int	ft_pwd(void)
 		free(pathname);
 		return (SUCCESS);
 	}
+	g_sig_info.exit_status = EXIT_FAILURE;
 	if (errno == ENOENT)
 	{
 		perror("minishell: pwd");

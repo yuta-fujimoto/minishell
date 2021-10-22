@@ -1,10 +1,16 @@
 #include "../../incs/minishell.h"
 
-int	ft_export_end(t_env *env, int rlt)
+extern t_sig_info	g_sig_info;
+
+int	ft_export_end(t_env *env, int rlt, int type)
 {
 	if (list_to_environ(env) == FAILURE)
 		rlt = FAILURE;
 	ft_envclear(&env, free);
+	if (type == ERROR)
+		g_sig_info.exit_status = EXIT_FAILURE;
+	else
+		g_sig_info.exit_status = EXIT_SUCCESS;
 	return (rlt);
 }
 
@@ -32,7 +38,7 @@ int	ft_export_print(t_env *env)
 		i++;
 	}
 	print_name_value(tmp);
-	return (ft_export_end(env, SUCCESS));
+	return (ft_export_end(env, SUCCESS, NOTHING));
 }
 
 int	ft_export_update(char *s, t_env **env)
@@ -100,10 +106,10 @@ int	ft_export(char **av)
 		if (type == ERROR)
 			ft_export_error(*av);
 		else if (type == UPDATE && ft_export_update(*av, &env) == FAILURE)
-			return (ft_export_end(env, FAILURE));
+			return (ft_export_end(env, FAILURE, type));
 		else if (type == ADD && ft_export_add(*av, &env) == FAILURE)
-			return (ft_export_end(env, FAILURE));
+			return (ft_export_end(env, FAILURE, type));
 		av++;
 	}
-	return (ft_export_end(env, SUCCESS));
+	return (ft_export_end(env, SUCCESS, type));
 }

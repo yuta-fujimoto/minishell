@@ -19,7 +19,7 @@ long	ft_atol(const char *nptr, int *flg)
 	{
 		if (j > LONG_MAX / 10 || (j == LONG_MAX / 10
 				&& (nptr[i] - '0') > LONG_MAX % 10)
-			|| j < INT_MIN / 10 || (j == INT_MIN / 10
+			|| j < LONG_MIN / 10 || (j == LONG_MIN / 10
 				&& (nptr[i] - '0') > (INT_MIN % 10) * (-1)))
 			*flg = 1;
 		j = j * 10 + (nptr[i++] - '0') * minus;
