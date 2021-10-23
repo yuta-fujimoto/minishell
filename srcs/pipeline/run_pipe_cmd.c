@@ -46,6 +46,8 @@ static bool	init_pipe_cmd(t_node *exp_node, t_pipe_info *p_info, t_redir *redir)
 		p_info->cmd = exp_node->av;
 	if (!p_info->cmd && !p_info->touch && has_redirection(exp_node))
 		return (FAILURE);
+	if (!p_info->cmd)
+		return (SUCCESS);
 	if (get_cmd_path(p_info->cmd, &p_info->cmd_path) == FAILURE)
 		return (FAILURE);
 	return (SUCCESS);
@@ -64,7 +66,7 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 		return (expansion_node_conclude(exp_node, SUCCESS));
 	if (init_pipe_cmd(exp_node, &p_info, redir) == FAILURE)
 		return (end_pipe(exp_node, &p_info, FAILURE));
-	if (!p_info.cmd_path && !is_buildin(node.av[0]))
+	if (!p_info.cmd_path && !is_buildin(node.av[0]) && !p_info.touch)
 		return (pipe_command_not_found(exp_node, &p_info, pipes));
 	c_pid = fork();
 	if (c_pid < 0)
