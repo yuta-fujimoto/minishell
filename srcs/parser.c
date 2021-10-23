@@ -28,7 +28,6 @@ t_tree	*list(t_list **lst)
 
 bool	parser(t_tree **set_tree, t_list *lst)
 {
-
 	*set_tree = list(&lst);
 	traverse_tree(*set_tree, 0);
 	if (syntax_error(*set_tree))

@@ -9,13 +9,7 @@ int	exec_cmd_error(char *cmd, char *cmd_path, bool malloc_failure)
 		return (CHILD_FAILURE);
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(cmd, STDERR_FILENO);
-	ft_putstr_fd(": ", STDERR_FILENO);	
-	if (errno == ENOENT || errno == ENOEXEC)
-	{
-		ft_putendl_fd("command not found", STDERR_FILENO);
-		free(cmd_path);
-		return (127);
-	}
+	ft_putstr_fd(": ", STDERR_FILENO);
 	perror(NULL);
 	free(cmd_path);
 	cmd_path = NULL;

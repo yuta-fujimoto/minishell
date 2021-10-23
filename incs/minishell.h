@@ -97,19 +97,19 @@ typedef struct s_pipe_info
 # define SAME 0
 # define FAILURE 1
 # define SUCCESS 0
-# define STR 0
-# define RDIR 1
-# define RRDIR 2
-# define LDIR 3
-# define LLDIR 4
-# define SQUOTE 7
-# define DQUOTE 8
-# define PIPE 9
-# define DPIPE 10 
-# define AND 11
-# define DAND 12
-# define SCOLON 13
-# define STR_VAL 14
+# define STR 1
+# define RDIR 2
+# define RRDIR 3
+# define LDIR 4
+# define LLDIR 5
+# define SQUOTE 6
+# define DQUOTE 7
+# define PIPE 8
+# define DPIPE 9 
+# define AND 10
+# define DAND 11
+# define SCOLON 12
+# define STR_VAL 13
 
 # define ADD 14
 # define UPDATE 15
@@ -130,8 +130,8 @@ typedef struct s_pipe_info
 
 void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
-char	*create_path(char *cmd, char **paths);
-int	exec_cmd_error(char *cmd, char *cmd_path, bool malloc_failure);
+int		create_path(char *cmd, char **paths, char **cmd_path);
+int		exec_cmd_error(char *cmd, char *cmd_path, bool malloc_failure);
 bool	str_equal(char *s1, char *s2, size_t n);
 void	print_str(unsigned int i, char *s);
 /* utils */
@@ -168,7 +168,7 @@ void	free_tree(t_tree *l);
 /* tree library */
 
 bool	wait_options(pid_t pid, bool pipeline);
-char	*create_cmd_path(char **cmd);
+int		create_cmd_path(char **cmd, char **cmd_path);
 bool	execute_input(t_tree *l, t_set *set);
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir);
 void	mod_termios_attr(t_set *set, int init);

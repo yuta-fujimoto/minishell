@@ -1,6 +1,6 @@
 #include "../incs/minishell.h"
 
-char	*create_path(char *cmd, char **paths)
+int	create_path(char *cmd, char **paths, char **cmd_path)
 {
 	char		*abs_path;
 	int			i;
@@ -14,7 +14,7 @@ char	*create_path(char *cmd, char **paths)
 		if (!abs_path)
 		{
 			ft_free_str_arr(paths);
-			return (NULL);
+			return (FAILURE);
 		}
 		if (stat(abs_path, &ss) == 0 && (ss.st_mode & S_IXUSR))
 			break ;
@@ -23,9 +23,8 @@ char	*create_path(char *cmd, char **paths)
 		i++;
 	}
 	ft_free_str_arr(paths);
-	if (!abs_path)
-		return (ft_strdup(cmd));
-	return (abs_path);
+	*cmd_path = abs_path;
+	return (SUCCESS);
 }
 
 bool	str_equal(char *s1, char *s2, size_t n)

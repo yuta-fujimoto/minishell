@@ -20,9 +20,10 @@ char	*get_available_path(char *pathname, bool *print_path)
 	cdpaths = ft_split(env_cdpath, ':');
 	if (!cdpaths)
 		return (NULL);
-	newpath = create_path(pathname, cdpaths);
-	if (!newpath)
+	if (create_path(pathname, cdpaths, &newpath) == FAILURE)
 		return (NULL);
+	if (!newpath)
+		return (ft_strdup(pathname));
 	if (!str_equal(pathname, newpath, ft_strlen(pathname) + 1))
 		*print_path = true;
 	return (newpath);
