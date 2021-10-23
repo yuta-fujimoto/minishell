@@ -1,0 +1,32 @@
+
+input >> cat result.log > a | cat
+
+====result of lexar====
+[cat]
+[result.log]
+[>]
+[a]
+[|]
+[cat]
+
+====result of parser====
+	1 4 >> [cat][result.log][>][a]
+8 0 >> 
+	1 1 >> [cat]
+
+input >> cat a
+
+====result of lexar====
+[cat]
+[a]
+
+====result of parser====
+1 2 >> [cat][a]
+
+input >> exit
+
+====result of lexar====
+[exit]
+
+====result of parser====
+1 1 >> [exit]
