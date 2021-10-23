@@ -46,7 +46,7 @@ static bool	init_pipe_cmd(t_node *exp_node, t_pipe_info *p_info, t_redir *redir)
 		p_info->cmd = exp_node->av;
 	if (!p_info->cmd && !p_info->touch && has_redirection(exp_node))
 		return (FAILURE);
-	if (!p_info->cmd)
+	if (p_info->touch)
 		return (SUCCESS);
 	if (get_cmd_path(p_info->cmd, &p_info->cmd_path) == FAILURE)
 		return (FAILURE);
