@@ -157,13 +157,12 @@ int		expansion_node_conclude(t_node *node, int rlt);
 
 t_tree	*command(t_list **lst);
 int		consume(int flgs, t_list **lst);
-bool	parser(t_tree **set_tree, t_list *lst);
+bool	parser(t_set *set);
 bool	syntax_error(t_tree *tree);
 /* parser */
 
 t_tree	*new_tree_cmd(t_node node);
 t_tree	*new_tree(int flgs, t_tree *left, t_tree *right);
-void	traverse_tree(t_tree *l, int h);
 void	free_tree(t_tree *l);
 /* tree library */
 

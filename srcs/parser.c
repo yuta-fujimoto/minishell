@@ -2,35 +2,53 @@
 
 extern t_sig_info	g_sig_info;
 
-t_tree	*pipeline(t_list **lst)
+static t_tree	*pipeline(t_list **lst)
 {
 	t_tree	*tree;
 
 	if (!lst || !*lst)
 		return (NULL);
 	tree = command(lst);
+	if (!tree)
+		return (NULL);
 	if (consume(PIPE, lst))
 		return (new_tree(PIPE, tree, pipeline(lst)));
 	return (tree);
 }
 
-t_tree	*list(t_list **lst)
+static t_tree	*list(t_list **lst)
 {
 	t_tree	*tree;
 
 	if (!lst || !*lst)
 		return (NULL);
 	tree = pipeline(lst);
+	if (!tree)
+		return (NULL);
 	if (consume(SCOLON, lst))
 		return (new_tree(SCOLON, tree, list(lst)));
 	return (tree);
 }
 
-bool	parser(t_tree **set_tree, t_list *lst)
+bool	parser(t_set *set)
 {
-	*set_tree = list(&lst);
-	traverse_tree(*set_tree, 0);
-	if (syntax_error(*set_tree))
+	t_list	*lst;
+
+	lst = set->lst;
+	if (!set->lst)
+	{
+		set->tree = NULL;
+		return (true);
+	}
+	set->tree = list(&lst);
+	if (!set->tree)
+	{
+		ft_putendl_fd("minishell:error", STDERR_FILENO);
+		ft_lstclear(&set->lst, free);
+		free(set->input);
+		exit(EXIT_FAILURE);
+	}
+	if (syntax_error(set->tree))
 	{
 		ft_putendl_fd("minishell: syntax error", STDERR_FILENO);
 		g_sig_info.exit_status = 258;

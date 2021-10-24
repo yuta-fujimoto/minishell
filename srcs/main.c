@@ -131,7 +131,7 @@ int	main(int ac, char **av)
 		if (set.lst)
 			ft_lstiter(set.lst, ft_printf);
 		dprintf(fd, "\n====result of parser====\n");
-		is_not_syntax_error = parser(&set.tree, set.lst);
+		is_not_syntax_error = parser(&set);
 		if (*set.input)
 			add_history(set.input);
 		if (is_not_syntax_error)
