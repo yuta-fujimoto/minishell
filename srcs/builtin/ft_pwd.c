@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 static char	*logical_getcwd(void)
 {
 	struct stat	st1;

@@ -80,6 +80,7 @@ else
 	exec_test 'cd /Users ; pwd; env | grep PWD | sort'
 fi
 exec_test 'cd ; pwd; env | grep PWD | sort'
+exec_test 'cd . ;cd -; pwd; env | grep PWD | sort'
 exec_test 'mkdir test_dir ; cd test_dir ; rm -rf ../test_dir ; cd . ; pwd ; cd . ; pwd ; cd .. ; pwd ; env | grep PWD | sort'
 exec_test 'cd fdfddffdfdfdff'
 # exec_test 'cd ./; unset OLDPWD ;cd ./; env | grep PWD' fix later,,,,,
@@ -90,7 +91,7 @@ fi
 #	exec_test 'export CDPATH=/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD | sort' 
 #	exec_test 'export CDPATH=/home:/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD | sort'
 # replace with your minishell path!!
-exec_test 'mkdir dir; ln -s dir sdir; cd sdir; pwd; cd ..; rmdir dir; rm sdir'
+exec_test 'mkdir dir; ln -s dir sdir; cd sdir; pwd; cd ..; rmdir dir; env | grep PWD | sort; rm sdir'
 
 # export TESTS
 exec_test 'export AAA=BBB; env | grep AAA'
