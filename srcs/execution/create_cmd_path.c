@@ -11,19 +11,23 @@ static char	**find_paths(void)
 	return (paths);
 }
 
-char	*create_cmd_path(char **cmd)
+int	create_cmd_path(char **cmd, char **cmd_path)
 {
 	char	**paths;
-	char	*cmd_path;
 
-	if (cmd[0][0] != '/')
+	if (ft_strchr(cmd[0], '/') == NULL)
 	{
 		paths = find_paths();
 		if (!paths)
-			return (NULL);
-		cmd_path = create_path(cmd[0], paths);
+			return (FAILURE);
+		if (create_path(cmd[0], paths, cmd_path) == FAILURE) 
+			return (FAILURE);
 	}
 	else
-		cmd_path = ft_strdup(cmd[0]);
-	return (cmd_path);
+	{
+		*cmd_path = ft_strdup(cmd[0]);
+		if (!*cmd_path)
+			return (FAILURE);
+	}
+	return (SUCCESS);
 }

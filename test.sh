@@ -27,12 +27,13 @@ function exec_test()
 {
 	echo "command : "$@ >> test_error.log
 	echo ">>> MINISHELL" >>test_error.log
-	TEST1=$(echo $@ "; exit" | ./minishell 2>>test_error.log | grep -v "minishell >")
+	echo $@ "; exit" | ./minishell 2>>test_error.log > test_stdout
 	ES_1=$?
+	TEST1=$(cat test_stdout | grep -v "minishell >")
 	echo ">>> BASH" >>test_error.log
 	TEST2=$(echo $@ "; exit" | bash 2>>test_error.log)
-	echo >>test_error.log
 	ES_2=$?
+	echo >>test_error.log
 	if [ "$TEST1" == "$TEST2" ] && [ "$ES_1" == "$ES_2" ]; then
 		printf " $BOLDGREEN%s$RESET" "✓ "
 	else
@@ -209,26 +210,40 @@ exec_test 'cat | ls'
 # exec_test 'echo testing multi ; echo "test 1 ; | and 2" ; cat tests/lorem.txt | grep Lorem'
 
 # # SYNTAX ERROR
-# exec_test ';; test'
-# exec_test '| test'
-# exec_test 'echo > <'
-# exec_test 'echo | |'
-# exec_test '<'
+exec_test ';; test'
+exec_test '| test'
+exec_test 'echo > <'
+exec_test 'echo | |'
+exec_test '<'
 
-# # EXIT
-# exec_test "exit 42"
+# EXIT STATUS
+exec_test "exit 42"
 # exec_test "exit 42 53 68"
-# exec_test "exit 259"
-# exec_test "exit 9223372036854775807"
-# exec_test "exit -9223372036854775808"
-# exec_test "exit 9223372036854775808"
-# exec_test "exit -9223372036854775810"
-# exec_test "exit -4"
-# exec_test "exit wrong"
-# exec_test "exit wrong_command"
-# exec_test "gdagadgag"
-# exec_test "ls -Z"
-# exec_test "cd gdhahahad"
-# exec_test "ls -la | wtf"
+exec_test "exit 259"
+exec_test "exit 9223372036854775807"
+exec_test "exit -9223372036854775808"
+exec_test "exit 9223372036854775808"
+exec_test "exit -9223372036854775810"
+exec_test "exit -4"
+exec_test "exit wrong"
+exec_test "exit wrong_command"
+exec_test "gdagadgag"
+exec_test "ls -Z"
+exec_test "cd gdhahahad"
+exec_test "touch perm_a; chmod 355 perm_a; cat perm_a"
+exec_test "touch perm_b; chmod 355 perm_b; < perm_b cat"
+exec_test "touch perm_c; chmod 355 perm_c; perm_c"
+exec_test "< nofile cat"
+exec_test "pwd | wtf"
+exec_test "wtf | pwd"
+exec_test "export AAA"
+exec_test "export AAA=A"
+exec_test "export 1AA"
+exec_test "export 1AA=A"
+exec_test "export AAA-=A"
+exec_test "export AAA+=A"
+exec_test "cd"
+exec_test "cd ./a b"
+exec_test "cd a b"
 
-rm lol ls a f1 i1 test
+rm lol ls a f1 test perm_a perm_b perm_c test_stdout i1

@@ -38,9 +38,9 @@ void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info)
 	if (is_buildin(p_info->cmd[0]))
 	{
 		if (run_builtin_cmd(p_info->cmd, set) == FAILURE)
-			exit(exec_cmd_error(p_info->cmd[0], NULL));
+			exit(exec_cmd_error(p_info->cmd[0], NULL, true));
 		exit(EXIT_SUCCESS);
 	}
 	else if (execve(p_info->cmd_path, p_info->cmd, environ) == SYS_ERROR)
-		exit(exec_cmd_error(p_info->cmd[0], NULL));
+		exit(exec_cmd_error(p_info->cmd[0], NULL, false));
 }

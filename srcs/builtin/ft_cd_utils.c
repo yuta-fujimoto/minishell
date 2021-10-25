@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 int	ft_cd_end(char *tmp, t_env **env, int ret_val)
 {
 	if (tmp)
@@ -18,6 +20,7 @@ int	cd_error(char *pathname)
 		return (FAILURE);
 	perror(err);
 	free(err);
+	g_sig_info.exit_status = EXIT_FAILURE;
 	return (SUCCESS);
 }
 
