@@ -15,7 +15,7 @@ int	cd_error(char *pathname)
 {
 	char	*err;
 
-	err = ft_strjoin("minishell: cd ", pathname);
+	err = ft_strjoin("minishell: cd: ", pathname);
 	if (!err)
 		return (FAILURE);
 	perror(err);
