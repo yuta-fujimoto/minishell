@@ -2,7 +2,7 @@
 
 extern t_sig_info	g_sig_info;
 
-char	*get_available_path(char *pathname, bool *print_path)
+static char	*get_available_path(char *pathname, bool *print_path)
 {
 	char	*newpath;
 	char	**cdpaths;
@@ -29,7 +29,7 @@ char	*get_available_path(char *pathname, bool *print_path)
 	return (newpath);
 }
 
-int	try_absolute_path(char *input, bool *malloc_success)
+static int	try_absolute_path(char *input, bool *malloc_success)
 {
 	char	*pathname;
 	bool	print_path;
@@ -49,7 +49,7 @@ int	try_absolute_path(char *input, bool *malloc_success)
 	return (set_working_directory(pathname));
 }
 
-int	try_verbatim_path(char *input, bool *malloc_success)
+static int	try_verbatim_path(char *input, bool *malloc_success)
 {
 	char	*pathname;
 
@@ -75,7 +75,7 @@ directories: No such file or directory", STDERR_FILENO);
 	return (set_working_directory(pathname));
 }
 
-int	ft_cd_env(char *env)
+static int	ft_cd_env(char *env)
 {
 	char	*pathname;
 
