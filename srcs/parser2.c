@@ -1,10 +1,9 @@
 #include "../incs/minishell.h"
 
-void	parser_error(t_set *set, void *free_buff)
+void	parser_error(t_set *set)
 {
 	ft_putendl_fd("minishell:error", STDERR_FILENO);
-	if (free_buff)
-		free(free_buff);
+	mod_termios_attr(set, false);
 	ft_lstclear(&set->lst, free);
 	free(set->input);
 	exit(EXIT_FAILURE);

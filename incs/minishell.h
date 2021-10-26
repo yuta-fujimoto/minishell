@@ -136,7 +136,7 @@ bool	str_equal(char *s1, char *s2, size_t n);
 void	print_str(unsigned int i, char *s);
 /* utils */
 
-t_list	*lexar(char *line);
+void	*lexar(t_set *set);
 /* lexar */
 
 bool	is_word_in_dquote(t_exp *exp);
@@ -159,6 +159,7 @@ t_tree	*command(t_list **lst);
 int		consume(int flgs, t_list **lst);
 bool	parser(t_set *set);
 bool	syntax_error(t_tree *tree);
+void	parser_error(t_set *set);
 /* parser */
 
 t_tree	*new_tree_cmd(t_node node);

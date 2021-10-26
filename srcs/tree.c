@@ -5,6 +5,11 @@ t_tree	*new_tree(int flgs, t_tree *left, t_tree *right)
 	t_tree	*tree;
 	t_node	node;
 
+	if (!right)
+	{
+		free_tree(left);
+		return (NULL);
+	}
 	tree = ft_calloc(1, sizeof(t_tree));
 	if (!tree)
 	{
@@ -27,7 +32,11 @@ t_tree	*new_tree_cmd(t_node node)
 
 	tree = ft_calloc(1, sizeof(t_tree));
 	if (!tree)
+	{
+		free(node.av);
+		free(node.str_flgs);
 		return (NULL);
+	}
 	tree->node = node;
 	return (tree);
 }

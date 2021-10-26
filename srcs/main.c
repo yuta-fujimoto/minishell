@@ -125,7 +125,7 @@ int	main(int ac, char **av)
 			ft_putendl_fd("exit", STDERR_FILENO);
 			exit(g_sig_info.exit_status);
 		}
-		set.lst = lexar(set.input);
+		lexar(&set);
 		dprintf(fd, "\ninput >> %s\n", set.input);
 		dprintf(fd, "\n====result of lexar====\n");
 		if (set.lst)

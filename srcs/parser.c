@@ -42,12 +42,7 @@ bool	parser(t_set *set)
 	}
 	set->tree = list(&lst);
 	if (!set->tree)
-	{
-		ft_putendl_fd("minishell:error", STDERR_FILENO);
-		ft_lstclear(&set->lst, free);
-		free(set->input);
-		exit(EXIT_FAILURE);
-	}
+		parser_error(set);
 	if (syntax_error(set->tree))
 	{
 		ft_putendl_fd("minishell: syntax error", STDERR_FILENO);

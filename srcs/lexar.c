@@ -1,12 +1,13 @@
 #include "../incs/minishell.h"
 
-static void	lexar_error(t_list **lst, char *line, int rlt)
+static void	lexar_error(t_list **lst, t_set *set, int rlt)
 {
 	if (rlt == SUCCESS)
 		return ;
 	ft_putendl_fd("minishell:error", STDERR_FILENO);
 	ft_lstclear(lst, free);
-	free(line);
+	free(set->input);
+	mod_termios_attr(set, false);
 	exit(EXIT_FAILURE);
 }
 
@@ -54,11 +55,13 @@ static int	lst_line_update(t_list **list, char *word, int flgs, char **line)
 	return (SUCCESS);
 }
 
-t_list	*lexar(char *line)
+void	*lexar(t_set *set)
 {
 	t_list	*list;
+	char	*line;
 	int		rlt;
 
+	line = set->input;
 	list = NULL;
 	while (*line)
 	{
@@ -78,7 +81,7 @@ t_list	*lexar(char *line)
 			rlt = lst_line_update(&list, ft_strdup("|"), PIPE, &line);
 		else
 			rlt = lst_line_update(&list, get_str(line), STR, &line);
-		lexar_error(&list, line, rlt);
+		lexar_error(&list, set, rlt);
 	}
-	return (list);
+	set->lst = list;
 }
