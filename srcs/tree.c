@@ -8,6 +8,7 @@ t_tree	*new_tree(int flgs, t_tree *left, t_tree *right, bool *malloc_err)
 	if (*malloc_err)
 	{
 		free_tree(left);
+		free_tree(right);
 		return (NULL);
 	}
 	tree = ft_calloc(1, sizeof(t_tree));
@@ -15,6 +16,7 @@ t_tree	*new_tree(int flgs, t_tree *left, t_tree *right, bool *malloc_err)
 	{
 		*malloc_err = true;
 		free_tree(left);
+		free_tree(right);
 		return (NULL);
 	}
 	tree->left = left;
