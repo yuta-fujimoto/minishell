@@ -93,6 +93,7 @@ t_env			*ft_envnew(char *name, char *value);
 int				ft_envsize(t_env *env);
 t_env			*ft_find_env_var(t_env *env, char *name);
 int				ft_str_arr_len(char **str_arr);
+int				ft_str_arr_search(char **str_arr, char *search);
 void			ft_free_str_arr(char **str_arr);
 t_pidlist		*ft_pidlstnew(pid_t pid);
 int				ft_pidlstsize(t_pidlist *pidlst);

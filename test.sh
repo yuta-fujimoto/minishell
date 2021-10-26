@@ -94,6 +94,8 @@ fi
 exec_test 'mkdir dir; ln -s dir sdir; cd sdir; pwd; cd ..; rmdir dir; env | grep PWD | sort; rm sdir'
 exec_test 'cd nodir/..'
 exec_test 'mkdir dir; chmod 055 dir; cd dir; pwd; env | grep PWD | sort; rmdir dir'
+exec_test 'cd ./././././../minishell/srcs;  pwd; env | grep PWD | sort'
+exec_test 'cd ././././././././././.;  pwd; env | grep PWD | sort'
 
 # export TESTS
 exec_test 'export AAA=BBB; env | grep AAA'

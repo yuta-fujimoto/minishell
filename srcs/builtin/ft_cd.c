@@ -9,7 +9,7 @@ char	*get_available_path(char *pathname, bool *print_path)
 	char	*env_cdpath;
 
 	if (pathname[0] == '/')
-		return (ft_strdup(pathname));
+		return (canonical_path(ft_strdup(pathname)));
 	if (str_equal(pathname, ".", 2) || str_equal(pathname, "./", 2)
 		|| str_equal(pathname, "../", 3)
 		|| str_equal(pathname, "..", 3))
@@ -23,7 +23,7 @@ char	*get_available_path(char *pathname, bool *print_path)
 	if (create_path(pathname, cdpaths, &newpath) == FAILURE)
 		return (NULL);
 	if (!newpath)
-		return (ft_strdup(pathname));
+		return (canonical_path(ft_strdup(pathname)));
 	if (!str_equal(pathname, newpath, ft_strlen(pathname) + 1))
 		*print_path = true;
 	return (newpath);
