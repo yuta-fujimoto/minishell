@@ -3,9 +3,9 @@
 void	parser_error(t_set *set)
 {
 	ft_putendl_fd("minishell:error", STDERR_FILENO);
-	mod_termios_attr(set, false);
 	ft_lstclear(&set->lst, free);
 	free(set->input);
+	mod_termios_attr(set, false);
 	exit(EXIT_FAILURE);
 }
 
