@@ -4,22 +4,15 @@ extern t_sig_info	g_sig_info;
 
 static char	*logical_getcwd(void)
 {
-	struct stat	st1;
-	struct stat	st2;
+	struct stat	lg;
+	struct stat	phy;
 	char		*wd;
-	char		*p;
 
 	wd = getenv("PWD");
 	if (!wd || wd[0] != '/')
 		return (NULL);
-	p = ft_strnstr(wd, "/.", 2);
-	while (p)
-	{
-		if (!p[2] || p[2] == '/' || (p[2] == '.' && (!p[3] || p[3] == '/')))
-			return (NULL);
-		p = ft_strnstr((++p), "/.", 2);
-	}
-	if (stat(wd, &st1) == 0 && stat(".", &st2) == 0 && st1.st_ino == st2.st_ino)
+	if (stat(wd, &lg) == 0 && stat(".", &phy) == 0
+			&& lg.st_ino == phy.st_ino && lg.st_dev == phy.st_dev)
 		return (wd);
 	return (NULL);
 }
