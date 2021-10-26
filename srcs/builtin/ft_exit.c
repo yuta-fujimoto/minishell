@@ -23,14 +23,14 @@ bool	ft_exit(char **av, t_set *set)
 	if (!av[1])
 	{
 		free_set(set);
-		exit(g_sig_info.exit_status);
+		ms_exit(set, g_sig_info.exit_status);
 	}
 	status = ft_atol(av[1], &flg) % 256;
 	if (flg)
 	{
 		exit_error(av[1], "numeric argument required");
 		free_set(set);
-		exit(255);
+		ms_exit(set, 255);
 	}
 	if (av[2])
 	{
@@ -39,5 +39,6 @@ bool	ft_exit(char **av, t_set *set)
 		g_sig_info.exit_status = EXIT_FAILURE;
 		return (SUCCESS);
 	}
-	exit(status);
+	ms_exit(set, status);
+	return (SUCCESS);
 }

@@ -36,7 +36,45 @@ bool	str_equal(char *s1, char *s2, size_t n)
 	return (false);
 }
 
-void	print_str(unsigned int i, char *s)
+void	mod_termios_attr(t_set *set, int init)
 {
-	printf("[%d, %s]", i, s);
+	unsigned int	lflag;
+	unsigned char	vquit;
+
+	if (init)
+	{
+		lflag = C_LFLAGS;
+		vquit = false;
+	}
+	else
+	{
+		lflag = set->safe_c_lflag;
+		vquit = set->safe_c_vquit;
+	}
+	set->t.c_lflag = lflag;
+	set->t.c_cc[VQUIT] = vquit;
+	if (isatty(STDIN_FILENO) && tcsetattr(STDIN_FILENO, TCSANOW, &set->t) == SYS_ERROR)
+	{
+		perror(NULL);
+		exit(EXIT_FAILURE);
+	}
+}
+
+void	free_set(t_set *set)
+{
+	ft_lstclear(&set->lst, free);
+	free_tree(set->tree);
+	set->tree = NULL;
+	if (set->input)
+	{
+		free(set->input);
+		set->input = NULL;
+	}
+}
+
+void	ms_exit(t_set *set, int exit_status)
+{
+	free_environ();
+	mod_termios_attr(set, false);
+	exit(exit_status);
 }

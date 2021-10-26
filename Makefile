@@ -10,6 +10,8 @@ SRCS :=	srcs/main.c \
 		srcs/parser2.c \
 		srcs/tree.c \
 		srcs/syntax_error.c \
+		srcs/init/ms_init.c \
+		srcs/init/ms_init2.c \
 		srcs/execution/execute_input.c \
 		srcs/execution/execute_simple_cmd.c \
 		srcs/execution/create_cmd_path.c \
