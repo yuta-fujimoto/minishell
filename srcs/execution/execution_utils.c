@@ -4,7 +4,6 @@ extern t_sig_info	g_sig_info;
 
 int	exec_cmd_error(char *cmd, char *cmd_path, bool malloc_failure)
 {
-
 	if (malloc_failure)
 		return (CHILD_FAILURE);
 	ft_putstr_fd("minishell: ", STDERR_FILENO);

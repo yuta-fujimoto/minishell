@@ -6,10 +6,9 @@ static int	prepare_heredoc(int fds[2], int *new_in, char **line)
 {
 	if (pipe(fds) == SYS_ERROR)
 		return (false);
+	//error handling for max_fds
 	*new_in = fds[0];
 	*line = NULL;
-	if (g_sig_info.signal == SIGINT)
-		g_sig_info.signal = 0;
 	g_sig_info.heredoc = true;
 	return (true);
 }

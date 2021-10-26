@@ -48,7 +48,8 @@ typedef struct s_set
 	t_list			*lst;
 	struct termios	t;
 	unsigned int	safe_c_lflag;
-	unsigned char	safe_c_vquit;
+	unsigned char	safe_c_vquit;	
+	t_intlist		*heredoc_lst;////
 }	t_set;
 
 typedef struct s_pipes
@@ -169,9 +170,10 @@ void	free_tree(t_tree *l);
 
 bool	wait_options(pid_t pid, bool pipeline);
 int		create_cmd_path(char **cmd, char **cmd_path);
-bool	execute_input(t_tree *l, t_set *set);
+bool	execute_input(t_tree *l, t_set *set, int *rlt);
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir);
 void	mod_termios_attr(t_set *set, int init);
+bool	minishell_error(t_redir *redir, int *rlt);
 /* execution */
 
 void	ft_export_error(char *arg);
@@ -212,15 +214,18 @@ void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info);
 
 bool	close_fd(int fd, int rlt);
 bool	reset_stdio_fd(t_redir *redir, int rlt);
-bool	ms_redirection(t_node *node, t_redir *redir);
+bool	ms_redirection(t_node *node, t_redir *redir, t_set *set);//
 bool	is_rdir(int str_flg);
 bool	is_open_fd(int fd);
 bool	end_redirection(char **cmd, t_redir *redir, int rlt);
 bool	has_redirection(t_node *node);
-bool	set_redirection(char **cmd, int i, t_redir *redir);
+bool	set_redirection(char **cmd, int i, t_redir *redir, t_set *set);//
 int		open_heredoc(char *delimiter);
-char	**get_cmd(t_node *node, t_redir *redir, bool *touch);
+char	**get_cmd(t_node *node, t_set *set, t_redir *redir, bool *touch);//
 char	**create_new_cmd(t_node *node, bool *touch);
 /* redirection */
 
+bool	handle_heredocs(t_tree *l, t_set *set, int *rlt);//
+bool	redirect_fds(t_redir *redir);
+bool	has_heredoc(char **av);
 #endif

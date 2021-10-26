@@ -18,7 +18,9 @@ void	free_set(t_set *set)
 	{
 		free(set->input);
 		set->input = NULL;
-	}
+	}	
+	if (set->heredoc_lst)//
+		ft_intlstclear(&set->heredoc_lst);//
 }
 
 void	sigint_handler(int sigint)
@@ -103,7 +105,7 @@ static void	init_termios_attr(t_set *set)
 int	main(int ac, char **av)
 {
 	t_set	set;
-	int		ret;
+	int		rlt;
 	bool	is_not_syntax_error;
 
 	(void)ac;
@@ -114,6 +116,7 @@ int	main(int ac, char **av)
 	init_termios_attr(&set);
 	while (1)
 	{
+		rlt = SUCCESS;
 		handle_sigint(&set);
 		set.input = readline("minishell > ");
 		g_sig_info.heredoc_sigint = false;
@@ -136,15 +139,20 @@ int	main(int ac, char **av)
 			add_history(set.input);
 		if (is_not_syntax_error)
 		{
-			ret = execute_input(set.tree, &set);
+			set.heredoc_lst = NULL;
+			handle_heredocs(set.tree, &set, &rlt);
+			if (rlt != FAILURE)
+				execute_input(set.tree, &set, &rlt);
 			free_set(&set);
-			if (ret == FAILURE && !g_sig_info.signal)
+			if (rlt == FAILURE && !g_sig_info.signal)
 			{
+				printf("this shouldn't print\n");
 				mod_termios_attr(&set, false);
 				exit(EXIT_FAILURE);
 			}
 		}
 		else
 			free_set(&set);
+		g_sig_info.signal = 0;
 	}
 }

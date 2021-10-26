@@ -13,7 +13,7 @@ static void	init_redirection(t_redir *redir)
 	redir->permissions = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 }
 
-static bool	redirect_fds(t_redir *redir)
+bool	redirect_fds(t_redir *redir)
 {
 	if (redir->new_out != -1)
 	{
@@ -34,7 +34,7 @@ static bool	redirect_fds(t_redir *redir)
 	return (true);
 }
 
-bool	ms_redirection(t_node *node, t_redir *redir)
+bool	ms_redirection(t_node *node, t_redir *redir, t_set *set)
 {
 	int		i;
 
@@ -44,7 +44,7 @@ bool	ms_redirection(t_node *node, t_redir *redir)
 	{
 		if (!is_rdir(node->str_flgs[i]))
 			continue ;
-		if (!set_redirection(node->av, i, redir))
+		if (!set_redirection(node->av, i, redir, set))
 			return (false);
 	}
 	if (!redirect_fds(redir))

@@ -6,7 +6,7 @@
 /*   By: fyuta <fyuta@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/08 22:39:12 by fyuta             #+#    #+#             */
-/*   Updated: 2021/10/20 16:08:04 by jthompso         ###   ########.fr       */
+/*   Updated: 2021/10/25 15:54:13 by jthompso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,12 @@ typedef struct s_pidlist
 	pid_t				pid;
 	struct s_pidlist	*next;
 }				t_pidlist;
+
+typedef struct s_intlist
+{
+	int					num;
+	struct s_intlist	*next;
+}				t_intlist;
 
 int				ft_atoi(const char *nptr);
 long			ft_atol(const char *nptr, int *flg);
@@ -99,5 +105,10 @@ int				ft_pidlstsize(t_pidlist *pidlst);
 t_pidlist		*ft_pidlstlast(t_pidlist *pidlst);
 void			ft_pidlstclear(t_pidlist **pidlst);
 bool			ft_pidlstadd_back(t_pidlist **pidlst, t_pidlist *new);
+t_intlist		*ft_intlstnew(int num);
+int				ft_intlstsize(t_intlist *intlst);
+t_intlist		*ft_intlstlast(t_intlist *intlst);
+void			ft_intlstclear(t_intlist **intlst);
+bool			ft_intlstadd_back(t_intlist **intlst, t_intlist *new);
 
 #endif

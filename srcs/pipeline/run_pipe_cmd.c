@@ -53,6 +53,20 @@ static bool	init_pipe_cmd(t_node *exp_node, t_pipe_info *p_info, t_redir *redir)
 	return (SUCCESS);
 }
 
+bool	has_heredoc(char **av)
+{
+	int	i;
+
+	i = 0;
+	while (av[i])
+	{
+		if (str_equal(av[i], "<<", 3))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
 bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 {
 	pid_t		c_pid;
@@ -75,6 +89,8 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 		run_child(exp_node, pipes, set, &p_info);
 	else
 	{
+		if (has_heredoc(node.av))
+			set->heredoc_lst = set->heredoc_lst->next;
 		if (!ft_pidlstadd_back(&pipes->pidlst, ft_pidlstnew(c_pid)))
 			return (end_pipe(exp_node, &p_info, FAILURE));
 	}

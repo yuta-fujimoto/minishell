@@ -29,8 +29,8 @@ void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info)
 
 	update_pipes(pipes);
 	if (has_redirection(n))
-	{
-		if (!ms_redirection(n, p_info->rdr))
+	{	
+		if (!ms_redirection(n, p_info->rdr, set))
 			exit(REDIRECTION_FAILURE);
 	}
 	if (p_info->touch)

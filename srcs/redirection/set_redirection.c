@@ -41,11 +41,9 @@ static bool	check_new_fd(char *filename, t_redir *redir)
 	if ((redir->status == RDIR || redir->status == RRDIR)
 		&& redir->new_out == SYS_ERROR)
 		redir->perror = true;
-	if ((redir->status == LDIR || redir->status == LLDIR)
+	if ((redir->status == LDIR)
 		&& redir->new_in == SYS_ERROR)
 		redir->perror = true;
-	if (redir->new_in == SIGINT_CALL)
-		return (false);
 	if (!redir->perror)
 		return (true);
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
@@ -56,7 +54,7 @@ static bool	check_new_fd(char *filename, t_redir *redir)
 	return (false);
 }
 
-bool	set_redirection(char **cmd, int i, t_redir *redir)
+bool	set_redirection(char **cmd, int i, t_redir *redir, t_set *set)
 {
 	set_status(cmd[i], redir);
 	if (!reset_fds(redir))
@@ -68,6 +66,6 @@ bool	set_redirection(char **cmd, int i, t_redir *redir)
 	else if (redir->status == LDIR)
 		redir->new_in = open(cmd[i + 1], redir->l_flags);
 	else
-		redir->new_in = open_heredoc(cmd[i + 1]);
+		redir->new_in = set->heredoc_lst->num;
 	return (check_new_fd(cmd[i + 1], redir));
 }
