@@ -136,7 +136,7 @@ bool	str_equal(char *s1, char *s2, size_t n);
 void	print_str(unsigned int i, char *s);
 /* utils */
 
-void	*lexar(t_set *set);
+void	lexar(t_set *set);
 /* lexar */
 
 bool	is_word_in_dquote(t_exp *exp);
@@ -155,15 +155,15 @@ t_node	*expansion_conclude(t_env **env, char *free_s, t_node *exp_node);
 int		expansion_node_conclude(t_node *node, int rlt);
 /* expansion */
 
-t_tree	*command(t_list **lst);
+t_tree	*command(t_list **lst, bool *malloc_err);
 int		consume(int flgs, t_list **lst);
 bool	parser(t_set *set);
 bool	syntax_error(t_tree *tree);
 void	parser_error(t_set *set);
 /* parser */
 
-t_tree	*new_tree_cmd(t_node node);
-t_tree	*new_tree(int flgs, t_tree *left, t_tree *right);
+t_tree	*new_tree_cmd(t_node node, bool *malloc_err);
+t_tree	*new_tree(int flgs, t_tree *left, t_tree *right, bool *malloc_err);
 void	free_tree(t_tree *l);
 /* tree library */
 
