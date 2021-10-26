@@ -1,6 +1,17 @@
 #include "../incs/minishell.h"
 
-char	*get_str(char *line)
+static void	lexar_error(t_set *set, int rlt)
+{
+	if (rlt == SUCCESS)
+		return ;
+	ft_putendl_fd("minishell:error", STDERR_FILENO);
+	ft_lstclear(&set->lst, free);
+	free(set->input);
+	mod_termios_attr(set, false);
+	exit(EXIT_FAILURE);
+}
+
+static char	*get_str(char *line)
 {
 	int		cnt;
 	int		quote_flg;
@@ -29,45 +40,46 @@ char	*get_str(char *line)
 	return (ft_substr(line, 0, cnt - 1));
 }
 
-void	lst_line_update(t_list **list, char *word, int flgs, char **line)
+static int	lst_line_update(t_set *set, char *word, int flgs, char **line)
 {
 	if (word == NULL)
-	{
-		ft_lstclear(list, free);
-		exit(1);
-	}
+		lexar_error(set, FAILURE);
 	if (**line == '\0')
 	{
 		free(word);
-		return ;
+		return (SUCCESS);
 	}
-	ft_lstadd_back(list, ft_lstnew(word, flgs));
+	if (!ft_lstadd_back(&set->lst, ft_lstnew(word, flgs)))
+		return (FAILURE);
 	*line += ft_strlen(word);
+	return (SUCCESS);
 }
 
-t_list	*lexar(char *line)
+void	lexar(t_set *set)
 {
-	t_list	*list;
+	char	*line;
+	int		rlt;
 
-	list = NULL;
+	line = set->input;
+	set->lst = NULL;
 	while (*line)
 	{
 		while (*line == ' ' || *line == '\t')
 			line++;
 		if (str_equal(line, ">>", 2))
-			lst_line_update(&list, ft_strdup(">>"), RRDIR, &line);
+			rlt = lst_line_update(set, ft_strdup(">>"), RRDIR, &line);
 		else if (str_equal(line, "<<", 2))
-			lst_line_update(&list, ft_strdup("<<"), LLDIR, &line);
+			rlt = lst_line_update(set, ft_strdup("<<"), LLDIR, &line);
 		else if (*line == '>')
-			lst_line_update(&list, ft_strdup(">"), RDIR, &line);
+			rlt = lst_line_update(set, ft_strdup(">"), RDIR, &line);
 		else if (*line == '<')
-			lst_line_update(&list, ft_strdup("<"), LDIR, &line);
+			rlt = lst_line_update(set, ft_strdup("<"), LDIR, &line);
 		else if (*line == ';')
-			lst_line_update(&list, ft_strdup(";"), SCOLON, &line);
+			rlt = lst_line_update(set, ft_strdup(";"), SCOLON, &line);
 		else if (*line == '|')
-			lst_line_update(&list, ft_strdup("|"), PIPE, &line);
+			rlt = lst_line_update(set, ft_strdup("|"), PIPE, &line);
 		else
-			lst_line_update(&list, get_str(line), STR, &line);
+			rlt = lst_line_update(set, get_str(line), STR, &line);
+		lexar_error(set, rlt);
 	}
-	return (list);
 }
