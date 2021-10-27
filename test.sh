@@ -233,6 +233,7 @@ exec_test "exit -9223372036854775810"
 exec_test "exit -4"
 exec_test "exit wrong"
 exec_test "exit wrong_command"
+exec_test "exit 1 2 | ls"
 exec_test "gdagadgag"
 exec_test "ls -Z"
 exec_test "cd gdhahahad"
@@ -253,3 +254,8 @@ exec_test "cd ./a b"
 exec_test "cd a b"
 
 rm lol ls a f1 test perm_a perm_b perm_c test_stdout i1
+
+# exit 1 2 | ls
+# exit 1 2 ; ls
+# exit 1 ; ls
+# exit 1 ; ls

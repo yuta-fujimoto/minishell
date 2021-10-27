@@ -36,7 +36,7 @@ bool	is_buildin(char *cmd)
 }
 
 
-int	run_builtin_cmd(char **av, t_set *set)
+int	run_builtin_cmd(char **av, t_set *set, bool print_exit)
 {
 	int		rlt;
 	char	*cmd;
@@ -51,7 +51,7 @@ int	run_builtin_cmd(char **av, t_set *set)
 	if (str_equal(cmd, "pwd", 4))
 		rlt = ft_pwd();
 	if (str_equal(cmd, "exit", 5))
-		rlt = ft_exit(av, set);
+		rlt = ft_exit(av, set, print_exit);
 	if (str_equal(cmd, "cd", 3))
 		rlt = ft_cd(av);
 	if (str_equal(cmd, "echo", 5))

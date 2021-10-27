@@ -114,6 +114,7 @@ int	main(int ac, char **av)
 	init_termios_attr(&set);
 	while (1)
 	{
+		set.exit_done = false;
 		handle_sigint(&set);
 		set.input = readline("minishell > ");
 		g_sig_info.heredoc_sigint = false;
