@@ -1,36 +1,78 @@
 #include "../incs/minishell.h"
 
+static bool	close_heredocs(t_set *set)
+{
+	while(set->heredoc_lst)
+	{	
+		close(set->heredoc_lst->fds[0]);
+		close(set->heredoc_lst->fds[1]);
+		set->heredoc_lst = set->heredoc_lst->next;
+	}
+	return (FAILURE);
+}
+
 static bool	create_heredoc(char **av, t_set *set)
 {
-	int		i;
-	bool	expansion_required;
-	int		new_in;
+	int	fds[2];
+	int	i;
 
 	i = 0;
-	expansion_required = true;
+	if (pipe(fds) == SYS_ERROR)
+		return (close_heredocs(set));
+	if (fds[0] == _POSIX_OPEN_MAX || fds[1] == _POSIX_OPEN_MAX)
+	{
+		close(fds[0]);
+		close(fds[1]);
+		ft_putendl_fd("minishell: maximum here-document count exceeded", STDERR_FILENO);// connect with minishell error somehow
+		return (close_heredocs(set));
+	}
 	while (!str_equal(av[i], "<<", 3))
 		i++;
-	new_in = open_heredoc(av[++i]);//need to expand av
-	if (new_in == SYS_ERROR || new_in == SIGINT_CALL)
-		return (FAILURE);
-	if (!ft_intlstadd_back(&set->heredoc_lst, ft_intlstnew(new_in)))
-		return (FAILURE);	
+	if (!ft_doclstadd_back(&set->heredoc_lst, ft_doclstnew(fds, av[++i])))
+		return (close_heredocs(set));
 	return (SUCCESS);
 }
 
-bool	handle_heredocs(t_tree *l, t_set *set, int *rlt)
+static bool	open_heredocs(t_tree *l, t_set *set, int *rlt)
 {
 	if (*rlt == FAILURE)
 		return (FAILURE);
 	if (!l)
 		return (SUCCESS);
-	handle_heredocs(l->left, set, rlt);	
+	open_heredocs(l->left, set, rlt);
 	if (l->node.av && has_heredoc(l->node.av))
 	{
 		if (create_heredoc(l->node.av, set) == FAILURE)
 			return (minishell_error(NULL, rlt));
 	}
-	handle_heredocs(l->right, set, rlt);
-	return (rlt);
+	open_heredocs(l->right, set, rlt);
+	return (*rlt);
 }
-//need to add lots and lots of error handling
+
+static bool	write_heredocs(t_doclist *heredoc_lst)
+{
+	char 	*delim;
+	bool	exp;
+
+	while (heredoc_lst)
+	{
+		exp = false;
+		delim = heredoc_lst->delim;//expand func and enter exp	
+		if (!handle_heredoc(heredoc_lst->fds, delim, exp))
+			return (false);
+		heredoc_lst = heredoc_lst->next;
+	}
+	return (true);
+}
+
+bool	init_heredocs(t_tree *parent, t_set *set, int *rlt)
+{
+	if (open_heredocs(parent, set, rlt) == FAILURE)
+		return (FAILURE);	
+	if (!write_heredocs(set->heredoc_lst))
+	{
+		close_heredocs(set);
+		return (minishell_error(NULL, rlt));
+	}
+	return (SUCCESS);
+}//make sure to close heredocs after redirection... and all docs for that matter

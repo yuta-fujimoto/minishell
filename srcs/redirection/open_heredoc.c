@@ -2,40 +2,35 @@
 
 extern t_sig_info	g_sig_info;
 
-static int	prepare_heredoc(int fds[2], int *new_in, char **line)
-{
-	if (pipe(fds) == SYS_ERROR)
-		return (false);
-	//error handling for max_fds
-	*new_in = fds[0];
-	*line = NULL;
-	g_sig_info.heredoc = true;
-	return (true);
-}
-
-static int	conclude_heredoc(int fds[2], int new_in)
+static int	conclude_heredoc(int fds[2])
 {
 	if (close(fds[1]) == SYS_ERROR)
-		return (SYS_ERROR);
+	{
+		close(fds[0]);
+		g_sig_info.sys_error = true;
+		return (false);
+	}
 	if (g_sig_info.signal)
 	{
 		g_sig_info.heredoc_sigint = true;
 		if (close(fds[0]) == SYS_ERROR)
-			return (SYS_ERROR);
-		return (SIGINT_CALL);
+		{
+			g_sig_info.sys_error = true;
+			return (false);
+		}
+		return (false);
 	}
 	g_sig_info.heredoc = false;
-	return (new_in);
+	return (true);
 }
 
-int	open_heredoc(char *delimiter)
+int	handle_heredoc(int fds[2], char *delimiter, bool expand)
 {
-	char	*line;
-	int		new_in;
-	int		fds[2];
+	char	*line;	
 
-	if (!prepare_heredoc(fds, &new_in, &line))
-		return (SYS_ERROR);
+	line = NULL;
+	expand = false;//
+	g_sig_info.heredoc = true;
 	while (1)
 	{
 		line = readline("> ");
@@ -57,5 +52,5 @@ int	open_heredoc(char *delimiter)
 	if (line)
 		free(line);
 	line = NULL;
-	return (conclude_heredoc(fds, new_in));
+	return (conclude_heredoc(fds));
 }

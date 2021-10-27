@@ -49,7 +49,7 @@ typedef struct s_set
 	struct termios	t;
 	unsigned int	safe_c_lflag;
 	unsigned char	safe_c_vquit;	
-	t_intlist		*heredoc_lst;////
+	t_doclist		*heredoc_lst;////
 }	t_set;
 
 typedef struct s_pipes
@@ -82,6 +82,7 @@ typedef struct s_sig_info
 	char	*term_stdin;
 	bool	heredoc_sigint;
 	bool	heredoc_sigeof;
+	bool	sys_error;
 }				t_sig_info;
 
 typedef struct s_pipe_info
@@ -220,12 +221,12 @@ bool	is_open_fd(int fd);
 bool	end_redirection(char **cmd, t_redir *redir, int rlt);
 bool	has_redirection(t_node *node);
 bool	set_redirection(char **cmd, int i, t_redir *redir, t_set *set);//
-int		open_heredoc(char *delimiter);
+int		handle_heredoc(int fds[2], char *delimiter, bool expand);
 char	**get_cmd(t_node *node, t_set *set, t_redir *redir, bool *touch);//
 char	**create_new_cmd(t_node *node, bool *touch);
 /* redirection */
 
-bool	handle_heredocs(t_tree *l, t_set *set, int *rlt);//
+bool	init_heredocs(t_tree *parent, t_set *set, int *rlt);//
 bool	redirect_fds(t_redir *redir);
 bool	has_heredoc(char **av);
 #endif

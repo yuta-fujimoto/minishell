@@ -6,7 +6,7 @@
 /*   By: fyuta <fyuta@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/08 22:39:12 by fyuta             #+#    #+#             */
-/*   Updated: 2021/10/25 15:54:13 by jthompso         ###   ########.fr       */
+/*   Updated: 2021/10/27 20:24:50 by jthompso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,12 @@ typedef struct s_pidlist
 	struct s_pidlist	*next;
 }				t_pidlist;
 
-typedef struct s_intlist
+typedef struct s_doclist
 {
-	int					num;
-	struct s_intlist	*next;
-}				t_intlist;
+	int					fds[2];
+	char				*delim;
+	struct s_doclist	*next;
+}				t_doclist;
 
 int				ft_atoi(const char *nptr);
 long			ft_atol(const char *nptr, int *flg);
@@ -105,10 +106,10 @@ int				ft_pidlstsize(t_pidlist *pidlst);
 t_pidlist		*ft_pidlstlast(t_pidlist *pidlst);
 void			ft_pidlstclear(t_pidlist **pidlst);
 bool			ft_pidlstadd_back(t_pidlist **pidlst, t_pidlist *new);
-t_intlist		*ft_intlstnew(int num);
-int				ft_intlstsize(t_intlist *intlst);
-t_intlist		*ft_intlstlast(t_intlist *intlst);
-void			ft_intlstclear(t_intlist **intlst);
-bool			ft_intlstadd_back(t_intlist **intlst, t_intlist *new);
+t_doclist		*ft_doclstnew(int fds[2], char *delim);
+int				ft_doclstsize(t_doclist *doclst);
+t_doclist		*ft_doclstlast(t_doclist *doclst);
+void			ft_doclstclear(t_doclist **doclst);
+bool			ft_doclstadd_back(t_doclist **doclst, t_doclist *new);
 
 #endif

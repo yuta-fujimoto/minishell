@@ -39,5 +39,5 @@ bool	execute_input(t_tree *l, t_set *set, int *rlt)
 		}
 		execute_input(l->right, set, rlt);
 	}
-	return (rlt);
+	return (*rlt);
 }

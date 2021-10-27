@@ -1,7 +1,7 @@
 #include "../incs/minishell.h"
 
 int			fd;
-t_sig_info	g_sig_info = {0, false, NULL, false, false, 0};
+t_sig_info	g_sig_info = {0, false, NULL, false, false, 0, 0};
 
 void	ft_printf(void *word)
 {
@@ -20,7 +20,7 @@ void	free_set(t_set *set)
 		set->input = NULL;
 	}	
 	if (set->heredoc_lst)//
-		ft_intlstclear(&set->heredoc_lst);//
+		ft_doclstclear(&set->heredoc_lst);//
 }
 
 void	sigint_handler(int sigint)
@@ -32,7 +32,8 @@ void	sigint_handler(int sigint)
 		write(STDOUT_FILENO, "\n", 1);
 		if (isatty(STDIN_FILENO))
 			g_sig_info.term_stdin = ttyname(STDIN_FILENO);
-		close(STDIN_FILENO);
+		if (close(STDIN_FILENO) == SYS_ERROR)
+			g_sig_info.sys_error = true;
 		g_sig_info.heredoc = false;
 	}
 	else
@@ -63,6 +64,7 @@ static void	handle_sigint(t_set *set)
 		g_sig_info.term_stdin = NULL;
 	}
 	g_sig_info.signal = 0;
+	g_sig_info.sys_error = false;
 }
 
 void	mod_termios_attr(t_set *set, int init)
@@ -140,19 +142,17 @@ int	main(int ac, char **av)
 		if (is_not_syntax_error)
 		{
 			set.heredoc_lst = NULL;
-			handle_heredocs(set.tree, &set, &rlt);
+			init_heredocs(set.tree, &set, &rlt);
 			if (rlt != FAILURE)
 				execute_input(set.tree, &set, &rlt);
 			free_set(&set);
-			if (rlt == FAILURE && !g_sig_info.signal)
+			if (rlt == FAILURE && (!g_sig_info.signal || g_sig_info.sys_error))
 			{
-				printf("this shouldn't print\n");
 				mod_termios_attr(&set, false);
 				exit(EXIT_FAILURE);
 			}
 		}
 		else
 			free_set(&set);
-		g_sig_info.signal = 0;
 	}
 }
