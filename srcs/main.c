@@ -15,7 +15,7 @@ static void	handle_sigint(t_set *set)
 
 void	ms_execution(t_set *set)
 {
-	int ret;
+	int	ret;
 
 	ret = execute_input(set->tree, set);
 	free_set(set);
@@ -35,15 +35,15 @@ int	main()
 	t_set	set;
 	bool	is_not_syntax_error;
 
+	set.input = readline("minishell > ");
 	init_ms(&set);
 	while (1)
 	{
-		handle_sigint(&set);
-		set.input = readline("minishell > ");
-		g_sig_info.heredoc_sigint = false;
-		g_sig_info.heredoc_sigeof = false;
 		if (!set.input)
 			ms_exit_eof(&set);
+		handle_sigint(&set);
+		g_sig_info.heredoc_sigint = false;
+		g_sig_info.heredoc_sigeof = false;
 		lexar(&set);
 		is_not_syntax_error = parser(&set);
 		if (*set.input)
@@ -52,5 +52,6 @@ int	main()
 			ms_execution(&set);
 		else
 			free_set(&set);
+		set.input = readline("minishell > ");
 	}
 }
