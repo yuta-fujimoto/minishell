@@ -25,6 +25,7 @@ SRCS :=	srcs/main.c \
 		srcs/builtin/ft_unset.c \
 		srcs/builtin/ft_pwd.c \
 		srcs/builtin/ft_cd_utils.c \
+		srcs/builtin/canonical_path.c \
 		srcs/builtin/ft_export_utils.c \
 		srcs/builtin/env_utils.c \
 		srcs/expansion/expansion.c \
