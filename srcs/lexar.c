@@ -66,9 +66,9 @@ void	lexar(t_set *set)
 	{
 		while (*line == ' ' || *line == '\t')
 			line++;
-		if (str_equal(line, ">>", 2))
+		if (str_equal(line, ">>", 3))
 			rlt = lst_line_update(set, ft_strdup(">>"), RRDIR, &line);
-		else if (str_equal(line, "<<", 2))
+		else if (str_equal(line, "<<", 3))
 			rlt = lst_line_update(set, ft_strdup("<<"), LLDIR, &line);
 		else if (*line == '>')
 			rlt = lst_line_update(set, ft_strdup(">"), RDIR, &line);
