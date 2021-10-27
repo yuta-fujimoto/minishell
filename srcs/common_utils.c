@@ -74,7 +74,10 @@ void	free_set(t_set *set)
 
 void	ms_exit(t_set *set, int exit_status)
 {
+	extern char	**environ;
+
 	free_environ();
+	environ = set->safe_envrion;
 	mod_termios_attr(set, false);
 	exit(exit_status);
 }

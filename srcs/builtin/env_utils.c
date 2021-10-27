@@ -79,6 +79,5 @@ void	free_environ(void)
 		flg = true;
 		return ;
 	}
-	printf("done");
 	ft_free_str_arr(environ);
 }

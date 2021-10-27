@@ -47,6 +47,6 @@ static void	init_sig_handler(void)
 void	init_ms(t_set *set)
 {
 	init_sig_handler();
-	init_env();
+	init_env(set);
 	init_termios_attr(set);
 }

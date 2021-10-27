@@ -18,7 +18,6 @@ bool	ft_exit(char **av, t_set *set)
 	int	status;
 	int	flg;
 
-	mod_termios_attr(set, false);
 	ft_putendl_fd("exit", STDERR_FILENO);
 	if (!av[1])
 	{

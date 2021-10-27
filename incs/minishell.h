@@ -49,6 +49,7 @@ typedef struct s_set
 	struct termios	t;
 	unsigned int	safe_c_lflag;
 	unsigned char	safe_c_vquit;
+	char			**safe_envrion;
 }	t_set;
 
 typedef struct s_pipes
@@ -138,7 +139,7 @@ void	mod_termios_attr(t_set *set, int init);
 void	ms_exit(t_set *set, int exit_status);
 /* utils */
 
-void	init_env(void);
+void	init_env(t_set *set);
 void	init_ms(t_set *set);
 /* init */
 

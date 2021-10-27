@@ -42,10 +42,12 @@ void	init_shlvl(t_env *env)
 		exit(EXIT_FAILURE);
 }
 
-void	init_env(void)
+void	init_env(t_set *set)
 {
-	t_env	*env;
+	t_env		*env;
+	extern char	**environ;
 
+	set->safe_envrion = environ;
 	env = environ_to_list();
 	if (!env)
 		exit(EXIT_FAILURE);
