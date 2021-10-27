@@ -2,7 +2,7 @@
 
 t_sig_info	g_sig_info = {0, false, NULL, false, false, 0};
 
-static void	handle_sigint(t_set *set)
+static void	handle_signal(t_set *set)
 {
 	if (g_sig_info.term_stdin)
 	{
@@ -11,6 +11,8 @@ static void	handle_sigint(t_set *set)
 		g_sig_info.term_stdin = NULL;
 	}
 	g_sig_info.signal = 0;
+	g_sig_info.heredoc_sigint = false;
+	g_sig_info.heredoc_sigeof = false;
 }
 
 void	ms_execution(t_set *set)
@@ -36,18 +38,16 @@ int	main()
 	bool	is_not_syntax_error;
 
 	set.input = readline("minishell > ");
-	init_ms(&set);
+	ms_init(&set);
 	while (1)
 	{
 		if (!set.input)
 			ms_exit_eof(&set);
-		handle_sigint(&set);
-		g_sig_info.heredoc_sigint = false;
-		g_sig_info.heredoc_sigeof = false;
-		lexar(&set);
-		is_not_syntax_error = parser(&set);
 		if (*set.input)
 			add_history(set.input);
+		handle_signal(&set);
+		lexar(&set);
+		is_not_syntax_error = parser(&set);
 		if (is_not_syntax_error)
 			ms_execution(&set);
 		else

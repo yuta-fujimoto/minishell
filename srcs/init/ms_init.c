@@ -44,7 +44,7 @@ static void	init_sig_handler(void)
 		exit(EXIT_FAILURE);
 }
 
-void	init_ms(t_set *set)
+void	ms_init(t_set *set)
 {
 	init_sig_handler();
 	init_env(set);

@@ -140,7 +140,7 @@ void	ms_exit(t_set *set, int exit_status);
 /* utils */
 
 void	init_env(t_set *set);
-void	init_ms(t_set *set);
+void	ms_init(t_set *set);
 /* init */
 
 void	lexar(t_set *set);
