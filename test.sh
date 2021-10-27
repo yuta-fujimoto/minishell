@@ -86,6 +86,7 @@ exec_test 'cd fdfddffdfdfdff'
 # exec_test 'cd ./; unset OLDPWD ;cd ./; env | grep PWD' fix later,,,,,
 if [ $(uname) == "Linux" ]; then
 	exec_test 'export CDPATH=/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD | sort' 
+	exec_test 'export CDPATH=/home/fyuta/minishell/./srcs; cd builtin; pwd; env | grep PWD | sort' 
 	exec_test 'export CDPATH=/home:/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD | sort' 
 fi
 #	exec_test 'export CDPATH=/home/fyuta/minishell/srcs; cd builtin; pwd; env | grep PWD | sort' 
