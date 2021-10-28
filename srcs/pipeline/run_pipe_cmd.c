@@ -66,7 +66,7 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 		return (expansion_node_conclude(exp_node, SUCCESS));
 	if (init_pipe_cmd(exp_node, &p_info, redir) == FAILURE)
 		return (end_pipe(exp_node, &p_info, false, FAILURE));
-	if (!p_info.cmd_path && !is_buildin(node.av[0]))
+	if (!p_info.cmd_path && !is_buildin(p_info.cmd[0]))
 		return (pipe_command_not_found(exp_node, &p_info, pipes));
 	c_pid = fork();
 	if (c_pid < 0)

@@ -17,9 +17,9 @@ bool	execute_input(t_tree *l, t_set *set)
 
 	redir.perror = false;
 	redir.new_in = 0;
-	if (!l)
+	if (!l || set->exit_done)
 		return (SUCCESS);
-	else if (l->node.flgs == PIPE)
+	if (l->node.flgs == PIPE)
 	{
 		if (execute_pipeline(l, set, &redir) == FAILURE)
 			return (minishell_error(redir));
@@ -27,7 +27,7 @@ bool	execute_input(t_tree *l, t_set *set)
 	else
 	{
 		execute_input(l->left, set);
-		if (l->node.av)
+		if (l->node.av && !set->exit_done)
 		{
 			if (execute_simple_cmd(l->node, set, &redir) == FAILURE)
 				return (minishell_error(redir));
