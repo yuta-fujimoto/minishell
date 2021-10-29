@@ -24,9 +24,9 @@ int	identifier_type(char *s)
 	}
 	if (i == ft_strlen(s))
 		return (NOTHING);
-	if (s[i] == '+' && s[i - 1] != ' ' && s[i + 2] != ' ')
+	if (s[i] == '+')
 		return (ADD);
-	if (s[i] == '=' && s[i - 1] != ' ' && s[i + 1] != ' ')
+	if (s[i] == '=')
 		return (UPDATE);
 	return (ERROR);
 }

@@ -214,6 +214,7 @@ exec_test 'cat | ls'
 
 # # MULTI TESTS
 # exec_test 'echo testing multi ; echo "test 1 ; | and 2" ; cat tests/lorem.txt | grep Lorem'
+exec_test 'echo "#include <stdio.h>" > hello.c; echo int main\(\)\{printf\(\"hello\"\)";"\} >> hello.c; cp a.out ./incs; a.out; ./a.out; chmod 000 a.out; ./a.out; export PATH=$PWD; a.out ; export PATH+=:./incs; a.out'
 
 # # SYNTAX ERROR
 exec_test ';; test'
@@ -253,4 +254,4 @@ exec_test "cd"
 exec_test "cd ./a b"
 exec_test "cd a b"
 
-rm lol ls a f1 test perm_a perm_b perm_c test_stdout i1
+rm -f lol ls a f1 test perm_a perm_b perm_c test_stdout i1 hello.c a.out ./incs/a.out

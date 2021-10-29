@@ -1,29 +1,49 @@
 #include "../incs/minishell.h"
 
-int	create_path(char *cmd, char **paths, char **cmd_path)
+static int	search_path(char **abs_path, char **exec_path, char **paths, char *cmd)
 {
-	char		*abs_path;
 	int			i;
 	struct stat	ss;
 
-	abs_path = NULL;
 	i = 0;
 	while (paths[i])
 	{
-		abs_path = ft_strcjoin(paths[i], cmd, '/');
-		if (!abs_path)
+		*abs_path = ft_strcjoin(paths[i], cmd, '/');
+		if (!*abs_path)
 		{
 			ft_free_str_arr(paths);
 			return (FAILURE);
 		}
-		if (stat(abs_path, &ss) == 0 && (ss.st_mode & S_IXUSR))
+		if (stat(*abs_path, &ss) == 0 && (ss.st_mode & S_IXUSR))
 			break ;
-		free(abs_path);
-		abs_path = NULL;
+		if (stat(*abs_path, &ss) == 0 && exec_path == NULL)
+			*exec_path = *abs_path;
+		else
+			free(*abs_path);
+		*abs_path = NULL;
 		i++;
 	}
+	return (SUCCESS);
+}
+
+int	create_path(char *cmd, char **paths, char **cmd_path)
+{
+	char	*abs_path;
+	char	*exec_path;
+
+	abs_path = NULL;
+	exec_path = NULL;
+	if (search_path(&abs_path, &exec_path, paths, cmd) == FAILURE)
+		return (FAILURE);
 	ft_free_str_arr(paths);
-	*cmd_path = abs_path;
+	if (abs_path)
+	{
+		*cmd_path = abs_path;
+		if (exec_path)
+			free(exec_path);
+	}
+	else
+		*cmd_path = exec_path;
 	return (SUCCESS);
 }
 
