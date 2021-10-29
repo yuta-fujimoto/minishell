@@ -24,7 +24,7 @@ bool	execute_input(t_tree *l, t_set *set, int *rlt)
 		return (FAILURE);
 	if (!l)
 		return (SUCCESS);
-	else if (l->node.flgs == PIPE)
+	if (l->node.flgs == PIPE)
 	{
 		if (execute_pipeline(l, set, &redir) == FAILURE)
 			return (minishell_error(&redir, rlt));

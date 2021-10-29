@@ -10,8 +10,8 @@ static char	*get_available_path(char *pathname, bool *print_path)
 
 	if (pathname[0] == '/')
 		return (canonical_path(ft_strdup(pathname)));
-	if (str_equal(pathname, ".", 2) || str_equal(pathname, "./", 3)
-		|| str_equal(pathname, "../", 4)
+	if (str_equal(pathname, ".", 2) || str_equal(pathname, "./", 2)
+		|| str_equal(pathname, "../", 3)
 		|| str_equal(pathname, "..", 3))
 		return (canonical_path(absolute_path(pathname)));
 	env_cdpath = getenv("CDPATH");
