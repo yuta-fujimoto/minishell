@@ -13,31 +13,33 @@ void	exit_error(char *arg, char *msg)
 	ft_putendl_fd(msg, STDERR_FILENO);
 }
 
-bool	ft_exit(char **av, t_set *set)
+bool	ft_exit(char **av, t_set *set, bool print_exit)
 {
 	int	status;
 	int	flg;
 
-	ft_putendl_fd("exit", STDERR_FILENO);
+	if (print_exit)
+		ft_putendl_fd("exit", STDERR_FILENO);
 	if (!av[1])
 	{
 		free_set(set);
-		ms_exit(set, g_sig_info.exit_status);
+		ms_exit(set, g_sig_info.exit_status, print_exit);
 	}
 	status = ft_atol(av[1], &flg) % 256;
 	if (flg)
 	{
 		exit_error(av[1], "numeric argument required");
 		free_set(set);
-		ms_exit(set, 255);
+		ms_exit(set, 255, print_exit);
 	}
 	if (av[2])
 	{
+		set->exit_done = true;
 		exit_error(NULL, "too many arguments");
 		free_set(set);
 		g_sig_info.exit_status = EXIT_FAILURE;
 		return (SUCCESS);
 	}
-	ms_exit(set, status);
+	ms_exit(set, status, print_exit);
 	return (SUCCESS);
 }

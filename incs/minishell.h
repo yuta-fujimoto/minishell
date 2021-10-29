@@ -43,6 +43,7 @@ typedef struct s_tree
 
 typedef struct s_set
 {
+	bool			exit_done;
 	t_tree			*tree;
 	char			*input;
 	t_list			*lst;
@@ -136,7 +137,7 @@ int		exec_cmd_error(char *cmd, char *cmd_path, bool malloc_failure);
 bool	str_equal(char *s1, char *s2, size_t n);
 void	print_str(unsigned int i, char *s);
 void	mod_termios_attr(t_set *set, int init);
-void	ms_exit(t_set *set, int exit_status);
+void	ms_exit(t_set *set, int exit_status, bool exit_done);
 /* utils */
 
 void	init_env(t_set *set);
@@ -203,9 +204,10 @@ int		ft_export(char **av);
 bool	ft_env(void);
 int		ft_unset(char **av);
 int		ft_pwd(void);
-bool	ft_exit(char **av, t_set *set);
+bool	ft_exit(char **av, t_set *set, bool print_exit);
 bool	is_buildin(char *cmd);
-int		run_builtin_cmd(char **av, t_set *set);
+int		run_builtin_cmd(char **av, t_set *set, bool print_exit
+);
 /* builtin */
 
 bool	execute_pipeline(t_tree *parent, t_set *set, t_redir *redir);

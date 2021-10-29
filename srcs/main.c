@@ -7,7 +7,7 @@ static void	handle_signal(t_set *set)
 	if (g_sig_info.term_stdin)
 	{
 		if (open(g_sig_info.term_stdin, O_RDONLY) == SYS_ERROR)
-			ms_exit(set, EXIT_FAILURE);
+			ms_exit(set, EXIT_FAILURE, true);
 		g_sig_info.term_stdin = NULL;
 	}
 	g_sig_info.signal = 0;
@@ -22,14 +22,14 @@ void	ms_execution(t_set *set)
 	ret = execute_input(set->tree, set);
 	free_set(set);
 	if (ret == FAILURE && !g_sig_info.signal)
-		ms_exit(set, EXIT_FAILURE);
+		ms_exit(set, EXIT_FAILURE, true);
 }
 
 void	ms_exit_eof(t_set *set)
 {
 	ft_putstr_fd("\033[Aminishell > ", STDOUT_FILENO);
 	ft_putendl_fd("exit", STDERR_FILENO);
-	ms_exit(set, g_sig_info.exit_status);
+	ms_exit(set, g_sig_info.exit_status, true);
 }
 
 int	main()
@@ -41,6 +41,8 @@ int	main()
 	ms_init(&set);
 	while (1)
 	{
+		set.exit_done = false;
+		handle_sigint(&set);
 		if (!set.input)
 			ms_exit_eof(&set);
 		if (*set.input)
