@@ -17,13 +17,14 @@ bool	ft_exit(char **av, t_set *set, bool print_exit)
 {
 	int	status;
 	int	flg;
-
-	mod_termios_attr(set, false);
+	
 	if (print_exit)
 		ft_putendl_fd("exit", STDERR_FILENO);
 	if (!av[1])
 	{
 		free_set(set);
+		if (!mod_termios_attr(set, false))
+			exit(SYS_ERROR);
 		exit(g_sig_info.exit_status);
 	}
 	status = ft_atol(av[1], &flg) % 256;
@@ -31,6 +32,8 @@ bool	ft_exit(char **av, t_set *set, bool print_exit)
 	{
 		exit_error(av[1], "numeric argument required");
 		free_set(set);
+		if (!mod_termios_attr(set, false))
+			exit(SYS_ERROR);
 		exit(255);
 	}
 	if (av[2])
@@ -41,5 +44,7 @@ bool	ft_exit(char **av, t_set *set, bool print_exit)
 		g_sig_info.exit_status = EXIT_FAILURE;
 		return (SUCCESS);
 	}
+	if (!mod_termios_attr(set, false))
+		exit(SYS_ERROR);
 	exit(status);
 }

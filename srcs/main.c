@@ -53,7 +53,7 @@ void	sigint_handler(int sigint)
 		rl_redisplay();
 	}
 	if (g_sig_info.child)
-		write(STDOUT_FILENO, "^C\n", 3);
+		write(STDOUT_FILENO, "\n", 1);
 }
 
 static void	init_sig_handler(void)
@@ -68,7 +68,8 @@ static void	handle_sigint(t_set *set)
 	{
 		if (open(g_sig_info.term_stdin, O_RDONLY) == SYS_ERROR)
 		{
-			mod_termios_attr(set, false);
+			if (!mod_termios_attr(set, false))
+				exit(SYS_ERROR);
 			exit(EXIT_FAILURE);
 		}
 		g_sig_info.term_stdin = NULL;
@@ -76,7 +77,7 @@ static void	handle_sigint(t_set *set)
 	g_sig_info.signal = 0;
 }
 
-void	mod_termios_attr(t_set *set, int init)
+bool	mod_termios_attr(t_set *set, int init)
 {
 	unsigned int	lflag;
 	unsigned char	vquit;
@@ -96,8 +97,10 @@ void	mod_termios_attr(t_set *set, int init)
 	if (isatty(STDIN_FILENO) && tcsetattr(STDIN_FILENO, TCSANOW, &set->t) == SYS_ERROR)
 	{
 		perror(NULL);
-		exit(SYS_ERROR);
+		g_sig_info.sys_error = true;
+		return(false);
 	}
+	return (true);
 }
 
 static void	init_termios_attr(t_set *set)
@@ -110,7 +113,8 @@ static void	init_termios_attr(t_set *set)
 	}
 	set->safe_c_lflag = set->t.c_lflag;
 	set->safe_c_vquit = set->t.c_cc[VQUIT];
-	mod_termios_attr(set, true);
+	if (!mod_termios_attr(set, true))
+		exit(SYS_ERROR);
 }
 
 int	main(int ac, char **av)
@@ -138,7 +142,8 @@ int	main(int ac, char **av)
 		{	
 			ft_putstr_fd("\033[Aminishell > ", STDOUT_FILENO);
 			ft_putendl_fd("exit", STDERR_FILENO);
-			mod_termios_attr(&set, false);
+			if (!mod_termios_attr(&set, false))
+				exit(SYS_ERROR);
 			exit(g_sig_info.exit_status);
 		}
 		lexar(&set);
@@ -159,7 +164,8 @@ int	main(int ac, char **av)
 			free_set(&set);
 			if (rlt == FAILURE && !g_sig_info.signal)
 			{
-				mod_termios_attr(&set, false);
+				if (!mod_termios_attr(&set, false))
+					exit(SYS_ERROR);
 				exit(EXIT_FAILURE);
 			}
 		}

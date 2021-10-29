@@ -18,7 +18,23 @@ static int	command_not_found(char *cmd)
 	return (SUCCESS);
 }
 
-static bool	run_gnu_cmd(char **cmd)
+static bool run_gnu_parent(int c_pid, t_set *set, char *cmd_path)
+{
+	g_sig_info.child = true;
+	if (!wait_options(c_pid, false))
+	{
+		if (g_sig_info.signal == SIGINT)
+			mod_termios_attr(set, true);
+		return (free_cmd_path(cmd_path));
+	}
+	mod_termios_attr(set, true);
+	free(cmd_path);
+	if (g_sig_info.sys_error)
+		return (FAILURE);
+	return (SUCCESS);
+}
+
+static bool	run_gnu_cmd(char **cmd, t_set *set)
 {
 	pid_t		c_pid;
 	char		*cmd_path;
@@ -33,16 +49,13 @@ static bool	run_gnu_cmd(char **cmd)
 		return (free_cmd_path(cmd_path));
 	else if (c_pid == 0)
 	{
+		if (!mod_termios_attr(set, false))
+			exit(exec_cmd_error(cmd[0], cmd_path, true));
 		if (execve(cmd_path, cmd, environ) == SYS_ERROR)
 			exit(exec_cmd_error(cmd[0], cmd_path, false));
 	}
 	else
-	{
-		g_sig_info.child = true;
-		if (!wait_options(c_pid, false))
-			return (free_cmd_path(cmd_path));
-		free(cmd_path);
-	}
+		return (run_gnu_parent(c_pid, set, cmd_path));
 	return (SUCCESS);
 }
 
@@ -88,7 +101,7 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 		if (is_buildin(cmd[0]))
 			rlt = run_builtin_cmd(cmd, set, true);
 		else
-			rlt = run_gnu_cmd(cmd);
+			rlt = run_gnu_cmd(cmd, set);
 	}
 	if (has_redirection(exp_node))
 		rlt = end_redirection(cmd, redir, rlt);

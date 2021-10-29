@@ -175,7 +175,7 @@ bool	wait_options(pid_t pid, bool pipeline);
 int		create_cmd_path(char **cmd, char **cmd_path);
 bool	execute_input(t_tree *l, t_set *set, int *rlt);
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir);
-void	mod_termios_attr(t_set *set, int init);
+bool	mod_termios_attr(t_set *set, int init);
 bool	minishell_error(t_redir *redir, int *rlt, bool no_prnt);
 /* execution */
 

@@ -49,9 +49,11 @@ static bool	conclude_pipeline(t_pidlist *pidlst)
 	return (true);
 }
 
-static bool	free_pidlst(t_pidlist **pidlst, int rlt)
+static bool	free_pidlst(t_pidlist **pidlst, int rlt, t_set *set)
 {
 	ft_pidlstclear(pidlst);
+	if (!mod_termios_attr(set, true))
+			rlt = FAILURE;
 	return (rlt);
 }
 
@@ -61,11 +63,14 @@ bool	execute_pipeline(t_tree *parent, t_set *set, t_redir *redir)
 
 	pipes.status = FIRST_PIPE;
 	pipes.pidlst = NULL;
+	g_sig_info.child = true;
+	if (!mod_termios_attr(set, false))
+		return (FAILURE);
 	if (pipe(pipes.fd_a) == -1)
 		return (FAILURE);
 	if (pipe_next_node(parent, &pipes, set, redir) == FAILURE)
-		return (free_pidlst(&pipes.pidlst, FAILURE));
+		return (free_pidlst(&pipes.pidlst, FAILURE, set));
 	if (!conclude_pipeline(pipes.pidlst))
-		return (free_pidlst(&pipes.pidlst, FAILURE));
-	return (free_pidlst(&pipes.pidlst, SUCCESS));
+		return (free_pidlst(&pipes.pidlst, FAILURE, set));
+	return (free_pidlst(&pipes.pidlst, SUCCESS, set));
 }
