@@ -52,6 +52,8 @@ void	sigint_handler(int sigint)
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
+	if (g_sig_info.child)
+		write(STDOUT_FILENO, "^C\n", 3);
 }
 
 static void	init_sig_handler(void)
