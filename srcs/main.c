@@ -42,7 +42,7 @@ int	main()
 	while (1)
 	{
 		set.exit_done = false;
-		handle_sigint(&set);
+		handle_signal(&set);
 		if (!set.input)
 			ms_exit_eof(&set);
 		if (*set.input)
