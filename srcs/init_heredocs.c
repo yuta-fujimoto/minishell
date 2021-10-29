@@ -2,21 +2,24 @@
 
 extern t_sig_info g_sig_info;
 
-void	close_heredocs(t_set *set)
+void	close_heredocs(t_doclist *hdocs)
 {
-	while(set->heredoc_lst)
+	t_doclist	*tmp;
+
+	tmp = hdocs;
+	while(tmp)
 	{	
-		if (is_open_fd(set->heredoc_lst->fds[0]))
+		if (is_open_fd(tmp->fds[0]))
 		{
-			if (close(set->heredoc_lst->fds[0]) == SYS_ERROR)
+			if (close(tmp->fds[0]) == SYS_ERROR)
 				g_sig_info.sys_error = true;
 		}
-		if (is_open_fd(set->heredoc_lst->fds[1]))
+		if (is_open_fd(tmp->fds[1]))
 		{
-			if (close(set->heredoc_lst->fds[1]) == SYS_ERROR)
+			if (close(tmp->fds[1]) == SYS_ERROR)
 				g_sig_info.sys_error = true;
 		}
-		set->heredoc_lst = set->heredoc_lst->next;
+		tmp = tmp->next;
 	}
 }
 
@@ -91,7 +94,7 @@ bool	init_heredocs(t_tree *parent, t_set *set, int *rlt)
 		return (FAILURE);	
 	if (!write_heredocs(set->heredoc_lst))
 	{
-		close_heredocs(set);
+		close_heredocs(set->heredoc_lst);
 		return (minishell_error(NULL, rlt, false));
 	}
 	return (SUCCESS);

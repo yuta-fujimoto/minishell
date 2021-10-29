@@ -63,6 +63,7 @@ bool	execute_pipeline(t_tree *parent, t_set *set, t_redir *redir)
 
 	pipes.status = FIRST_PIPE;
 	pipes.pidlst = NULL;
+	pipes.tmp_hdocs = set->heredoc_lst;
 	g_sig_info.child = true;
 	if (!mod_termios_attr(set, false))
 		return (FAILURE);

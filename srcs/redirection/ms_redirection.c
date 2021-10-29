@@ -45,17 +45,19 @@ bool	redirect_fds(t_redir *redir)
 bool	ms_redirection(t_node *node, t_redir *redir, t_doclist *hdocs)
 {
 	int			i;
+	t_doclist		*tmp;
 
 	i = -1;
+	tmp = hdocs;
 	init_redirection(redir);
 	while (node->av[++i])
 	{
 		if (!is_rdir(node->str_flgs[i]))
 			continue ;
-		if (!set_redirection(node->av, i, redir, hdocs))
+		if (!set_redirection(node->av, i, redir, tmp))
 			return (false);
 		if (str_equal(node->av[i], "<<", 3))
-			hdocs = hdocs->next;
+			tmp = tmp->next;
 	}
 	if (!redirect_fds(redir))
 		return (false);

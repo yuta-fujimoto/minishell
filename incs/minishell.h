@@ -59,6 +59,7 @@ typedef struct s_pipes
 	int			fd_a[2];
 	int			fd_b[2];
 	t_pidlist	*pidlst;
+	t_doclist	*tmp_hdocs;
 }				t_pipes;
 
 typedef struct s_redir
@@ -89,10 +90,10 @@ typedef struct s_sig_info
 
 typedef struct s_pipe_info
 {
-	t_redir	*rdr;
-	char	**cmd;
-	char	*cmd_path;
-	bool	touch;
+	t_redir		*rdr;
+	char		**cmd;
+	char		*cmd_path;
+	bool		touch;
 }				t_pipe_info;
 
 # define SIGINT_CALL -2
@@ -232,6 +233,6 @@ char	**create_new_cmd(t_node *node, bool *touch);
 bool	init_heredocs(t_tree *parent, t_set *set, int *rlt);
 bool	redirect_fds(t_redir *redir);
 bool	has_heredoc(char **av);
-void	close_heredocs(t_set *set);
+void	close_heredocs(t_doclist *hdocs);
 bool	set_sys_error(void);
 #endif

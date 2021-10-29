@@ -21,7 +21,7 @@ void	free_set(t_set *set)
 	}	
 	if (set->heredoc_lst)
 	{
-		close_heredocs(set);
+		close_heredocs(set->heredoc_lst);
 		ft_doclstclear(&set->heredoc_lst);
 	}
 	if (g_sig_info.sys_error)

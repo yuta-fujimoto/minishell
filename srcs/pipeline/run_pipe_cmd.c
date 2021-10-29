@@ -92,7 +92,7 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 		int	i = -1;
 		if (has_heredoc(node.av))
 		{
-			if (close(set->heredoc_lst->fds[0]) == SYS_ERROR)
+			if (close(pipes->tmp_hdocs->fds[0]) == SYS_ERROR)
 			{
 				g_sig_info.sys_error = true;
 				return (end_pipe(exp_node, &p_info, FAILURE));
@@ -100,7 +100,7 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 			while (node.av[++i])
 			{
 				if (str_equal(node.av[i], "<<", 3))
-					set->heredoc_lst = set->heredoc_lst->next;
+					pipes->tmp_hdocs = pipes->tmp_hdocs->next;
 			}
 		}
 		if (!ft_pidlstadd_back(&pipes->pidlst, ft_pidlstnew(c_pid)))

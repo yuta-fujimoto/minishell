@@ -76,7 +76,7 @@ void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info)
 		exit(SYS_ERROR);
 	if (has_redirection(n))
 	{	
-		if (!ms_redirection(n, p_info->rdr, set->heredoc_lst))
+		if (!ms_redirection(n, p_info->rdr, pipes->tmp_hdocs))
 			exit(REDIRECTION_FAILURE);
 	}
 	if (p_info->touch)
