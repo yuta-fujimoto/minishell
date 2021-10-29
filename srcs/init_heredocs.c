@@ -23,9 +23,7 @@ void	close_heredocs(t_set *set)
 static bool	create_heredoc(char *delim, t_set *set, bool *no_prnt)
 {
 	int	fds[2];
-	int	i;
 
-	i = 0;
 	if (pipe(fds) == SYS_ERROR)
 	{
 		g_sig_info.sys_error = true;

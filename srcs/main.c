@@ -129,6 +129,7 @@ int	main(int ac, char **av)
 			| S_IWUSR | S_IRGRP | S_IROTH);
 	init_sig_handler();
 	init_termios_attr(&set);
+	set.heredoc_lst = NULL;
 	while (1)
 	{
 		rlt = SUCCESS;
@@ -156,8 +157,7 @@ int	main(int ac, char **av)
 		if (*set.input)
 			add_history(set.input);
 		if (is_not_syntax_error)
-		{
-			set.heredoc_lst = NULL;
+		{	
 			init_heredocs(set.tree, &set, &rlt);
 			if (rlt == SUCCESS)
 				execute_input(set.tree, &set, &rlt);

@@ -54,9 +54,8 @@ static bool	check_new_fd(char *filename, t_redir *redir)
 	return (false);
 }
 
-bool	set_redirection(char **cmd, int i, t_redir *redir, t_doclist **hdocs)
+bool	set_redirection(char **cmd, int i, t_redir *redir, t_doclist *hdocs)
 {
-	t_doclist	tmp;
 	set_status(cmd[i], redir);
 	if (!reset_fds(redir))
 		return (false);
@@ -67,12 +66,6 @@ bool	set_redirection(char **cmd, int i, t_redir *redir, t_doclist **hdocs)
 	else if (redir->status == LDIR)
 		redir->new_in = open(cmd[i + 1], redir->l_flags);
 	else
-	{	
-		redir->new_in = (*hdocs)->fds[0];
-		tmp = *(*hdocs);
-		tmp.next = NULL;
-		(*hdocs) = (*hdocs)->next;
-		ft_doclstadd_back(hdocs, &tmp);
-	}
+		redir->new_in = hdocs->fds[0];
 	return (check_new_fd(cmd[i + 1], redir));
 }

@@ -42,7 +42,7 @@ bool	redirect_fds(t_redir *redir)
 	return (true);
 }
 
-bool	ms_redirection(t_node *node, t_redir *redir, t_set *set)
+bool	ms_redirection(t_node *node, t_redir *redir, t_doclist *hdocs)
 {
 	int			i;
 
@@ -52,8 +52,10 @@ bool	ms_redirection(t_node *node, t_redir *redir, t_set *set)
 	{
 		if (!is_rdir(node->str_flgs[i]))
 			continue ;
-		if (!set_redirection(node->av, i, redir, &set->heredoc_lst))
+		if (!set_redirection(node->av, i, redir, hdocs))
 			return (false);
+		if (str_equal(node->av[i], "<<", 3))
+			hdocs = hdocs->next;
 	}
 	if (!redirect_fds(redir))
 		return (false);
