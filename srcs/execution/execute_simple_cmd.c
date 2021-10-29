@@ -65,11 +65,6 @@ char	**get_cmd(t_node *node, t_set *set, t_redir *redir, bool *touch)
 	{
 		if (!ms_redirection(node, redir, set))
 			return (NULL);
-		if (has_heredoc(node->av))
-		{
-			close(set->heredoc_lst->fds[0]);
-			set->heredoc_lst = set->heredoc_lst->next;
-		}
 		return (create_new_cmd(node, touch));
 	}
 	else

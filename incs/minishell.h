@@ -223,7 +223,7 @@ bool	is_rdir(int str_flg);
 bool	is_open_fd(int fd);
 bool	end_redirection(char **cmd, t_redir *redir, int rlt);
 bool	has_redirection(t_node *node);
-bool	set_redirection(char **cmd, int i, t_redir *redir, t_set *set);
+bool	set_redirection(char **cmd, int i, t_redir *redir, t_doclist **hdocs);
 int		handle_heredoc(int fds[2], char *delimiter);
 char	**get_cmd(t_node *node, t_set *set, t_redir *redir, bool *touch);
 char	**create_new_cmd(t_node *node, bool *touch);

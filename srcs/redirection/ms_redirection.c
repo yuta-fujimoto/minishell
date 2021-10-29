@@ -44,7 +44,7 @@ bool	redirect_fds(t_redir *redir)
 
 bool	ms_redirection(t_node *node, t_redir *redir, t_set *set)
 {
-	int		i;
+	int			i;
 
 	i = -1;
 	init_redirection(redir);
@@ -52,7 +52,7 @@ bool	ms_redirection(t_node *node, t_redir *redir, t_set *set)
 	{
 		if (!is_rdir(node->str_flgs[i]))
 			continue ;
-		if (!set_redirection(node->av, i, redir, set))
+		if (!set_redirection(node->av, i, redir, &set->heredoc_lst))
 			return (false);
 	}
 	if (!redirect_fds(redir))

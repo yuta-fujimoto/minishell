@@ -20,7 +20,7 @@ void	close_heredocs(t_set *set)
 	}
 }
 
-static bool	create_heredoc(char **av, t_set *set, bool *no_prnt)
+static bool	create_heredoc(char *delim, t_set *set, bool *no_prnt)
 {
 	int	fds[2];
 	int	i;
@@ -39,17 +39,17 @@ static bool	create_heredoc(char **av, t_set *set, bool *no_prnt)
 		*no_prnt = true;
 		return (FAILURE);
 	}
-	while (!str_equal(av[i], "<<", 3))
-		i++;
-	if (!ft_doclstadd_back(&set->heredoc_lst, ft_doclstnew(fds, av[++i])))
+	if (!ft_doclstadd_back(&set->heredoc_lst, ft_doclstnew(fds, delim)))
 		return (FAILURE);
 	return (SUCCESS);
 }
 
 static bool	open_heredocs(t_tree *l, t_set *set, int *rlt)
 {
+	int		i;
 	bool	no_prnt;
 
+	i = 0;
 	no_prnt = false;
 	if (*rlt == FAILURE)
 		return (FAILURE);
@@ -58,8 +58,16 @@ static bool	open_heredocs(t_tree *l, t_set *set, int *rlt)
 	open_heredocs(l->left, set, rlt);
 	if (l->node.av && has_heredoc(l->node.av))
 	{
-		if (create_heredoc(l->node.av, set, &no_prnt) == FAILURE)
-			return (minishell_error(NULL, rlt, no_prnt));
+		while (l->node.av[i])
+		{
+			if (str_equal(l->node.av[i], "<<", 3))
+			{
+				i++;
+				if (create_heredoc(l->node.av[i], set, &no_prnt) == FAILURE)
+					return (minishell_error(NULL, rlt, no_prnt));
+			}
+			i++;
+		}
 	}
 	open_heredocs(l->right, set, rlt);
 	return (*rlt);
