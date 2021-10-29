@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern	t_sig_info g_sig_info;
+
 bool	close_fd(int fd, int rlt)
 {
 	int	ret;
@@ -8,7 +10,11 @@ bool	close_fd(int fd, int rlt)
 	if (fd != -1)
 		ret = close(fd);
 	if (ret == SYS_ERROR || rlt == FAILURE)
+	{
+		if (ret == SYS_ERROR)
+			g_sig_info.sys_error = true;
 		return (false);
+	}
 	return (true);
 }
 
@@ -22,7 +28,11 @@ bool	end_stdio_fd(t_redir *redir, int rlt)
 	if (is_open_fd(redir->safe_in))
 		ret = dup2(redir->safe_in, STDIN_FILENO);
 	if (ret == SYS_ERROR || rlt == FAILURE)
+	{
+		if (ret == SYS_ERROR)
+			g_sig_info.sys_error = true;
 		return (false);
+	}
 	return (true);
 }
 

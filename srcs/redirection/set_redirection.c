@@ -16,22 +16,17 @@ static void	set_status(char *cmd_i, t_redir *redir)
 
 static bool	reset_fds(t_redir *redir)
 {
-	int	rlt;
-
-	rlt = 0;
 	if (redir->status == RDIR || redir->status == RRDIR)
 	{
-		if (!close_fd(redir->new_out, SUCCESS))
-			rlt = SYS_ERROR;
+		close_fd(redir->new_out, SUCCESS);
 		redir->new_out = -1;
 	}
 	else if ((redir->status == LDIR || redir->status == LLDIR))
 	{
-		if (!close_fd(redir->new_in, SUCCESS))
-			rlt = SYS_ERROR;
+		close_fd(redir->new_in, SUCCESS);
 		redir->new_in = -1;
 	}
-	if (rlt == SYS_ERROR)
+	if (g_sig_info.sys_error)
 		return (false);
 	return (true);
 }
@@ -40,23 +35,26 @@ static bool	check_new_fd(char *filename, t_redir *redir)
 {
 	if ((redir->status == RDIR || redir->status == RRDIR)
 		&& redir->new_out == SYS_ERROR)
-		redir->perror = true;
-	if ((redir->status == LDIR || redir->status == LLDIR)
+		redir->nofile = true;
+	if ((redir->status == LDIR)
 		&& redir->new_in == SYS_ERROR)
-		redir->perror = true;
-	if (redir->new_in == SIGINT_CALL)
-		return (false);
-	if (!redir->perror)
+		redir->nofile = true;
+	if (!redir->nofile)
 		return (true);
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
-	ft_putstr_fd(filename, STDERR_FILENO);
-	ft_putstr_fd(": ", STDERR_FILENO);
-	g_sig_info.exit_status = EXIT_FAILURE;
-	perror(NULL);
+	if (errno == ENOENT || errno == EACCES) //maybe it needs to be more inclusive?
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(filename, STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+		g_sig_info.exit_status = EXIT_FAILURE;
+		perror(NULL);
+	}
+	else
+		g_sig_info.sys_error = true;
 	return (false);
 }
 
-bool	set_redirection(char **cmd, int i, t_redir *redir)
+bool	set_redirection(char **cmd, int i, t_redir *redir, t_set *set)
 {
 	set_status(cmd[i], redir);
 	if (!reset_fds(redir))
@@ -68,6 +66,6 @@ bool	set_redirection(char **cmd, int i, t_redir *redir)
 	else if (redir->status == LDIR)
 		redir->new_in = open(cmd[i + 1], redir->l_flags);
 	else
-		redir->new_in = open_heredoc(cmd[i + 1]);
+		redir->new_in = set->heredoc_lst->fds[0];
 	return (check_new_fd(cmd[i + 1], redir));
 }

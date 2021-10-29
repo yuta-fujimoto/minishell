@@ -38,6 +38,7 @@ static bool	run_gnu_cmd(char **cmd)
 	}
 	else
 	{
+		g_sig_info.child = true;
 		if (!wait_options(c_pid, false))
 			return (free_cmd_path(cmd_path));
 		free(cmd_path);
@@ -45,12 +46,17 @@ static bool	run_gnu_cmd(char **cmd)
 	return (SUCCESS);
 }
 
-char	**get_cmd(t_node *node, t_redir *redir, bool *touch)
+char	**get_cmd(t_node *node, t_set *set, t_redir *redir, bool *touch)
 {
 	if (has_redirection(node))
 	{
-		if (!ms_redirection(node, redir))
+		if (!ms_redirection(node, redir, set))
 			return (NULL);
+		if (has_heredoc(node->av))
+		{
+			close(set->heredoc_lst->fds[0]);
+			set->heredoc_lst = set->heredoc_lst->next;
+		}
 		return (create_new_cmd(node, touch));
 	}
 	else
@@ -71,7 +77,7 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 		return (expansion_node_conclude(NULL, FAILURE));
 	if (!exp_node->av)
 		return (expansion_node_conclude(exp_node, SUCCESS));
-	cmd = get_cmd(exp_node, redir, &touch);
+	cmd = get_cmd(exp_node, set, redir, &touch);
 	if (!cmd && !touch)
 	{
 		expansion_node_conclude(exp_node, FAILURE);

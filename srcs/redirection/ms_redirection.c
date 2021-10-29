@@ -1,5 +1,7 @@
 #include "../../incs/minishell.h"
 
+extern	t_sig_info g_sig_info;
+
 static void	init_redirection(t_redir *redir)
 {
 	redir->status = 0;
@@ -13,28 +15,34 @@ static void	init_redirection(t_redir *redir)
 	redir->permissions = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 }
 
-static bool	redirect_fds(t_redir *redir)
+bool	set_sys_error(void)
+{
+	g_sig_info.sys_error = true;
+	return (false);
+}
+
+bool	redirect_fds(t_redir *redir)
 {
 	if (redir->new_out != -1)
 	{
 		redir->safe_out = dup(STDOUT_FILENO);
 		if (redir->safe_out == SYS_ERROR)
-			return (false);
+			return (set_sys_error());
 		if (dup2(redir->new_out, STDOUT_FILENO) == SYS_ERROR)
-			return (false);
+			return (set_sys_error());
 	}
 	if (redir->new_in != -1)
 	{
 		redir->safe_in = dup(STDIN_FILENO);
 		if (redir->safe_in == SYS_ERROR)
-			return (false);
+			return (set_sys_error());
 		if (dup2(redir->new_in, STDIN_FILENO) == SYS_ERROR)
-			return (false);
+			return (set_sys_error());
 	}
 	return (true);
 }
 
-bool	ms_redirection(t_node *node, t_redir *redir)
+bool	ms_redirection(t_node *node, t_redir *redir, t_set *set)
 {
 	int		i;
 
@@ -44,7 +52,7 @@ bool	ms_redirection(t_node *node, t_redir *redir)
 	{
 		if (!is_rdir(node->str_flgs[i]))
 			continue ;
-		if (!set_redirection(node->av, i, redir))
+		if (!set_redirection(node->av, i, redir, set))
 			return (false);
 	}
 	if (!redirect_fds(redir))

@@ -1,7 +1,7 @@
 #include "../incs/minishell.h"
 
 int			fd;
-t_sig_info	g_sig_info = {0, false, NULL, false, false, 0};
+t_sig_info	g_sig_info = {0, false, NULL, false, false, 0, 0, 0};
 
 void	ft_printf(void *word)
 {
@@ -18,6 +18,16 @@ void	free_set(t_set *set)
 	{
 		free(set->input);
 		set->input = NULL;
+	}	
+	if (set->heredoc_lst)
+	{
+		close_heredocs(set);
+		ft_doclstclear(&set->heredoc_lst);
+	}
+	if (g_sig_info.sys_error)
+	{
+		mod_termios_attr(set, false);
+		exit(SYS_ERROR);
 	}
 }
 
@@ -30,10 +40,11 @@ void	sigint_handler(int sigint)
 		write(STDOUT_FILENO, "\n", 1);
 		if (isatty(STDIN_FILENO))
 			g_sig_info.term_stdin = ttyname(STDIN_FILENO);
-		close(STDIN_FILENO);
+		if (close(STDIN_FILENO) == SYS_ERROR)
+			g_sig_info.sys_error = true;
 		g_sig_info.heredoc = false;
 	}
-	else
+	else if (!g_sig_info.child)
 	{
 		if (!g_sig_info.heredoc_sigint && !g_sig_info.heredoc_sigeof)
 			write(STDOUT_FILENO, "\n", 1);
@@ -83,7 +94,7 @@ void	mod_termios_attr(t_set *set, int init)
 	if (isatty(STDIN_FILENO) && tcsetattr(STDIN_FILENO, TCSANOW, &set->t) == SYS_ERROR)
 	{
 		perror(NULL);
-		exit(EXIT_FAILURE);
+		exit(SYS_ERROR);
 	}
 }
 
@@ -93,7 +104,7 @@ static void	init_termios_attr(t_set *set)
 	if (isatty(STDIN_FILENO) && tcgetattr(STDIN_FILENO, &set->t) == SYS_ERROR)
 	{
 		perror(NULL);
-		exit(EXIT_FAILURE);
+		exit(SYS_ERROR);
 	}
 	set->safe_c_lflag = set->t.c_lflag;
 	set->safe_c_vquit = set->t.c_cc[VQUIT];
@@ -103,7 +114,7 @@ static void	init_termios_attr(t_set *set)
 int	main(int ac, char **av)
 {
 	t_set	set;
-	int		ret;
+	int		rlt;
 	bool	is_not_syntax_error;
 
 	(void)ac;
@@ -114,16 +125,18 @@ int	main(int ac, char **av)
 	init_termios_attr(&set);
 	while (1)
 	{
+		rlt = SUCCESS;
 		set.exit_done = false;
 		handle_sigint(&set);
+		g_sig_info.child = false;
 		set.input = readline("minishell > ");
 		g_sig_info.heredoc_sigint = false;
 		g_sig_info.heredoc_sigeof = false;
 		if (!set.input)
-		{
-			mod_termios_attr(&set, false);
+		{	
 			ft_putstr_fd("\033[Aminishell > ", STDOUT_FILENO);
 			ft_putendl_fd("exit", STDERR_FILENO);
+			mod_termios_attr(&set, false);
 			exit(g_sig_info.exit_status);
 		}
 		lexar(&set);
@@ -137,9 +150,12 @@ int	main(int ac, char **av)
 			add_history(set.input);
 		if (is_not_syntax_error)
 		{
-			ret = execute_input(set.tree, &set);
+			set.heredoc_lst = NULL;
+			init_heredocs(set.tree, &set, &rlt);
+			if (rlt == SUCCESS)
+				execute_input(set.tree, &set, &rlt);
 			free_set(&set);
-			if (ret == FAILURE && !g_sig_info.signal)
+			if (rlt == FAILURE && !g_sig_info.signal)
 			{
 				mod_termios_attr(&set, false);
 				exit(EXIT_FAILURE);
