@@ -57,9 +57,6 @@ char	**get_cmd(t_node *node, t_redir *redir, bool *touch)
 		return (node->av);
 }
 
-
-extern char **environ;
-
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 {
 	int		rlt;
