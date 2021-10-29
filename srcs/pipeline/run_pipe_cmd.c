@@ -11,11 +11,11 @@ static bool	end_pipe(t_node *n, t_pipe_info *p_info, int rlt)
 	return (expansion_node_conclude(n, rlt));
 }
 
-static int	pipe_command_not_found(t_node *n, t_pipe_info *p_info, t_pipes *pipes)
+static int	pipe_cmd_not_found(t_node *n, t_pipe_info *p_info, t_pipes *pipes)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(n->av[0], STDERR_FILENO);
-	ft_putendl_fd(": command not found" , STDERR_FILENO);
+	ft_putendl_fd(": command not found", STDERR_FILENO);
 	g_sig_info.exit_status = 127;
 	if (!ft_pidlstadd_back(&pipes->pidlst, ft_pidlstnew(0)))
 		return (end_pipe(n, p_info, FAILURE));
@@ -81,7 +81,7 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 	if (init_pipe_cmd(exp_node, &p_info, redir) == FAILURE)
 		return (end_pipe(exp_node, &p_info, FAILURE));
 	if (!p_info.cmd_path && !is_buildin(node.av[0]) && !p_info.touch)
-		return (pipe_command_not_found(exp_node, &p_info, pipes));
+		return (pipe_cmd_not_found(exp_node, &p_info, pipes));
 	c_pid = fork();
 	if (c_pid < 0)
 		return (end_pipe(exp_node, &p_info, FAILURE));

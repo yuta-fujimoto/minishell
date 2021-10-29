@@ -17,7 +17,7 @@ bool	ft_exit(char **av, t_set *set, bool print_exit)
 {
 	int	status;
 	int	flg;
-	
+
 	if (print_exit)
 		ft_putendl_fd("exit", STDERR_FILENO);
 	if (!av[1])

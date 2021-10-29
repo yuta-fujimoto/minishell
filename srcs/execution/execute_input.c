@@ -1,6 +1,6 @@
 #include "../../incs/minishell.h"
 
-extern t_sig_info g_sig_info;
+extern t_sig_info	g_sig_info;
 
 bool	minishell_error(t_redir *redir, int *rlt, bool no_prnt)
 {	

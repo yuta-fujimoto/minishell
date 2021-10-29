@@ -1,6 +1,6 @@
 #include "../../incs/minishell.h"
 
-static char *create_path_for_cd(char **cmps, int end)
+static char	*create_path_for_cd(char **cmps, int end)
 {
 	char	*path;
 	char	*tmp;
@@ -10,7 +10,7 @@ static char *create_path_for_cd(char **cmps, int end)
 	if (end == 0)
 		return (ft_strdup("/"));
 	path = ft_strdup("");
-	if(!path)
+	if (!path)
 		return (NULL);
 	while (cmps[i] && i < end)
 	{
@@ -45,7 +45,7 @@ static bool	is_valid_path(char **cmps, int end)
 static void	skip_dot(char **cmps)
 {
 	int	i;
-	int j;
+	int	j;
 	int	cmps_len;
 
 	i = 0;
@@ -66,7 +66,7 @@ static void	skip_dot(char **cmps)
 static bool	skip_dot_dot(char **cmps)
 {
 	int	i;
-	int j;
+	int	j;
 
 	j = 0;
 	i = ft_str_arr_search(cmps, "..");
@@ -101,12 +101,14 @@ char	*canonical_path(char *pathname)
 		return (NULL);
 	skip_dot(cmps);
 	while (ft_str_arr_search(cmps, "..") != -1)
+	{
 		if (!skip_dot_dot(cmps))
 		{
 			free(pathname);
 			ft_free_str_arr(cmps);
 			return (NULL);
 		}
+	}
 	cano_path = create_path_for_cd(cmps, ft_str_arr_len(cmps));
 	free(pathname);
 	ft_free_str_arr(cmps);

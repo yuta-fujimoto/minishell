@@ -1,6 +1,6 @@
 #include "../../incs/minishell.h"
 
-extern	t_sig_info g_sig_info;
+extern t_sig_info	g_sig_info;
 
 static void	init_redirection(t_redir *redir)
 {
@@ -45,7 +45,7 @@ bool	redirect_fds(t_redir *redir)
 bool	ms_redirection(t_node *node, t_redir *redir, t_doclist *hdocs)
 {
 	int			i;
-	t_doclist		*tmp;
+	t_doclist	*tmp;
 
 	i = -1;
 	tmp = hdocs;

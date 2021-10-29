@@ -6,7 +6,7 @@ t_sig_info	g_sig_info = {0, false, NULL, false, false, 0, 0, 0};
 void	ft_printf(void *word)
 {
 	if (word)
-	dprintf(fd, "[%s]\n", (char *)word);
+		dprintf(fd, "[%s]\n", (char *)word);
 }
 
 void	free_set(t_set *set)
@@ -98,7 +98,7 @@ bool	mod_termios_attr(t_set *set, int init)
 	{
 		perror(NULL);
 		g_sig_info.sys_error = true;
-		return(false);
+		return (false);
 	}
 	return (true);
 }

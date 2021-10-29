@@ -53,7 +53,7 @@ static bool	free_pidlst(t_pidlist **pidlst, int rlt, t_set *set)
 {
 	ft_pidlstclear(pidlst);
 	if (!mod_termios_attr(set, true))
-			rlt = FAILURE;
+		rlt = FAILURE;
 	return (rlt);
 }
 

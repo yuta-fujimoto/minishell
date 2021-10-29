@@ -1,6 +1,6 @@
 #include "../../incs/minishell.h"
 
-static bool update_first_pipe(t_pipes *pipes)
+static bool	update_first_pipe(t_pipes *pipes)
 {
 	if (close(pipes->fd_a[0]) == SYS_ERROR)
 	{
