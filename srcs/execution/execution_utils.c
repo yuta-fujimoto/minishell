@@ -4,10 +4,13 @@ extern t_sig_info	g_sig_info;
 
 int	exec_cmd_error(char *cmd, char *cmd_path, bool child_failure)
 {
+	if (cmd_path)
+	{
+		free(cmd_path);
+		cmd_path = NULL;
+	}
 	if (child_failure)
 		return (CHILD_FAILURE);
-	free(cmd_path);
-	cmd_path = NULL;
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(cmd, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
