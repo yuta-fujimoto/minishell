@@ -31,6 +31,12 @@ static bool	reset_fds(t_redir *redir)
 	return (true);
 }
 
+static bool	is_acceptable_error(int errnum)
+{
+	return (errnum == ENOENT || errnum == EACCES || errnum == ENOTDIR
+		|| errnum == EISDIR);
+}
+
 static bool	check_new_fd(char *filename, t_redir *redir)
 {
 	if ((redir->status == RDIR || redir->status == RRDIR)
@@ -41,13 +47,14 @@ static bool	check_new_fd(char *filename, t_redir *redir)
 		redir->nofile = true;
 	if (!redir->nofile)
 		return (true);
-	if (errno == ENOENT || errno == EACCES) //maybe it needs to be more inclusive?
+	if (is_acceptable_error(errno))
 	{
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
 		ft_putstr_fd(filename, STDERR_FILENO);
 		ft_putstr_fd(": ", STDERR_FILENO);
 		g_sig_info.exit_status = EXIT_FAILURE;
 		perror(NULL);
+		return (false);
 	}
 	else
 		g_sig_info.sys_error = true;

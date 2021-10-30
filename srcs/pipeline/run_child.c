@@ -1,5 +1,6 @@
 #include "../../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
 static bool	update_first_pipe(t_pipes *pipes)
 {
 	if (close(pipes->fd_a[0]) == SYS_ERROR)
@@ -73,11 +74,15 @@ void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info)
 	extern char	**environ;
 
 	if (!update_pipes(pipes))
-		exit(SYS_ERROR);
+		exit(CHILD_FAILURE);
 	if (has_redirection(n))
 	{	
-		if (!ms_redirection(n, p_info->rdr, pipes->tmp_hdocs))
-			exit(REDIRECTION_FAILURE);
+		if (!ms_redirection(n, p_info->rdr, &set->tmp_hdocs))
+		{
+			if (g_sig_info.sys_error)
+				exit(CHILD_FAILURE);
+			exit(EXIT_FAILURE);
+		}
 	}
 	if (p_info->touch)
 		exit(EXIT_SUCCESS);

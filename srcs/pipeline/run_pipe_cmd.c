@@ -67,6 +67,21 @@ bool	has_heredoc(char **av)
 	return (false);
 }
 
+static void	update_heredocs(t_node exp_node, t_set *set)
+{
+	int	i;
+
+	i = -1;
+	if (has_heredoc(exp_node.av))
+	{
+		while (exp_node.av[++i])
+		{
+			if (str_equal(exp_node.av[i], "<<", 3))
+				set->tmp_hdocs = set->tmp_hdocs->next;
+		}
+	}
+}
+
 bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 {
 	pid_t		c_pid;
@@ -80,7 +95,7 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 		return (expansion_node_conclude(exp_node, SUCCESS));
 	if (init_pipe_cmd(exp_node, &p_info, redir) == FAILURE)
 		return (end_pipe(exp_node, &p_info, FAILURE));
-	if (!p_info.cmd_path && !is_buildin(node.av[0]) && !p_info.touch)
+	if (!p_info.cmd_path && !is_buildin(p_info.cmd[0]) && !p_info.touch)
 		return (pipe_cmd_not_found(exp_node, &p_info, pipes));
 	c_pid = fork();
 	if (c_pid < 0)
@@ -89,20 +104,7 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)
 		run_child(exp_node, pipes, set, &p_info);
 	else
 	{
-		int	i = -1;
-		if (has_heredoc(node.av))
-		{
-			if (close(pipes->tmp_hdocs->fds[0]) == SYS_ERROR)
-			{
-				g_sig_info.sys_error = true;
-				return (end_pipe(exp_node, &p_info, FAILURE));
-			}
-			while (node.av[++i])
-			{
-				if (str_equal(node.av[i], "<<", 3))
-					pipes->tmp_hdocs = pipes->tmp_hdocs->next;
-			}
-		}
+		update_heredocs(*exp_node, set);
 		if (!ft_pidlstadd_back(&pipes->pidlst, ft_pidlstnew(c_pid)))
 			return (end_pipe(exp_node, &p_info, FAILURE));
 	}

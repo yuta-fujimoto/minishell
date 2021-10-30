@@ -63,7 +63,7 @@ char	**get_cmd(t_node *node, t_set *set, t_redir *redir, bool *touch)
 {
 	if (has_redirection(node))
 	{
-		if (!ms_redirection(node, redir, set->heredoc_lst))
+		if (!ms_redirection(node, redir, &set->tmp_hdocs))
 			return (NULL);
 		return (create_new_cmd(node, touch));
 	}

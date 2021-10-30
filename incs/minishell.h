@@ -51,6 +51,7 @@ typedef struct s_set
 	unsigned int	safe_c_lflag;
 	unsigned char	safe_c_vquit;	
 	t_doclist		*heredoc_lst;
+	t_doclist		*tmp_hdocs;
 }	t_set;
 
 typedef struct s_pipes
@@ -59,7 +60,6 @@ typedef struct s_pipes
 	int			fd_a[2];
 	int			fd_b[2];
 	t_pidlist	*pidlst;
-	t_doclist	*tmp_hdocs;
 }				t_pipes;
 
 typedef struct s_redir
@@ -98,7 +98,6 @@ typedef struct s_pipe_info
 
 # define SIGINT_CALL -2
 # define SYS_ERROR -1
-# define CHILD_FAILURE -1
 # define SAME 0
 # define FAILURE 1
 # define SUCCESS 0
@@ -127,8 +126,8 @@ typedef struct s_pipe_info
 # define END_PIPE 20
 /* piping */
 
-# define REDIRECTION_FAILURE 21
-/* custom exit statuses */
+# define CHILD_FAILURE 21
+/* CUSTOM EXIT STATUSES */
 
 # define C_LFLAGS 536872335
 /* TERMIOS FLAGS INCLUDING ECHOCTL */
@@ -219,7 +218,7 @@ void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info);
 
 bool	close_fd(int fd, int rlt);
 bool	reset_stdio_fd(t_redir *redir, int rlt);
-bool	ms_redirection(t_node *node, t_redir *redir, t_doclist *hdocs);
+bool	ms_redirection(t_node *node, t_redir *redir, t_doclist **hdocs);
 bool	is_rdir(int str_flg);
 bool	is_open_fd(int fd);
 bool	end_redirection(char **cmd, t_redir *redir, int rlt);

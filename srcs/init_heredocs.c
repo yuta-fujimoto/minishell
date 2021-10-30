@@ -98,5 +98,6 @@ bool	init_heredocs(t_tree *parent, t_set *set, int *rlt)
 		close_heredocs(set->heredoc_lst);
 		return (minishell_error(NULL, rlt, false));
 	}
+	set->tmp_hdocs = set->heredoc_lst;
 	return (SUCCESS);
 }
