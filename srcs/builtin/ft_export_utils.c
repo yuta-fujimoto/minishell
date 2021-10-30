@@ -13,14 +13,15 @@ int	identifier_type(char *s)
 	size_t	i;
 
 	i = 0;
-	if (!ft_isalpha(s[i]))
+	if (!ft_isalpha(s[i]) && s[i] != '_')
 		return (ERROR);
 	while (s[i])
 	{
 		if ((s[i] == '+' && s[i + 1] == '=') || s[i] == '=')
 			break ;
-		if (!ft_isalnum(s[i++]))
+		if (!ft_isalnum(s[i]) && s[i] != '_')
 			return (ERROR);
+		i++;
 	}
 	if (i == ft_strlen(s))
 		return (NOTHING);
