@@ -22,8 +22,8 @@ bool	wait_options(pid_t pid, bool pipeline)
 	int	wstatus;
 
 	waitpid(pid, &wstatus, 0);
-	if ((!WIFEXITED(wstatus) && !pipeline)
-		|| WEXITSTATUS(wstatus) == CHILD_FAILURE)
+	if (((!WIFEXITED(wstatus) && !pipeline)
+		|| WEXITSTATUS(wstatus) == CHILD_FAILURE) && WEXITSTATUS(wstatus) != EXIT_SUCCESS)
 		return (false);
 	g_sig_info.exit_status = WEXITSTATUS(wstatus);
 	return (true);
