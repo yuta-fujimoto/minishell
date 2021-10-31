@@ -2,7 +2,7 @@
 
 extern t_sig_info	g_sig_info;
 
-static void	init_termios_attr(t_set *set)
+void	init_termios_attr(t_set *set)
 {
 	g_sig_info.exit_status = EXIT_SUCCESS;
 	if (isatty(STDIN_FILENO) && tcgetattr(STDIN_FILENO, &set->t) == SYS_ERROR)
@@ -46,7 +46,7 @@ static void	sigquit_handler(int sigquit)
 	(void)sigquit;
 }
 
-static void	init_sig_handler(void)
+void	init_sig_handler(void)
 {
 	if (signal(SIGINT, sigint_handler) == SIG_ERR)
 		exit(EXIT_FAILURE);
@@ -58,5 +58,4 @@ void	ms_init(t_set *set)
 {
 	init_sig_handler();
 	init_termios_attr(set);
-	init_env(set);
 }

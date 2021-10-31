@@ -43,8 +43,9 @@ int	main(void)
 	bool	is_not_syntax_error;
 
 	init_params(&set);
-	set.input = readline("minishell > ");
 	ms_init(&set);
+	set.input = readline("minishell > ");
+	init_env(&set);
 	while (1)
 	{
 		if (!set.input)
