@@ -11,10 +11,13 @@ static void	init_params(t_set *set)
 		g_sig_info.term_stdin = NULL;
 	}
 	g_sig_info.signal = 0;
-	set->exit_done = false;
 	g_sig_info.heredoc_sigint = false;
 	g_sig_info.heredoc_sigeof = false;
 	g_sig_info.child = false;
+	set->exit_done = false;
+	set->lst = NULL;
+	set->tree = NULL;
+	set->heredoc_lst = NULL;
 }
 
 static void	ms_execution(t_set *set)
