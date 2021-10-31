@@ -91,7 +91,6 @@ static bool	write_heredocs(t_doclist *heredoc_lst)
 
 bool	init_heredocs(t_tree *parent, t_set *set, int *rlt)
 {
-	set->heredoc_lst = NULL;
 	if (open_heredocs(parent, set, rlt) == FAILURE)
 		return (FAILURE);
 	if (!write_heredocs(set->heredoc_lst))
