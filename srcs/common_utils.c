@@ -1,5 +1,7 @@
 #include "../incs/minishell.h"
 
+extern t_sig_info	g_sig_info;
+
 int	create_path(char *cmd, char **paths, char **cmd_path)
 {
 	char		*abs_path;
@@ -36,10 +38,11 @@ bool	str_equal(char *s1, char *s2, size_t n)
 	return (false);
 }
 
-void	mod_termios_attr(t_set *set, int init)
+
+bool	mod_termios_attr(t_set *set, int init)
 {
-	unsigned int	lflag;
-	unsigned char	vquit;
+	int	lflag;
+	int	vquit;
 
 	if (init)
 	{
@@ -56,8 +59,10 @@ void	mod_termios_attr(t_set *set, int init)
 	if (isatty(STDIN_FILENO) && tcsetattr(STDIN_FILENO, TCSANOW, &set->t) == SYS_ERROR)
 	{
 		perror(NULL);
-		exit(EXIT_FAILURE);
+		g_sig_info.sys_error = true;
+		return (false);
 	}
+	return (true);
 }
 
 void	free_set(t_set *set)
@@ -69,7 +74,14 @@ void	free_set(t_set *set)
 	{
 		free(set->input);
 		set->input = NULL;
+	}	
+	if (set->heredoc_lst)
+	{
+		close_heredocs(set->heredoc_lst);
+		ft_doclstclear(&set->heredoc_lst);
 	}
+	if (g_sig_info.sys_error)
+		ms_exit(set, EXIT_FAILURE, true);
 }
 
 void	ms_exit(t_set *set, int exit_status, bool exit_done)
@@ -79,6 +91,9 @@ void	ms_exit(t_set *set, int exit_status, bool exit_done)
 	free_environ();
 	environ = set->safe_envrion;
 	if (exit_done)
-		mod_termios_attr(set, false);
+	{
+		if (!mod_termios_attr(set, false))
+			exit(EXIT_FAILURE);
+	}
 	exit(exit_status);
 }

@@ -8,7 +8,7 @@ void	init_pwd(t_env *env)
 	if (!pwd_env)
 	{
 		if (!ft_envadd_back(&env, ft_envnew(ft_strdup("PWD"),
-				get_current_directory())))
+					get_current_directory())))
 			exit(EXIT_FAILURE);
 		return ;
 	}
@@ -27,7 +27,7 @@ void	init_shlvl(t_env *env)
 	if (!shlvl_env)
 	{
 		if (!ft_envadd_back(&env, ft_envnew(ft_strdup("SHLVL"),
-				ft_strdup("0"))))
+					ft_strdup("0"))))
 			exit(EXIT_FAILURE);
 		return ;
 	}
