@@ -9,11 +9,20 @@ static bool	free_cmd_path(char *cmd_path)
 	return (FAILURE);
 }
 
-static int	command_not_found(char *cmd)
+static int	command_not_found(char *cmd, bool path_error)
 {
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
-	ft_putstr_fd(cmd, STDERR_FILENO);
-	ft_putendl_fd(": command not found", STDERR_FILENO);
+	if (path_error)
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		ft_putendl_fd(": No such file or directory", STDERR_FILENO);	
+	}
+	else
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		ft_putendl_fd(": command not found", STDERR_FILENO);
+	}
 	g_sig_info.exit_status = 127;
 	return (SUCCESS);
 }
@@ -39,11 +48,14 @@ static bool	run_gnu_cmd(char **cmd, t_set *set)
 	pid_t		c_pid;
 	char		*cmd_path;
 	extern char	**environ;
+	bool		path_error;
 
-	if (create_cmd_path(cmd, &cmd_path) == FAILURE)
+	cmd_path = NULL;
+	path_error = false;
+	if (create_cmd_path(cmd, &cmd_path, &path_error) == FAILURE)
 		return (FAILURE);
 	if (!cmd_path)
-		return (command_not_found(cmd[0]));
+		return (command_not_found(cmd[0], path_error));
 	c_pid = fork();
 	if (c_pid == SYS_ERROR)
 		return (free_cmd_path(cmd_path));

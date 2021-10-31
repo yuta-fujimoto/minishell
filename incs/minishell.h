@@ -90,10 +90,11 @@ typedef struct s_sig_info
 
 typedef struct s_pipe_info
 {
-	t_redir		*rdr;
-	char		**cmd;
-	char		*cmd_path;
-	bool		touch;
+	t_redir	*rdr;
+	char	**cmd;
+	char	*cmd_path;
+	bool	touch;
+	bool	path_error;
 }				t_pipe_info;
 
 # define SIGINT_CALL -2
@@ -172,7 +173,7 @@ void	free_tree(t_tree *l);
 /* tree library */
 
 bool	wait_options(pid_t pid, bool pipeline);
-int		create_cmd_path(char **cmd, char **cmd_path);
+int		create_cmd_path(char **cmd, char **cmd_path, bool *path_error);
 bool	execute_input(t_tree *l, t_set *set, int *rlt);
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir);
 bool	mod_termios_attr(t_set *set, int init);
@@ -234,4 +235,5 @@ bool	redirect_fds(t_redir *redir);
 bool	has_heredoc(char **av);
 void	close_heredocs(t_doclist *hdocs);
 bool	set_sys_error(void);
+bool	is_acceptable_error(int errnum);
 #endif

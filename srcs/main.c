@@ -1,7 +1,7 @@
 #include "../incs/minishell.h"
 
 int			fd;
-t_sig_info	g_sig_info = {0, false, NULL, false, false, 0, 0, 0};
+t_sig_info	g_sig_info = {0, 0, false, NULL, false, false, false, false};
 
 void	ft_printf(void *word)
 {
