@@ -18,17 +18,30 @@ bool	pipe_exit_failure(t_pipes *pipes)
 	return (FAILURE);
 }
 
-void	close_pipes(t_pipes *pipes)
+bool	close_pipes(t_pipes *pipes)
 {
+	bool	rlt;
+
+	rlt = true;
 	if (pipes->status == FIRST_PIPE)
-		close(pipes->fd_a[1]);
+	{
+		if (!close_fd(pipes->fd_a[1], SUCCESS))
+			rlt = false;
+	}
 	else if (pipes->status == MIDDLE_PIPE)
-	{	
-		close(pipes->fd_a[0]);
-		close(pipes->fd_b[1]);
+	{
+	
+		if (!close_fd(pipes->fd_a[0], SUCCESS))
+			rlt = false;
+		if (!close_fd(pipes->fd_b[1], SUCCESS))
+			rlt = false;
 	}
 	else
-		close(pipes->fd_a[0]);
+	{
+		if (!close_fd(pipes->fd_a[0], SUCCESS))
+			rlt = false;
+	}
+	return (rlt);
 }
 
 void	update_pipes_status(t_node node, t_pipes *pipes)

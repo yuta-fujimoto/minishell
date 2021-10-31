@@ -212,7 +212,7 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir);
 bool	pipe_exit_failure(t_pipes *pipes);
 void	update_pipes_status(t_node node, t_pipes *pipes);
 void	swap_fds(t_pipes *pipes);
-void	close_pipes(t_pipes *pipes);
+bool	close_pipes(t_pipes *pipes);
 t_node	decide_cmd_node(t_tree *parent, t_pipes *pipes);
 void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info);
 /* piping */
