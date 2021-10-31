@@ -139,7 +139,7 @@ int		create_path(char *cmd, char **paths, char **cmd_path);
 int		exec_cmd_error(char *cmd, char *cmd_path, bool malloc_failure);
 bool	str_equal(char *s1, char *s2, size_t n);
 void	print_str(unsigned int i, char *s);
-// void	mod_termios_attr(t_set *set, int init);
+void	mod_termios_attr(t_set *set, int init);
 void	ms_exit(t_set *set, int exit_status, bool exit_done);
 /* utils */
 
@@ -182,7 +182,6 @@ bool	wait_options(pid_t pid, bool pipeline);
 int		create_cmd_path(char **cmd, char **cmd_path);
 bool	execute_input(t_tree *l, t_set *set, int *rlt);
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir);
-bool	mod_termios_attr(t_set *set, int init);
 bool	minishell_error(t_redir *redir, int *rlt, bool no_prnt);
 /* execution */
 
