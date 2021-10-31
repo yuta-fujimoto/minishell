@@ -10,6 +10,8 @@ SRCS :=	srcs/main.c \
 		srcs/parser2.c \
 		srcs/tree.c \
 		srcs/syntax_error.c \
+		srcs/init_heredocs.c \
+		srcs/handle_heredoc.c \
 		srcs/execution/execute_input.c \
 		srcs/execution/execute_simple_cmd.c \
 		srcs/execution/create_cmd_path.c \
@@ -40,7 +42,6 @@ SRCS :=	srcs/main.c \
 		srcs/redirection/set_redirection.c \
 		srcs/redirection/redirection_handling.c \
 		srcs/redirection/redirection_utils.c \
-		srcs/redirection/open_heredoc.c \
 		srcs/redirection/create_new_cmd.c
 OBJS := $(SRCS:.c=.o)
 INCS := ./incs

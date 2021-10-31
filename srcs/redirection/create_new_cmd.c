@@ -37,7 +37,7 @@ char	**create_new_cmd(t_node *node, bool *touch)
 	while (node->av[i])
 	{
 		if (is_rdir(node->str_flgs[i]))
-			i += 2;/*this could be trouble, ensure if > is not followed by anything, it is syntax error*/
+			i += 2;
 		else
 			new_cmd[j++] = node->av[i++];
 	}
