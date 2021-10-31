@@ -10,6 +10,8 @@ SRCS :=	srcs/main.c \
 		srcs/parser2.c \
 		srcs/tree.c \
 		srcs/syntax_error.c \
+		srcs/init/ms_init.c \
+		srcs/init/ms_init2.c \
 		srcs/init_heredocs.c \
 		srcs/handle_heredoc.c \
 		srcs/execution/execute_input.c \
