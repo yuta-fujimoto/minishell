@@ -21,15 +21,11 @@ bool	ft_exit(char **av, t_set *set, bool print_exit)
 	if (print_exit)
 		ft_putendl_fd("exit", STDERR_FILENO);
 	if (!av[1])
-	{
-		free_set(set);
 		ms_exit(set, g_sig_info.exit_status, print_exit);
-	}
 	status = ft_atol(av[1], &flg) % 256;
 	if (flg)
 	{
 		exit_error(av[1], "numeric argument required");
-		free_set(set);
 		ms_exit(set, 255, print_exit);
 	}
 	if (av[2])

@@ -74,7 +74,7 @@ void	free_set(t_set *set)
 	{
 		free(set->input);
 		set->input = NULL;
-	}	
+	}
 	if (set->heredoc_lst)
 	{
 		close_heredocs(set->heredoc_lst);
@@ -92,6 +92,7 @@ void	ms_exit(t_set *set, int exit_status, bool exit_done)
 	environ = set->safe_envrion;
 	if (exit_done)
 	{
+		free_set(set);
 		if (!mod_termios_attr(set, false))
 			exit(EXIT_FAILURE);
 	}
