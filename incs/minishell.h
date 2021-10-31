@@ -139,7 +139,7 @@ int		create_path(char *cmd, char **paths, char **cmd_path);
 int		exec_cmd_error(char *cmd, char *cmd_path, bool malloc_failure);
 bool	str_equal(char *s1, char *s2, size_t n);
 void	print_str(unsigned int i, char *s);
-void	mod_termios_attr(t_set *set, int init);
+bool	mod_termios_attr(t_set *set, int init);
 void	ms_exit(t_set *set, int exit_status, bool exit_done);
 /* utils */
 
