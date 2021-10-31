@@ -20,7 +20,7 @@ int	create_cmd_path(char **cmd, char **cmd_path)
 		paths = find_paths();
 		if (!paths)
 			return (FAILURE);
-		if (create_path(cmd[0], paths, cmd_path) == FAILURE) 
+		if (create_path(cmd[0], paths, cmd_path) == FAILURE)
 			return (FAILURE);
 	}
 	else

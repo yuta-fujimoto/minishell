@@ -49,7 +49,9 @@ typedef struct s_set
 	t_list			*lst;
 	struct termios	t;
 	unsigned int	safe_c_lflag;
-	unsigned char	safe_c_vquit;
+	unsigned char	safe_c_vquit;	
+	t_doclist		*heredoc_lst;
+	t_doclist		*tmp_hdocs;
 }	t_set;
 
 typedef struct s_pipes
@@ -71,7 +73,7 @@ typedef struct s_redir
 	int		rr_flags;
 	int		l_flags;
 	int		permissions;
-	bool	perror;
+	bool	nofile;
 }				t_redir;
 
 typedef struct s_sig_info
@@ -82,19 +84,20 @@ typedef struct s_sig_info
 	char	*term_stdin;
 	bool	heredoc_sigint;
 	bool	heredoc_sigeof;
+	bool	sys_error;
+	bool	child;
 }				t_sig_info;
 
 typedef struct s_pipe_info
 {
-	t_redir	*rdr;
-	char	**cmd;
-	char	*cmd_path;
-	bool	touch;
+	t_redir		*rdr;
+	char		**cmd;
+	char		*cmd_path;
+	bool		touch;
 }				t_pipe_info;
 
 # define SIGINT_CALL -2
 # define SYS_ERROR -1
-# define CHILD_FAILURE -1
 # define SAME 0
 # define FAILURE 1
 # define SUCCESS 0
@@ -123,8 +126,8 @@ typedef struct s_pipe_info
 # define END_PIPE 20
 /* piping */
 
-# define REDIRECTION_FAILURE 21
-/* custom exit statuses */
+# define CHILD_FAILURE 21
+/* CUSTOM EXIT STATUSES */
 
 # define C_LFLAGS 536872335
 /* TERMIOS FLAGS INCLUDING ECHOCTL */
@@ -170,9 +173,10 @@ void	free_tree(t_tree *l);
 
 bool	wait_options(pid_t pid, bool pipeline);
 int		create_cmd_path(char **cmd, char **cmd_path);
-bool	execute_input(t_tree *l, t_set *set);
+bool	execute_input(t_tree *l, t_set *set, int *rlt);
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir);
-void	mod_termios_attr(t_set *set, int init);
+bool	mod_termios_attr(t_set *set, int init);
+bool	minishell_error(t_redir *redir, int *rlt, bool no_prnt);
 /* execution */
 
 void	ft_export_error(char *arg);
@@ -199,8 +203,7 @@ int		ft_unset(char **av);
 int		ft_pwd(void);
 bool	ft_exit(char **av, t_set *set, bool print_exit);
 bool	is_buildin(char *cmd);
-int		run_builtin_cmd(char **av, t_set *set, bool print_exit
-);
+int		run_builtin_cmd(char **av, t_set *set, bool print_exit);
 /* builtin */
 
 bool	execute_pipeline(t_tree *parent, t_set *set, t_redir *redir);
@@ -215,15 +218,20 @@ void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info);
 
 bool	close_fd(int fd, int rlt);
 bool	reset_stdio_fd(t_redir *redir, int rlt);
-bool	ms_redirection(t_node *node, t_redir *redir);
+bool	ms_redirection(t_node *node, t_redir *redir, t_doclist **hdocs);
 bool	is_rdir(int str_flg);
 bool	is_open_fd(int fd);
 bool	end_redirection(char **cmd, t_redir *redir, int rlt);
 bool	has_redirection(t_node *node);
-bool	set_redirection(char **cmd, int i, t_redir *redir);
-int		open_heredoc(char *delimiter);
-char	**get_cmd(t_node *node, t_redir *redir, bool *touch);
+bool	set_redirection(char **cmd, int i, t_redir *redir, t_doclist *hdocs);
+int		handle_heredoc(int fds[2], char *delimiter);
+char	**get_cmd(t_node *node, t_set *set, t_redir *redir, bool *touch);
 char	**create_new_cmd(t_node *node, bool *touch);
 /* redirection */
 
+bool	init_heredocs(t_tree *parent, t_set *set, int *rlt);
+bool	redirect_fds(t_redir *redir);
+bool	has_heredoc(char **av);
+void	close_heredocs(t_doclist *hdocs);
+bool	set_sys_error(void);
 #endif
