@@ -58,38 +58,10 @@ static bool	init_pipe_cmd(t_node *exp_node, t_pipe_info *p_info, t_redir *redir)
 		return (FAILURE);
 	if (p_info->touch)
 		return (SUCCESS);
-	if (get_cmd_path(p_info->cmd, &p_info->cmd_path, &p_info->path_error) == FAILURE)
+	if (get_cmd_path(p_info->cmd, &p_info->cmd_path,
+			&p_info->path_error) == FAILURE)
 		return (FAILURE);
 	return (SUCCESS);
-}
-
-bool	has_heredoc(char **av)
-{
-	int	i;
-
-	i = 0;
-	while (av[i])
-	{
-		if (str_equal(av[i], "<<", 3))
-			return (true);
-		i++;
-	}
-	return (false);
-}
-
-static void	update_heredocs(t_node exp_node, t_set *set)
-{
-	int	i;
-
-	i = -1;
-	if (has_heredoc(exp_node.av))
-	{
-		while (exp_node.av[++i])
-		{
-			if (str_equal(exp_node.av[i], "<<", 3))
-				set->tmp_hdocs = set->tmp_hdocs->next;
-		}
-	}
 }
 
 bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir)

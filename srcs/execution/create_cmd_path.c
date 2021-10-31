@@ -24,7 +24,7 @@ int	create_cmd_path(char **cmd, char **cmd_path, bool *path_error)
 	{	
 		paths = find_paths(&malloc_failure);
 		if (malloc_failure)
-			return (FAILURE);	
+			return (FAILURE);
 		else if (!paths)
 		{
 			*path_error = true;

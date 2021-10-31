@@ -178,6 +178,8 @@ bool	execute_input(t_tree *l, t_set *set, int *rlt);
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir);
 bool	mod_termios_attr(t_set *set, int init);
 bool	minishell_error(t_redir *redir, int *rlt, bool no_prnt);
+bool	free_cmd_path(char *cmd_path);
+int	command_not_found(char *cmd, bool path_error);
 /* execution */
 
 void	ft_export_error(char *arg);
@@ -236,4 +238,5 @@ bool	has_heredoc(char **av);
 void	close_heredocs(t_doclist *hdocs);
 bool	set_sys_error(void);
 bool	is_acceptable_error(int errnum);
+void	update_heredocs(t_node exp_node, t_set *set);
 #endif

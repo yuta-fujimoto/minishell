@@ -2,31 +2,6 @@
 
 extern t_sig_info	g_sig_info;
 
-static bool	free_cmd_path(char *cmd_path)
-{
-	free(cmd_path);
-	cmd_path = NULL;
-	return (FAILURE);
-}
-
-static int	command_not_found(char *cmd, bool path_error)
-{
-	if (path_error)
-	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(cmd, STDERR_FILENO);
-		ft_putendl_fd(": No such file or directory", STDERR_FILENO);	
-	}
-	else
-	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(cmd, STDERR_FILENO);
-		ft_putendl_fd(": command not found", STDERR_FILENO);
-	}
-	g_sig_info.exit_status = 127;
-	return (SUCCESS);
-}
-
 static bool	run_gnu_parent(int c_pid, t_set *set, char *cmd_path)
 {
 	g_sig_info.child = true;
@@ -83,6 +58,17 @@ char	**get_cmd(t_node *node, t_set *set, t_redir *redir, bool *touch)
 		return (node->av);
 }
 
+static bool	run_cmd(char **cmd, t_set *set)
+{
+	bool	rlt;
+
+	if (is_buildin(cmd[0]))
+		rlt = run_builtin_cmd(cmd, set, true);
+	else
+		rlt = run_gnu_cmd(cmd, set);
+	return (rlt);
+}
+
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 {
 	int		rlt;
@@ -104,12 +90,7 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir)
 		return (end_redirection(NULL, redir, FAILURE));
 	}
 	else if (!touch)
-	{
-		if (is_buildin(cmd[0]))
-			rlt = run_builtin_cmd(cmd, set, true);
-		else
-			rlt = run_gnu_cmd(cmd, set);
-	}
+		rlt = run_cmd(cmd, set);
 	if (has_redirection(exp_node))
 		rlt = end_redirection(cmd, redir, rlt);
 	return (expansion_node_conclude(exp_node, rlt));

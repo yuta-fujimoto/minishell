@@ -30,7 +30,6 @@ bool	close_pipes(t_pipes *pipes)
 	}
 	else if (pipes->status == MIDDLE_PIPE)
 	{
-	
 		if (!close_fd(pipes->fd_a[0], SUCCESS))
 			rlt = false;
 		if (!close_fd(pipes->fd_b[1], SUCCESS))
