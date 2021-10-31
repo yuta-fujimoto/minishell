@@ -17,7 +17,7 @@ static int	search_path(char **abs_path, char **exec_path,
 			ft_free_str_arr(paths);
 			return (FAILURE);
 		}
-		if (stat(*abs_path, &ss) == 0 && (ss.st_mode & S_IXUSR))
+		if (stat(*abs_path, &ss) == 0 && (ss.st_mode))
 			break ;
 		if (stat(*abs_path, &ss) == 0 && exec_path == NULL)
 			*exec_path = *abs_path;
