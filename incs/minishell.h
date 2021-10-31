@@ -187,7 +187,7 @@ bool	execute_input(t_tree *l, t_set *set, int *rlt);
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir);
 bool	minishell_error(t_redir *redir, int *rlt, bool no_prnt);
 bool	free_cmd_path(char *cmd_path);
-int	command_not_found(char *cmd, bool path_error);
+int		command_not_found(char *cmd, bool path_error);
 /* execution */
 
 void	ft_export_error(char *arg);
