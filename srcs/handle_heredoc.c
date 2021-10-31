@@ -64,6 +64,5 @@ int	handle_heredoc(int fds[2], char *delimiter)
 	}
 	if (line)
 		free(line);
-	line = NULL;
 	return (conclude_heredoc(fds));
 }

@@ -14,6 +14,7 @@ SRCS :=	srcs/main.c \
 		srcs/init/ms_init2.c \
 		srcs/init_heredocs.c \
 		srcs/handle_heredoc.c \
+		srcs/ms_exit.c \
 		srcs/execution/execute_input.c \
 		srcs/execution/execute_simple_cmd.c \
 		srcs/execution/execute_simple_cmd_utils.c \

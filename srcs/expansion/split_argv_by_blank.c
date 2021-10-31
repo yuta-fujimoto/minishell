@@ -27,7 +27,8 @@ static int	add_lst(t_node *node, int i, t_list **lst)
 	if (node->str_flgs[i] == STR_VAL)
 		rlt = add_lst_by_splited(lst, ft_split(node->av[i], ' '));
 	else
-		rlt = ft_lstadd_back(lst, ft_lstnew(ft_strdup(node->av[i]), node->str_flgs[i]));
+		rlt = ft_lstadd_back(lst,
+				ft_lstnew(ft_strdup(node->av[i]), node->str_flgs[i]));
 	if (!rlt)
 	{
 		ft_lstclear(lst, free);
@@ -58,7 +59,7 @@ static char	**list_to_argv(t_list *lst)
 
 static int	reset_str_flgs(t_node *node, t_list *lst)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	free(node->str_flgs);
