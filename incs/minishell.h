@@ -142,6 +142,8 @@ bool	str_equal(char *s1, char *s2, size_t n);
 void	print_str(unsigned int i, char *s);
 bool	mod_termios_attr(t_set *set, int init);
 void	ms_exit(t_set *set, int exit_status, bool exit_done);
+bool	set_sys_error(void);
+bool	is_acceptable_error(int errnum);
 /* utils */
 
 void	init_env(t_set *set);
@@ -236,13 +238,13 @@ bool	set_redirection(char **cmd, int i, t_redir *redir, t_doclist *hdocs);
 int		handle_heredoc(int fds[2], char *delimiter);
 char	**get_cmd(t_node *node, t_set *set, t_redir *redir, bool *touch);
 char	**create_new_cmd(t_node *node, bool *touch);
+bool	redirect_fds(t_redir *redir);
 /* redirection */
 
 bool	init_heredocs(t_tree *parent, t_set *set, int *rlt);
-bool	redirect_fds(t_redir *redir);
 bool	has_heredoc(char **av);
 void	close_heredocs(t_doclist *hdocs);
-bool	set_sys_error(void);
-bool	is_acceptable_error(int errnum);
 void	update_heredocs(t_node exp_node, t_set *set);
+/* heredocs */
+
 #endif
