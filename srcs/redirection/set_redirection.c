@@ -34,7 +34,7 @@ static bool	reset_fds(t_redir *redir)
 bool	is_acceptable_error(int errnum)
 {
 	return (errnum == ENOENT || errnum == EACCES || errnum == ENOTDIR
-		|| errnum == EISDIR || errnum == 14);
+		|| errnum == EISDIR);
 }
 
 static bool	check_new_fd(char *filename, t_redir *redir)
