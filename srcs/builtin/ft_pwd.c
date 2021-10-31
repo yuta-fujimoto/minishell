@@ -12,7 +12,7 @@ static char	*logical_getcwd(void)
 	if (!wd || wd[0] != '/')
 		return (NULL);
 	if (stat(wd, &lg) == 0 && stat(".", &phy) == 0
-			&& lg.st_ino == phy.st_ino && lg.st_dev == phy.st_dev)
+		&& lg.st_ino == phy.st_ino && lg.st_dev == phy.st_dev)
 		return (wd);
 	return (NULL);
 }

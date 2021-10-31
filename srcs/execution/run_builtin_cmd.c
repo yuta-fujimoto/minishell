@@ -2,7 +2,7 @@
 
 static char	*ft_strlowcase(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i] != '\0')
@@ -17,7 +17,6 @@ static char	*ft_strlowcase(char *str)
 bool	is_buildin(char *cmd)
 {
 	cmd = ft_strlowcase(cmd);
-
 	if (str_equal(cmd, "export", 7))
 		return (true);
 	if (str_equal(cmd, "env", 4))
@@ -34,7 +33,6 @@ bool	is_buildin(char *cmd)
 		return (true);
 	return (false);
 }
-
 
 int	run_builtin_cmd(char **av, t_set *set, bool print_exit)
 {
