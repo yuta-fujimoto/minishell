@@ -255,3 +255,10 @@ exec_test "cd ./a b"
 exec_test "cd a b"
 
 rm -f lol ls a f1 test perm_a perm_b perm_c test_stdout i1 hello.c a.out ./incs/a.out
+
+# export SHLVL=999; ./minishell
+# env | grep SHLVL; exit
+# export SHLVL=2; ./minishell
+# env | grep SHLVL; exit
+# export PWD=NO; ./minishell
+# env | grep PWD; exit

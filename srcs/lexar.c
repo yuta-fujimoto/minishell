@@ -5,10 +5,7 @@ static void	lexar_error(t_set *set, int rlt)
 	if (rlt == SUCCESS)
 		return ;
 	ft_putendl_fd("minishell:error", STDERR_FILENO);
-	ft_lstclear(&set->lst, free);
-	free(set->input);
-	mod_termios_attr(set, false);
-	exit(EXIT_FAILURE);
+	ms_exit(set, EXIT_FAILURE, true);
 }
 
 static char	*get_str(char *line)
