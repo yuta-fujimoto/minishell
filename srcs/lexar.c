@@ -27,7 +27,7 @@ static char	*get_str(char *line)
 		cnt++;
 		if (quote_flg == 0 && (*tmp == '\"' || *tmp == '\''))
 			quote_flg = *tmp;
-		else if (quote_flg != 0 && (*tmp == '\"' || *tmp == '\''))
+		else if (quote_flg != 0 && *tmp == quote_flg)
 			quote_flg = 0;
 		else if (*tmp == '\\' && *(tmp + 1) != '\0')
 		{
