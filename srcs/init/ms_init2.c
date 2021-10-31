@@ -1,6 +1,6 @@
 #include "../../incs/minishell.h"
 
-void	init_pwd(t_env *env)
+static void	init_pwd(t_env *env, t_set *set)
 {
 	t_env	*pwd_env;
 
@@ -9,16 +9,16 @@ void	init_pwd(t_env *env)
 	{
 		if (!ft_envadd_back(&env, ft_envnew(ft_strdup("PWD"),
 					get_current_directory())))
-			exit(EXIT_FAILURE);
+			ms_exit(set, EXIT_FAILURE, true);
 		return ;
 	}
 	free(pwd_env->value);
 	pwd_env->value = get_current_directory();
 	if (!pwd_env->value)
-		exit(EXIT_FAILURE);
+		ms_exit(set, EXIT_FAILURE, true);
 }
 
-void	init_shlvl(t_env *env)
+static void	init_shlvl(t_env *env, t_set *set)
 {
 	t_env	*shlvl_env;
 	int		shlvl_int;
@@ -27,8 +27,8 @@ void	init_shlvl(t_env *env)
 	if (!shlvl_env)
 	{
 		if (!ft_envadd_back(&env, ft_envnew(ft_strdup("SHLVL"),
-					ft_strdup("0"))))
-			exit(EXIT_FAILURE);
+					ft_strdup("1"))))
+			ms_exit(set, EXIT_FAILURE, true);
 		return ;
 	}
 	shlvl_int = ft_atoi(shlvl_env->value);
@@ -39,7 +39,7 @@ void	init_shlvl(t_env *env)
 	free(shlvl_env->value);
 	shlvl_env->value = ft_itoa(shlvl_int);
 	if (!shlvl_env->value)
-		exit(EXIT_FAILURE);
+		ms_exit(set, EXIT_FAILURE, true);
 }
 
 void	init_env(t_set *set)
@@ -50,13 +50,13 @@ void	init_env(t_set *set)
 	set->safe_envrion = environ;
 	env = environ_to_list();
 	if (!env)
-		exit(EXIT_FAILURE);
-	init_shlvl(env);
-	init_pwd(env);
+		ms_exit(set, EXIT_FAILURE, true);
+	init_shlvl(env, set);
+	init_pwd(env, set);
 	if (list_to_environ(env) == FAILURE)
 	{
 		ft_envclear(&env, free);
-		exit(EXIT_FAILURE);
+		ms_exit(set, EXIT_FAILURE, true);
 	}
 	ft_envclear(&env, free);
 }
