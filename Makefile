@@ -34,6 +34,7 @@ SRCS :=	srcs/main.c \
 		srcs/builtin/env_utils.c \
 		srcs/expansion/expansion.c \
 		srcs/expansion/expansion_node.c \
+		srcs/expansion/expansion_node2.c \
 		srcs/expansion/add_to_word.c \
 		srcs/expansion/add_to_word_utils.c \
 		srcs/expansion/eliminate_null_node.c \
