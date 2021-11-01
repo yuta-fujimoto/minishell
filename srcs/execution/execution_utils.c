@@ -4,17 +4,20 @@ extern t_sig_info	g_sig_info;
 
 int	exec_cmd_error(char *cmd, char *cmd_path, bool child_failure)
 {
-	if (cmd_path)
+	if (child_failure || !is_acceptable_error(errno) || errno == ENOEXEC)
 	{
 		free(cmd_path);
-		cmd_path = NULL;
-	}
-	if (child_failure || !is_acceptable_error(errno))
+		if (errno == ENOEXEC)
+			return (EXIT_SUCCESS);
 		return (CHILD_FAILURE);
+	}
+	if (errno == EACCES)
+		cmd = cmd_path;
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(cmd, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
 	perror(NULL);
+	free(cmd_path);
 	if (errno == EACCES)
 		return (126);
 	return (EXIT_FAILURE);
