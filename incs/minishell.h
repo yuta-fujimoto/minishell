@@ -117,22 +117,22 @@ typedef struct s_pipe_info
 # define SCOLON 12
 # define STR_VAL 13
 
+/* buildin_export */
 # define ADD 14
 # define UPDATE 15
 # define ERROR 16
 # define NOTHING 17
-/* buildin_export */
 
+/* piping */
 # define FIRST_PIPE 18
 # define MIDDLE_PIPE 19
 # define END_PIPE 20
-/* piping */
 
-# define CHILD_FAILURE 21
 /* CUSTOM EXIT STATUSES */
+# define CHILD_FAILURE 21
 
-# define C_LFLAGS 536872335
 /* TERMIOS FLAGS INCLUDING ECHOCTL */
+# define C_LFLAGS 536872335
 
 void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
@@ -162,6 +162,9 @@ void	add_to_word(t_exp *exp, bool *var_exp, t_env *env);
 char	*get_var_name(t_exp *exp);
 int		eliminate_null_node(t_node *exp_node, t_node *node);
 int		split_argv_by_blank(t_node *node);
+int		init_exp_node(t_node **exp_node, t_node *node);
+t_node	*finish_expansion_node(t_env **env, t_node *exp_node, int ret);
+int		copy_node(t_node *exp_node, t_node *node, int i);
 t_node	*expansion_node(t_node *node);
 int		expansion(char **exp_word, char **word, t_env *env,
 			bool *var_expansion);
