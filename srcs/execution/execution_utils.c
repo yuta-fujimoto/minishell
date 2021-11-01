@@ -9,7 +9,7 @@ int	exec_cmd_error(char *cmd, char *cmd_path, bool child_failure)
 		free(cmd_path);
 		cmd_path = NULL;
 	}
-	if (child_failure)
+	if (child_failure || !is_acceptable_error(errno))
 		return (CHILD_FAILURE);
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(cmd, STDERR_FILENO);
@@ -26,7 +26,8 @@ bool	wait_options(pid_t pid, bool pipeline)
 
 	waitpid(pid, &wstatus, 0);
 	if (((!WIFEXITED(wstatus) && !pipeline)
-		|| WEXITSTATUS(wstatus) == CHILD_FAILURE) && WEXITSTATUS(wstatus) != EXIT_SUCCESS)
+			|| WEXITSTATUS(wstatus) == CHILD_FAILURE)
+		&& WEXITSTATUS(wstatus) != EXIT_SUCCESS)
 		return (false);
 	g_sig_info.exit_status = WEXITSTATUS(wstatus);
 	return (true);

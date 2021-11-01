@@ -80,7 +80,8 @@ t_node	*expansion_node(t_node *node)
 	{
 		if (node->str_flgs[i] == STR)
 		{
-			if (expansion(&exp_node->av[i], &node->av[i], env, &var_exp) == FAILURE)
+			if (expansion(&exp_node->av[i],
+					&node->av[i], env, &var_exp) == FAILURE)
 				return (finish_expansion_node(&env, exp_node, FAILURE));
 			else
 				exp_node->str_flgs[i] = STR;

@@ -24,7 +24,8 @@ static bool	pipe_next_node(t_tree *prnt, t_pipes *pps, t_set *set, t_redir *rdr)
 {
 	if (pipe_node(prnt, pps, set, rdr) == FAILURE)
 		return (FAILURE);
-	close_pipes(pps);
+	if (!close_pipes(pps))
+		return (FAILURE);
 	if (pps->status == MIDDLE_PIPE)
 		swap_fds(pps);
 	else if (pps->status == END_PIPE)

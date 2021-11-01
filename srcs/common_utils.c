@@ -2,7 +2,8 @@
 
 extern t_sig_info	g_sig_info;
 
-static int	search_path(char **abs_path, char **exec_path, char **paths, char *cmd)
+static int	search_path(char **abs_path, char **exec_path,
+		char **paths, char *cmd)
 {
 	int			i;
 	struct stat	ss;
@@ -16,7 +17,7 @@ static int	search_path(char **abs_path, char **exec_path, char **paths, char *cm
 			ft_free_str_arr(paths);
 			return (FAILURE);
 		}
-		if (stat(*abs_path, &ss) == 0 && (ss.st_mode & S_IXUSR))
+		if (stat(*abs_path, &ss) == 0 && (ss.st_mode))
 			break ;
 		if (stat(*abs_path, &ss) == 0 && exec_path == NULL)
 			*exec_path = *abs_path;
@@ -58,7 +59,6 @@ bool	str_equal(char *s1, char *s2, size_t n)
 	return (false);
 }
 
-
 bool	mod_termios_attr(t_set *set, int init)
 {
 	int	lflag;
@@ -76,7 +76,8 @@ bool	mod_termios_attr(t_set *set, int init)
 	}
 	set->t.c_lflag = lflag;
 	set->t.c_cc[VQUIT] = vquit;
-	if (isatty(STDIN_FILENO) && tcsetattr(STDIN_FILENO, TCSANOW, &set->t) == SYS_ERROR)
+	if (isatty(STDIN_FILENO)
+		&& tcsetattr(STDIN_FILENO, TCSANOW, &set->t) == SYS_ERROR)
 	{
 		perror(NULL);
 		g_sig_info.sys_error = true;
@@ -102,19 +103,4 @@ void	free_set(t_set *set)
 	}
 	if (g_sig_info.sys_error)
 		ms_exit(set, EXIT_FAILURE, true);
-}
-
-void	ms_exit(t_set *set, int exit_status, bool exit_done)
-{
-	extern char	**environ;
-
-	free_environ();
-	environ = set->safe_envrion;
-	if (exit_done)
-	{
-		free_set(set);
-		if (!mod_termios_attr(set, false))
-			exit(EXIT_FAILURE);
-	}
-	exit(exit_status);
 }

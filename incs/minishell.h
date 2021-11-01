@@ -91,10 +91,11 @@ typedef struct s_sig_info
 
 typedef struct s_pipe_info
 {
-	t_redir		*rdr;
-	char		**cmd;
-	char		*cmd_path;
-	bool		touch;
+	t_redir	*rdr;
+	char	**cmd;
+	char	*cmd_path;
+	bool	touch;
+	bool	path_error;
 }				t_pipe_info;
 
 # define SIGINT_CALL -2
@@ -141,6 +142,8 @@ bool	str_equal(char *s1, char *s2, size_t n);
 void	print_str(unsigned int i, char *s);
 bool	mod_termios_attr(t_set *set, int init);
 void	ms_exit(t_set *set, int exit_status, bool exit_done);
+bool	set_sys_error(void);
+bool	is_acceptable_error(int errnum);
 /* utils */
 
 void	init_env(t_set *set);
@@ -179,10 +182,12 @@ void	free_tree(t_tree *l);
 /* tree library */
 
 bool	wait_options(pid_t pid, bool pipeline);
-int		create_cmd_path(char **cmd, char **cmd_path);
+int		create_cmd_path(char **cmd, char **cmd_path, bool *path_error);
 bool	execute_input(t_tree *l, t_set *set, int *rlt);
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir);
 bool	minishell_error(t_redir *redir, int *rlt, bool no_prnt);
+bool	free_cmd_path(char *cmd_path);
+int		command_not_found(char *cmd, bool path_error);
 /* execution */
 
 void	ft_export_error(char *arg);
@@ -217,7 +222,7 @@ bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir);
 bool	pipe_exit_failure(t_pipes *pipes);
 void	update_pipes_status(t_node node, t_pipes *pipes);
 void	swap_fds(t_pipes *pipes);
-void	close_pipes(t_pipes *pipes);
+bool	close_pipes(t_pipes *pipes);
 t_node	decide_cmd_node(t_tree *parent, t_pipes *pipes);
 void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info);
 /* piping */
@@ -233,11 +238,13 @@ bool	set_redirection(char **cmd, int i, t_redir *redir, t_doclist *hdocs);
 int		handle_heredoc(int fds[2], char *delimiter);
 char	**get_cmd(t_node *node, t_set *set, t_redir *redir, bool *touch);
 char	**create_new_cmd(t_node *node, bool *touch);
+bool	redirect_fds(t_redir *redir);
 /* redirection */
 
 bool	init_heredocs(t_tree *parent, t_set *set, int *rlt);
-bool	redirect_fds(t_redir *redir);
 bool	has_heredoc(char **av);
 void	close_heredocs(t_doclist *hdocs);
-bool	set_sys_error(void);
+void	update_heredocs(t_node exp_node, t_set *set);
+/* heredocs */
+
 #endif

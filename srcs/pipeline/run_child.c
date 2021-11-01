@@ -1,6 +1,7 @@
 #include "../../incs/minishell.h"
 
 extern t_sig_info	g_sig_info;
+
 static bool	update_first_pipe(t_pipes *pipes)
 {
 	if (close(pipes->fd_a[0]) == SYS_ERROR)

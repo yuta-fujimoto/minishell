@@ -2,6 +2,20 @@
 
 extern t_sig_info	g_sig_info;
 
+bool	has_heredoc(char **av)
+{
+	int	i;
+
+	i = 0;
+	while (av[i])
+	{
+		if (str_equal(av[i], "<<", 3))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
 static int	conclude_heredoc(int fds[2])
 {
 	if (close(fds[1]) == SYS_ERROR)
@@ -50,6 +64,5 @@ int	handle_heredoc(int fds[2], char *delimiter)
 	}
 	if (line)
 		free(line);
-	line = NULL;
 	return (conclude_heredoc(fds));
 }
