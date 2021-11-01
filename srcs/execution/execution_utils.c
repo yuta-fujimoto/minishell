@@ -4,9 +4,11 @@ extern t_sig_info	g_sig_info;
 
 int	exec_cmd_error(char *cmd, char *cmd_path, bool child_failure)
 {
-	if (child_failure || !is_acceptable_error(errno))
+	if (child_failure || !is_acceptable_error(errno) || errno == ENOEXEC)
 	{
 		free(cmd_path);
+		if (errno == ENOEXEC)
+			return (EXIT_SUCCESS);
 		return (CHILD_FAILURE);
 	}
 	if (errno == EACCES)
