@@ -15,11 +15,14 @@ int	cd_error(char *pathname)
 {
 	char	*err;
 
+	if (!pathname)
+		return (FAILURE);
 	err = ft_strjoin("minishell: cd: ", pathname);
 	if (!err)
 		return (FAILURE);
 	perror(err);
 	free(err);
+	free(pathname);
 	g_sig_info.exit_status = EXIT_FAILURE;
 	return (SUCCESS);
 }

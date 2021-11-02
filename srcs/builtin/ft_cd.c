@@ -24,7 +24,7 @@ static char	*get_available_path(char *pathname, bool *print_path)
 		return (NULL);
 	if (!newpath)
 		return (canonical_path(ft_strdup(pathname)));
-	if (!str_equal(pathname, newpath, ft_strlen(pathname) + 1))
+	else
 		*print_path = true;
 	return (canonical_path(newpath));
 }
@@ -87,11 +87,14 @@ static int	ft_cd_env(char *env)
 		ft_putendl_fd(" not set", STDERR_FILENO);
 		return (SUCCESS);
 	}
+	pathname = get_available_path(pathname, false);
 	if (chdir(pathname) == SYS_ERROR)
+	{
 		return (cd_error(pathname));
+	}
 	if (str_equal(env, "OLDPWD", 7))
 		ft_putendl_fd(pathname, STDOUT_FILENO);
-	return (set_working_directory(canonical_path(ft_strdup(pathname))));
+	return (set_working_directory(pathname));
 }
 
 int	ft_cd(char **av)
@@ -112,5 +115,5 @@ int	ft_cd(char **av)
 		return (SUCCESS);
 	if (!malloc_success)
 		return (FAILURE);
-	return (cd_error(av[1]));
+	return (cd_error(ft_strdup(av[1])));
 }

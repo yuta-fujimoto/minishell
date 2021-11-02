@@ -97,6 +97,8 @@ exec_test 'cd nodir/..'
 exec_test 'mkdir dir; chmod 055 dir; cd dir; pwd; env | grep PWD | sort; rmdir dir'
 exec_test 'cd ./././././../minishell/srcs;  pwd; env | grep PWD | sort'
 exec_test 'cd ././././././././././.;  pwd; env | grep PWD | sort'
+exec_test 'export HOME=; cd ; pwd'
+exec_test 'export CDPATH="./"; mkdir dir; cd dir; pwd; cd ..; rmdir dir'
 
 # export TESTS
 exec_test 'export AAA=BBB; env | grep AAA'
@@ -233,7 +235,7 @@ exec_test '"echo" result.log | grep 2 | "sort" | head "-1"'
 
 # # MULTI TESTS
 # exec_test 'echo testing multi ; echo "test 1 ; | and 2" ; cat tests/lorem.txt | grep Lorem'
-exec_test 'echo "#include <stdio.h>" > hello.c; echo int main\(\)\{printf\(\"hello\"\)";"\} >> hello.c; cp a.out ./incs; a.out; ./a.out; chmod 000 a.out; ./a.out; export PATH=$PWD; a.out ; export PATH+=:./incs; a.out'
+exec_test 'echo "#include <stdio.h>" > hello.c; echo int main\(\)\{printf\(\"hello\"\)";"\} >> hello.c; gcc hello.c; cp a.out ./incs; a.out; ./a.out; chmod 000 a.out; ./a.out; export PATH=$PWD; a.out ; export PATH+=:./incs; a.out'
 
 # # SYNTAX ERROR
 exec_test ';; test'

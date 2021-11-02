@@ -40,7 +40,7 @@ void	ms_exit_eof(t_set *set)
 	ms_exit(set, g_sig_info.exit_status, true);
 }
 
-int	main(void)
+void minishell()
 {
 	t_set	set;
 	bool	is_not_syntax_error;
@@ -64,4 +64,35 @@ int	main(void)
 		init_params(&set);
 		set.input = readline("minishell > ");
 	}
+}
+
+void minishell_c_option(char *cmd)
+{
+		t_set	set;
+	bool	is_not_syntax_error;
+
+	init_params(&set);
+	ms_init(&set);
+	set.input = ft_strdup(cmd);
+	init_env(&set);
+	if (!set.input)
+		ms_exit_eof(&set);
+	if (*set.input)
+		add_history(set.input);
+	lexar(&set);
+	is_not_syntax_error = parser(&set);
+	if (is_not_syntax_error)
+		ms_execution(&set);
+	else
+		free_set(&set);
+	exit (g_sig_info.exit_status);
+}
+
+int	main(int ac, char **av)
+{
+	(void)ac;
+	if (str_equal(av[1], "-c", 3))
+		minishell_c_option(av[2]);
+	else
+		minishell();
 }

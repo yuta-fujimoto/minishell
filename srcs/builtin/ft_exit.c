@@ -17,18 +17,23 @@ bool	ft_exit(char **av, t_set *set, bool print_exit)
 {
 	int	status;
 	int	flg;
+	int	i;
 
 	if (print_exit)
 		ft_putendl_fd("exit", STDERR_FILENO);
-	if (!av[1])
+	if (str_equal(av[1], "--", 3))
+		i = 1;
+	else
+		i = 0;
+	if (!av[i + 1])
 		ms_exit(set, g_sig_info.exit_status, print_exit);
-	status = ft_atol(av[1], &flg) % 256;
+	status = ft_atol(av[i + 1], &flg) % 256;
 	if (flg)
 	{
-		exit_error(av[1], "numeric argument required");
+		exit_error(av[i + 1], "numeric argument required");
 		ms_exit(set, 255, print_exit);
 	}
-	if (av[2])
+	if (av[i + 2])
 	{
 		set->exit_done = true;
 		exit_error(NULL, "too many arguments");
