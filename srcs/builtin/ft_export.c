@@ -90,23 +90,6 @@ int	ft_export_add(char *s, t_env **env)
 	return (SUCCESS);
 }
 
-// int	ft_export_add_null(char *s, t_env **env)
-// {
-// 	t_env	*new;
-
-// 	new = ft_calloc(sizeof(t_env), 1);
-// 	if (!new)
-// 		return (FAILURE);
-// 	new->name = get_name(s);
-// 	if (!new->name)
-// 	{
-// 		free(new);
-// 		return (FAILURE);
-// 	}
-// 	ft_envadd_back(env, new);
-// 	return (SUCCESS);
-// }
-
 int	ft_export(char **av)
 {
 	int			type;
