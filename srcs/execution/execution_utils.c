@@ -1,6 +1,8 @@
 #include "../../incs/minishell.h"
 #include <unistd.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 extern t_sig_info	g_sig_info;
 
