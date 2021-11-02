@@ -2,17 +2,7 @@
 # define MINISHELL_H
 
 # include <stdio.h>
-# include <unistd.h>
-# include <readline/readline.h>
-# include <readline/history.h>
 # include <stdbool.h>
-# include <signal.h>
-# include <fcntl.h>
-# include <sys/wait.h>
-# include <sys/types.h>
-# include <sys/stat.h>
-# include <limits.h>
-# include <errno.h>
 # include <termios.h>
 # include "../libft/libft.h"
 
@@ -134,6 +124,7 @@ typedef struct s_pipe_info
 /* TERMIOS FLAGS INCLUDING ECHOCTL */
 # define C_LFLAGS 536872335
 
+/* utils */
 void	free_str_arr(char **str_arr);
 void	free_set(t_set *set);
 int		create_path(char *cmd, char **paths, char **cmd_path);
@@ -144,15 +135,15 @@ bool	mod_termios_attr(t_set *set, int init);
 void	ms_exit(t_set *set, int exit_status, bool exit_done);
 bool	set_sys_error(void);
 bool	is_acceptable_error(int errnum);
-/* utils */
 
+/* init */
 void	init_env(t_set *set);
 void	ms_init(t_set *set);
-/* init */
 
-void	lexar(t_set *set);
 /* lexar */
+void	lexar(t_set *set);
 
+/* expansion */
 bool	is_word_in_dquote(t_exp *exp);
 bool	is_valid(t_exp *exp);
 int		add_char_to_word(t_exp *exp, int pos);
@@ -170,20 +161,20 @@ int		expansion(char **exp_word, char **word, t_env *env,
 			bool *var_expansion);
 t_node	*expansion_conclude(t_env **env, char *free_s, t_node *exp_node);
 int		expansion_node_conclude(t_node *node, int rlt);
-/* expansion */
 
+/* parser */
 t_tree	*command(t_list **lst, bool *malloc_err);
 int		consume(int flgs, t_list **lst);
 bool	parser(t_set *set);
 bool	syntax_error(t_tree *tree);
 void	parser_error(t_set *set);
-/* parser */
 
+/* tree library */
 t_tree	*new_tree_cmd(t_node node, bool *malloc_err);
 t_tree	*new_tree(int flgs, t_tree *left, t_tree *right, bool *malloc_err);
 void	free_tree(t_tree *l);
-/* tree library */
 
+/* execution */
 bool	wait_options(pid_t pid, bool pipeline);
 int		create_cmd_path(char **cmd, char **cmd_path, bool *path_error);
 bool	execute_input(t_tree *l, t_set *set, int *rlt);
@@ -191,8 +182,8 @@ bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir);
 bool	minishell_error(t_redir *redir, int *rlt, bool no_prnt);
 bool	free_cmd_path(char *cmd_path);
 int		command_not_found(char *cmd, bool path_error);
-/* execution */
 
+/* builtin */
 void	ft_export_error(char *arg);
 char	*get_current_directory(void);
 int		identifier_type(char *s);
@@ -218,8 +209,8 @@ int		ft_pwd(void);
 bool	ft_exit(char **av, t_set *set, bool print_exit);
 bool	is_buildin(char *cmd);
 int		run_builtin_cmd(char **av, t_set *set, bool print_exit);
-/* builtin */
 
+/* piping */
 bool	execute_pipeline(t_tree *parent, t_set *set, t_redir *redir);
 bool	run_pipe_cmd(t_node node, t_pipes *pipes, t_set *set, t_redir *redir);
 bool	pipe_exit_failure(t_pipes *pipes);
@@ -228,8 +219,8 @@ void	swap_fds(t_pipes *pipes);
 bool	close_pipes(t_pipes *pipes);
 t_node	decide_cmd_node(t_tree *parent, t_pipes *pipes);
 void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info);
-/* piping */
 
+/* redirection */
 bool	close_fd(int fd, int rlt);
 bool	reset_stdio_fd(t_redir *redir, int rlt);
 bool	ms_redirection(t_node *node, t_redir *redir, t_doclist **hdocs);
@@ -242,12 +233,11 @@ int		handle_heredoc(int fds[2], char *delimiter);
 char	**get_cmd(t_node *node, t_set *set, t_redir *redir, bool *touch);
 char	**create_new_cmd(t_node *node, bool *touch);
 bool	redirect_fds(t_redir *redir);
-/* redirection */
 
+/* heredocs */
 bool	init_heredocs(t_tree *parent, t_set *set, int *rlt);
 bool	has_heredoc(char **av);
 void	close_heredocs(t_doclist *hdocs);
 void	update_heredocs(t_node exp_node, t_set *set);
-/* heredocs */
 
 #endif

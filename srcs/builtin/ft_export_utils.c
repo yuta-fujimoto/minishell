@@ -1,4 +1,5 @@
 #include "../../incs/minishell.h"
+#include <unistd.h>
 
 void	ft_export_error(char *arg)
 {
