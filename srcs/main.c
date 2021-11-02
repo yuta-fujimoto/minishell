@@ -2,6 +2,12 @@
 
 t_sig_info	g_sig_info = {0, 0, false, NULL, false, false, false, false};
 
+
+void	end(void)
+{
+	system("leaks minishell");
+}
+
 static void	init_params(t_set *set)
 {
 	if (g_sig_info.term_stdin)
@@ -45,6 +51,7 @@ int	main(int ac, char **av)
 	t_set	set;
 	bool	is_not_syntax_error;
 
+	(void)ac;
 	init_params(&set);
 	ms_init(&set);
 	if (str_equal("-c", av[1], 3))
