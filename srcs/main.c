@@ -66,7 +66,10 @@ int	main(int ac, char **av)
 		else
 			free_set(&set);
 		if (str_equal("-c", av[1], 3))
+		{
+			mod_termios_attr(&set, false);
 			exit(g_sig_info.exit_status);
+		}
 		init_params(&set);
 		set.input = readline("minishell > ");
 	}
