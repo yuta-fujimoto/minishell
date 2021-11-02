@@ -235,7 +235,7 @@ exec_test '"echo" result.log | grep 2 | "sort" | head "-1"'
 
 # # MULTI TESTS
 # exec_test 'echo testing multi ; echo "test 1 ; | and 2" ; cat tests/lorem.txt | grep Lorem'
-exec_test 'echo "#include <stdio.h>" > hello.c; echo int main\(\)\{printf\(\"hello\"\)";"\} >> hello.c; gcc hello.c; cp a.out ./incs; a.out; ./a.out; chmod 000 a.out; ./a.out; export PATH=$PWD; a.out ; export PATH+=:./incs; a.out'
+exec_test 'echo "#include <stdio.h>" > hello.c; echo int main\(\)\{printf\(\"hello\"\)";"\} >> hello.c; gcc hello.c; cp a.out ./incs; a.out; ./a.out; chmod 000 a.out; ./a.out; export PATH=$PWD; a.out ; export PATH+=:./incs; a.out; rm -rf a.out'
 
 # # SYNTAX ERROR
 exec_test ';; test'

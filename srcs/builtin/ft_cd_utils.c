@@ -38,19 +38,25 @@ char	*update_environ_value(t_env *env, char *value)
 	return (oldvalue);
 }
 
-char	*absolute_path(char *pathname)
+char	*absolute_path(char *pathname, bool free_arg)
 {
 	char	*current;
 	char	*rlt;
 
 	current = get_current_directory();
 	if (!current)
+	{
+		if (free_arg)
+			free(pathname);
 		return (NULL);
+	}
 	if (current[ft_strlen(current) - 1] != '/')
 		rlt = ft_strcjoin(current, pathname, '/');
 	else
 		rlt = ft_strjoin(current, pathname);
 	free(current);
+	if (free_arg)
+		free(pathname);
 	return (rlt);
 }
 

@@ -13,10 +13,10 @@ static char	*get_available_path(char *pathname, bool *print_path)
 	if (str_equal(pathname, ".", 2) || str_equal(pathname, "./", 2)
 		|| str_equal(pathname, "../", 3)
 		|| str_equal(pathname, "..", 3))
-		return (canonical_path(absolute_path(pathname)));
+		return (canonical_path(absolute_path(pathname, false)));
 	env_cdpath = getenv("CDPATH");
 	if (!env_cdpath)
-		return (canonical_path(absolute_path(pathname)));
+		return (canonical_path(absolute_path(pathname, false)));
 	cdpaths = ft_split(env_cdpath, ':');
 	if (!cdpaths)
 		return (NULL);
@@ -26,7 +26,9 @@ static char	*get_available_path(char *pathname, bool *print_path)
 		return (canonical_path(ft_strdup(pathname)));
 	else
 		*print_path = true;
-	return (canonical_path(newpath));
+	if (newpath[0] == '/')
+		return (canonical_path(newpath));
+	return (canonical_path(absolute_path(newpath, true)));
 }
 
 static int	try_absolute_path(char *input, bool *malloc_success)
