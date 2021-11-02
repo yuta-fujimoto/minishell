@@ -40,7 +40,7 @@ void	ms_exit_eof(t_set *set)
 	ms_exit(set, g_sig_info.exit_status, true);
 }
 
-void minishell()
+void	minishell(void)
 {
 	t_set	set;
 	bool	is_not_syntax_error;
@@ -66,9 +66,9 @@ void minishell()
 	}
 }
 
-void minishell_c_option(char *cmd)
+void	minishell_c_option(char *cmd)
 {
-		t_set	set;
+	t_set	set;
 	bool	is_not_syntax_error;
 
 	init_params(&set);
