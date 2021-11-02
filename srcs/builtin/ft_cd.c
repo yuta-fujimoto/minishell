@@ -43,7 +43,8 @@ static int	try_absolute_path(char *input, bool *malloc_success)
 	if (chdir(pathname) == SYS_ERROR)
 	{
 		*malloc_success = true;
-		free(pathname);
+		if (pathname)
+			free(pathname);
 		return (FAILURE);
 	}
 	if (print_path)
@@ -90,10 +91,10 @@ static int	ft_cd_env(char *env)
 		return (SUCCESS);
 	}
 	pathname = get_available_path(pathname, false);
+	if (!pathname && errno != ENOENT)
+		return (FAILURE);
 	if (chdir(pathname) == SYS_ERROR)
-	{
 		return (cd_error(pathname));
-	}
 	if (str_equal(env, "OLDPWD", 7))
 		ft_putendl_fd(pathname, STDOUT_FILENO);
 	return (set_working_directory(pathname));

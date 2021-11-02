@@ -2,12 +2,6 @@
 
 t_sig_info	g_sig_info = {0, 0, false, NULL, false, false, false, false};
 
-
-void	end(void)
-{
-	system("leaks minishell");
-}
-
 static void	init_params(t_set *set)
 {
 	if (g_sig_info.term_stdin)
