@@ -247,6 +247,7 @@ exec_test '"echo" result.log | grep 2 | "sort" | head "-1"'
 # exec_test 'echo testing multi ; echo "test 1 ; | and 2" ; cat tests/lorem.txt | grep Lorem'
 exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 755 hello.sh; hello.sh;cp hello.sh ./incs; hello.sh; ./hello.sh; chmod 000 hello.sh; ./hello.sh; export PATH+=:$PWD; hello.sh ; export PATH+=:./incs; hello.sh; rm -rf hello.sh"
 exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 755 hello.sh; hello.sh; ./hello.sh ; unset PWD; hello.sh; export PWD="::::::"; hello.sh; rm -rf hello.sh"
+exec_test 'export aaa; echo $aaa'
 
 # # SYNTAX ERROR
 exec_test ';; test'

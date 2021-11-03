@@ -95,7 +95,7 @@ int	add_var_to_word(t_exp *exp, t_env *env)
 		return (add_exit_status_to_word(exp, var_name));
 	env_var = ft_find_env_var(env, var_name);
 	free(var_name);
-	if (!env_var)
+	if (!env_var || !env_var->value)
 		return (SUCCESS);
 	tmp = exp->exp_word;
 	exp->exp_word = ft_strjoin(exp->exp_word, env_var->value);
