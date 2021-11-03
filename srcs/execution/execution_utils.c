@@ -61,9 +61,9 @@ bool	wait_options(t_pidlist *pidlst, bool pipeline)
 		return (false);
 	if (WIFSIGNALED(wstatus))
 	{
-		if (WTERMSIG(wstatus) == 2)
+		if (WTERMSIG(wstatus) == SIGINT)
 			g_sig_info.exit_status = 130;
-		else if (WTERMSIG(wstatus) == 3)
+		else if (WTERMSIG(wstatus) == SIGQUIT)
 		{
 			g_sig_info.exit_status = 131;
 			if (!pidlst->next || !pipeline)
