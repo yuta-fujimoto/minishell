@@ -13,10 +13,10 @@ static char	*get_available_path(char *pathname, bool *print_path)
 	if (str_equal(pathname, ".", 2) || str_equal(pathname, "./", 2)
 		|| str_equal(pathname, "../", 3)
 		|| str_equal(pathname, "..", 3))
-		return (canonical_path(absolute_path(pathname)));
+		return (canonical_path(absolute_path(pathname, false)));
 	env_cdpath = getenv("CDPATH");
 	if (!env_cdpath)
-		return (canonical_path(absolute_path(pathname)));
+		return (canonical_path(absolute_path(pathname, false)));
 	cdpaths = ft_split(env_cdpath, ':');
 	if (!cdpaths)
 		return (NULL);
@@ -24,9 +24,11 @@ static char	*get_available_path(char *pathname, bool *print_path)
 		return (NULL);
 	if (!newpath)
 		return (canonical_path(ft_strdup(pathname)));
-	if (!str_equal(pathname, newpath, ft_strlen(pathname) + 1))
+	else if (print_path)
 		*print_path = true;
-	return (canonical_path(newpath));
+	if (newpath[0] == '/')
+		return (canonical_path(newpath));
+	return (canonical_path(absolute_path(newpath, true)));
 }
 
 static int	try_absolute_path(char *input, bool *malloc_success)
@@ -41,7 +43,8 @@ static int	try_absolute_path(char *input, bool *malloc_success)
 	if (chdir(pathname) == SYS_ERROR)
 	{
 		*malloc_success = true;
-		free(pathname);
+		if (pathname)
+			free(pathname);
 		return (FAILURE);
 	}
 	if (print_path)
@@ -87,11 +90,14 @@ static int	ft_cd_env(char *env)
 		ft_putendl_fd(" not set", STDERR_FILENO);
 		return (SUCCESS);
 	}
+	pathname = get_available_path(pathname, NULL);
+	if (!pathname && errno != ENOENT)
+		return (FAILURE);
 	if (chdir(pathname) == SYS_ERROR)
 		return (cd_error(pathname));
 	if (str_equal(env, "OLDPWD", 7))
 		ft_putendl_fd(pathname, STDOUT_FILENO);
-	return (set_working_directory(canonical_path(ft_strdup(pathname))));
+	return (set_working_directory(pathname));
 }
 
 int	ft_cd(char **av)
@@ -112,5 +118,5 @@ int	ft_cd(char **av)
 		return (SUCCESS);
 	if (!malloc_success)
 		return (FAILURE);
-	return (cd_error(av[1]));
+	return (cd_error(ft_strdup(av[1])));
 }

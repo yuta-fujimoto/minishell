@@ -24,7 +24,7 @@ long	ft_atol(const char *nptr, int *flg)
 			*flg = 1;
 		j = j * 10 + (nptr[i++] - '0') * minus;
 	}
-	if (nptr[i] != '\0')
+	if (nptr[i] != '\0' || i == 0 || (i == 1 && nptr[0] == '-'))
 		*flg = 1;
 	return (j);
 }
