@@ -3,8 +3,7 @@
 
 void	ft_export_error(char *arg)
 {
-	ft_putstr_fd("minishell: export: ", STDERR_FILENO);
-	ft_putchar_fd('`', STDERR_FILENO);
+	ft_putstr_fd("minishell: export: `", STDERR_FILENO);
 	ft_putstr_fd(arg, STDERR_FILENO);
 	ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
 }
@@ -14,13 +13,13 @@ int	identifier_type(char *s)
 	size_t	i;
 
 	i = 0;
-	if (!ft_isalpha(s[i]) && s[i] != '_')
+	if (!ft_isalpha(s[i]) && s[i] != '_' && s[i] != '\\' && s[i] != '/')
 		return (ERROR);
 	while (s[i])
 	{
 		if ((s[i] == '+' && s[i + 1] == '=') || s[i] == '=')
 			break ;
-		if (!ft_isalnum(s[i]) && s[i] != '_')
+		if (!ft_isalnum(s[i]) && s[i] != '_' && s[i] != '\\' && s[i] != '/')
 			return (ERROR);
 		i++;
 	}

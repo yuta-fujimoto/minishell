@@ -44,14 +44,18 @@ void	ms_exit_eof(t_set *set)
 	ms_exit(set, g_sig_info.exit_status, true);
 }
 
-int	main(void)
+int	main(int ac, char **av)
 {
 	t_set	set;
 	bool	is_not_syntax_error;
 
+	(void)ac;
 	init_params(&set);
 	ms_init(&set);
-	set.input = readline("minishell > ");
+	if (str_equal("-c", av[1], 3))
+		set.input = ft_strdup(av[2]);
+	else
+		set.input = readline("minishell > ");
 	init_env(&set);
 	while (1)
 	{
@@ -65,6 +69,11 @@ int	main(void)
 			ms_execution(&set);
 		else
 			free_set(&set);
+		if (str_equal("-c", av[1], 3))
+		{
+			mod_termios_attr(&set, false);
+			exit(g_sig_info.exit_status);
+		}
 		init_params(&set);
 		set.input = readline("minishell > ");
 	}
