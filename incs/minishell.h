@@ -175,7 +175,7 @@ t_tree	*new_tree(int flgs, t_tree *left, t_tree *right, bool *malloc_err);
 void	free_tree(t_tree *l);
 
 /* execution */
-bool	wait_options(pid_t pid, bool pipeline);
+bool	wait_options(t_pidlist *pidlst, bool pipeline);
 int		create_cmd_path(char **cmd, char **cmd_path, bool *path_error);
 bool	execute_input(t_tree *l, t_set *set, int *rlt);
 bool	execute_simple_cmd(t_node node, t_set *set, t_redir *redir);

@@ -4,10 +4,10 @@
 
 extern t_sig_info	g_sig_info;
 
-static bool	run_gnu_parent(int c_pid, t_set *set, char *cmd_path)
+static bool	run_gnu_parent(t_pidlist *pidlst, t_set *set, char *cmd_path)
 {
 	g_sig_info.child = true;
-	if (!wait_options(c_pid, false))
+	if (!wait_options(pidlst, false))
 	{
 		if (g_sig_info.signal == SIGINT)
 			mod_termios_attr(set, true);
@@ -22,7 +22,7 @@ static bool	run_gnu_parent(int c_pid, t_set *set, char *cmd_path)
 
 static bool	run_gnu_cmd(char **cmd, t_set *set)
 {
-	pid_t		c_pid;
+	t_pidlist	pidlst;
 	char		*cmd_path;
 	extern char	**environ;
 	bool		path_error;
@@ -33,10 +33,10 @@ static bool	run_gnu_cmd(char **cmd, t_set *set)
 		return (FAILURE);
 	if (!cmd_path)
 		return (command_not_found(cmd[0], path_error));
-	c_pid = fork();
-	if (c_pid == SYS_ERROR)
+	pidlst.pid = fork();
+	if (pidlst.pid == SYS_ERROR)
 		return (free_cmd_path(cmd_path));
-	else if (c_pid == 0)
+	else if (pidlst.pid == 0)
 	{
 		if (!mod_termios_attr(set, false))
 			exit(exec_cmd_error(cmd[0], cmd_path, true));
@@ -44,7 +44,7 @@ static bool	run_gnu_cmd(char **cmd, t_set *set)
 			exit(exec_cmd_error(cmd[0], cmd_path, false));
 	}
 	else
-		return (run_gnu_parent(c_pid, set, cmd_path));
+		return (run_gnu_parent(&pidlst, set, cmd_path));
 	return (SUCCESS);
 }
 

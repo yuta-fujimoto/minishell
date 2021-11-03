@@ -50,19 +50,26 @@ int	exec_cmd_error(char *cmd, char *cmd_path, bool child_failure)
 	return (EXIT_FAILURE);
 }
 
-bool	wait_options(pid_t pid, bool pipeline)
+bool	wait_options(t_pidlist *pidlst, bool pipeline)
 {
 	int	wstatus;
 
-	waitpid(pid, &wstatus, 0);
+	waitpid(pidlst->pid, &wstatus, 0);
 	if (((!WIFEXITED(wstatus) && !pipeline)
 			|| WEXITSTATUS(wstatus) == CHILD_FAILURE)
 		&& WEXITSTATUS(wstatus) != EXIT_SUCCESS)
 		return (false);
-	if (g_sig_info.exit_status == 130)
-		return (true);
-	if (g_sig_info.exit_status == 131)
-		return (true);
+	if (WIFSIGNALED(wstatus))
+	{
+		if (WTERMSIG(wstatus) == 2)
+			g_sig_info.exit_status = 130;
+		else if (WTERMSIG(wstatus) == 3)
+		{
+			g_sig_info.exit_status = 131;
+			if (!pidlst->next || !pipeline)
+				ft_putendl_fd("Quit: 3", STDERR_FILENO);
+		}
+	}
 	else
 		g_sig_info.exit_status = WEXITSTATUS(wstatus);
 	return (true);

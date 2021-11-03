@@ -42,17 +42,12 @@ static void	sigint_handler(int sigint)
 		rl_redisplay();
 	}
 	if (g_sig_info.child)
-	{
-		g_sig_info.exit_status = 130;
 		write(STDOUT_FILENO, "\n", 1);
-	}
 }
 
 static void	sigquit_handler(int sigquit)
 {
 	(void)sigquit;
-	ft_putendl_fd("Quit: 3", STDERR_FILENO);
-	g_sig_info.exit_status = 131;
 }
 
 void	init_sig_handler(void)

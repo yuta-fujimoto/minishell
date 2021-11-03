@@ -64,6 +64,12 @@ printf "| |  | |_| |_| |\  |_| |_ ____) | |  | | |____| |____| |____ \n"
 printf "|_|  |_|_____|_| \_|_____|_____/|_|  |_|______|______|______|\n$RESET"
 echo
 
+# EXECUTION TESTS
+exec_test '/bin/no'
+exec_test 'no'
+exec_test '/bin/ls'
+exec_test 'ls'
+
 # ECHO TESTS
 exec_test 'echo test tout'
 exec_test 'echo test      tout'
@@ -281,7 +287,74 @@ exec_test "cd"
 exec_test "cd ./a b"
 exec_test "cd a b"
 
-rm  lol ls a f1 test perm_a perm_b perm_c test_stdout i1 ./incs/hello.sh
+# PERMISSIONS TESTS
+exec_test 'touch a; chmod 000 a; ./a; chmod 777 a'
+exec_test 'touch b; chmod 100 b; ./b; chmod 777 b'
+exec_test 'touch c; chmod 200 c; ./c; chmod 777 c'
+exec_test 'touch d; chmod 400 d; ./d; chmod 777 d'
+exec_test 'touch e; chmod 500 e; ./e; chmod 777 e'
+exec_test 'touch f; chmod 600 f; ./f; chmod 777 f'
+exec_test 'touch g; chmod 700 g; ./g; chmod 777 g'
+exec_test 'touch b; chmod 010 b; ./b; chmod 777 b'
+exec_test 'touch c; chmod 020 c; ./c; chmod 777 c'
+exec_test 'touch d; chmod 040 d; ./d; chmod 777 d'
+exec_test 'touch e; chmod 050 e; ./e; chmod 777 e'
+exec_test 'touch f; chmod 060 f; ./f; chmod 777 f'
+exec_test 'touch g; chmod 070 g; ./g; chmod 777 g'
+exec_test 'touch b; chmod 001 b; ./b; chmod 777 b'
+exec_test 'touch c; chmod 002 c; ./c; chmod 777 c'
+exec_test 'touch d; chmod 004 d; ./d; chmod 777 d'
+exec_test 'touch e; chmod 005 e; ./e; chmod 777 e'
+exec_test 'touch f; chmod 006 f; ./f; chmod 777 f'
+exec_test 'touch g; chmod 007 g; ./g; chmod 777 g'
+exec_test 'touch a; chmod 000 a; cat a; chmod 777 a'
+exec_test 'touch b; chmod 100 b; cat b; chmod 777 b'
+exec_test 'touch c; chmod 200 c; cat c; chmod 777 c'
+exec_test 'touch d; chmod 400 d; cat d; chmod 777 d'
+exec_test 'touch e; chmod 500 e; cat e; chmod 777 e'
+exec_test 'touch f; chmod 600 f; cat f; chmod 777 f'
+exec_test 'touch g; chmod 700 g; cat g; chmod 777 g'
+exec_test 'touch b; chmod 010 b; cat b; chmod 777 b'
+exec_test 'touch c; chmod 020 c; cat c; chmod 777 c'
+exec_test 'touch d; chmod 040 d; cat d; chmod 777 d'
+exec_test 'touch e; chmod 050 e; cat e; chmod 777 e'
+exec_test 'touch f; chmod 060 f; cat f; chmod 777 f'
+exec_test 'touch g; chmod 070 g; cat g; chmod 777 g'
+exec_test 'touch b; chmod 001 b; cat b; chmod 777 b'
+exec_test 'touch c; chmod 002 c; cat c; chmod 777 c'
+exec_test 'touch d; chmod 004 d; cat d; chmod 777 d'
+exec_test 'touch e; chmod 005 e; cat e; chmod 777 e'
+exec_test 'touch f; chmod 006 f; cat f; chmod 777 f'
+exec_test 'touch g; chmod 007 g; cat g; chmod 777 g'
+exec_test 'touch a; chmod 000 a; cd a; chmod 777 a'
+exec_test 'touch b; chmod 100 b; cd b; chmod 777 b'
+exec_test 'touch c; chmod 200 c; cd c; chmod 777 c'
+exec_test 'touch d; chmod 400 d; cd d; chmod 777 d'
+exec_test 'touch e; chmod 500 e; cd e; chmod 777 e'
+exec_test 'touch f; chmod 600 f; cd f; chmod 777 f'
+exec_test 'touch g; chmod 700 g; cd g; chmod 777 g'
+exec_test 'touch a; chmod 010 a; cd a; chmod 777 b'
+exec_test 'touch c; chmod 020 c; cd c; chmod 777 c'
+exec_test 'touch d; chmod 040 d; cd d; chmod 777 d'
+exec_test 'touch e; chmod 050 e; cd e; chmod 777 e'
+exec_test 'touch f; chmod 060 f; cd f; chmod 777 f'
+exec_test 'touch g; chmod 070 g; cd g; chmod 777 g'
+exec_test 'touch b; chmod 001 b; cd b; chmod 777 b'
+exec_test 'touch c; chmod 002 c; cd c; chmod 777 c'
+exec_test 'touch d; chmod 004 d; cd d; chmod 777 d'
+exec_test 'touch e; chmod 005 e; cd e; chmod 777 e'
+exec_test 'touch f; chmod 006 f; cd f; chmod 777 f'
+exec_test 'touch g; chmod 007 g; cd g; chmod 777 g'
+exec_test 'mkdir aa; chmod 000 aa; cd aa; cd ../'
+exec_test 'mkdir bb; chmod 100 bb; cd bb; cd ../'
+exec_test 'mkdir cc; chmod 200 cc; cd cc; cd ../'
+exec_test 'mkdir dd; chmod 400 dd; cd dd; cd ../'
+exec_test 'mkdir ee; chmod 500 ee; cd ee; cd ../'
+exec_test 'mkdir ff; chmod 600 ff; cd ff; cd ../'
+exec_test 'mkdir gg; chmod 700 gg; cd gg; cd ../'
+
+rm  lol ls a b c d e f g f1 test perm_a perm_b perm_c test_stdout i1 ./incs/hello.sh
+rmdir aa bb cc dd ee ff gg
 
 # export SHLVL=999; ./minishell
 # env | grep SHLVL; exit
