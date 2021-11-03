@@ -1,4 +1,6 @@
 #include "../../incs/minishell.h"
+#include <sys/stat.h>
+#include <errno.h>
 
 static char	*create_path_for_cd(char **cmps, int end)
 {

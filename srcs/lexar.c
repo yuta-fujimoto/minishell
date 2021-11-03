@@ -1,4 +1,5 @@
 #include "../incs/minishell.h"
+#include <unistd.h>
 
 static void	lexar_error(t_set *set, int rlt)
 {
