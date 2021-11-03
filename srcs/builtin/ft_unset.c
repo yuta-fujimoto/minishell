@@ -7,7 +7,7 @@ static void	unset_env(char *av_i, t_env **env)
 {
 	if (identifier_type(av_i) != NOTHING)
 	{
-		ft_putstr_fd("minishell: unset: \'", STDERR_FILENO);
+		ft_putstr_fd("minishell: unset: `", STDERR_FILENO);
 		ft_putstr_fd(av_i, STDERR_FILENO);
 		ft_putendl_fd("\': not a valid identifier", STDERR_FILENO);
 		g_sig_info.exit_status = EXIT_FAILURE;

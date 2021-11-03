@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <readline/readline.h>
 #include <signal.h>
+#include <sys/errno.h>
 
 extern t_sig_info	g_sig_info;
 
@@ -20,11 +21,11 @@ void	init_termios_attr(t_set *set)
 }
 
 static void	sigint_handler(int sigint)
-{
-	g_sig_info.exit_status = 1;
+{	
 	g_sig_info.signal = sigint;
 	if (g_sig_info.heredoc)
 	{
+		g_sig_info.exit_status = 1;
 		write(STDOUT_FILENO, "\n", 1);
 		if (isatty(STDIN_FILENO))
 			g_sig_info.term_stdin = ttyname(STDIN_FILENO);
@@ -34,6 +35,7 @@ static void	sigint_handler(int sigint)
 	}
 	else if (!g_sig_info.child)
 	{
+		g_sig_info.exit_status = 1;
 		if (!g_sig_info.heredoc_sigint && !g_sig_info.heredoc_sigeof)
 			write(STDOUT_FILENO, "\n", 1);
 		rl_on_new_line();
@@ -41,12 +43,17 @@ static void	sigint_handler(int sigint)
 		rl_redisplay();
 	}
 	if (g_sig_info.child)
+	{
+		g_sig_info.exit_status = 130;
 		write(STDOUT_FILENO, "\n", 1);
+	}
 }
 
 static void	sigquit_handler(int sigquit)
 {
-	(void)sigquit;
+	(void)sigquit;	
+	ft_putendl_fd("Quit: 3", STDERR_FILENO);
+	g_sig_info.exit_status = 131;
 }
 
 void	init_sig_handler(void)
