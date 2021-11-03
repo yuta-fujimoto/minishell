@@ -11,7 +11,10 @@ static int	search_path(char **abs_path, char **exec_path,
 	i = 0;
 	while (paths[i])
 	{
-		*abs_path = ft_strcjoin(paths[i], cmd, '/');
+		if (paths[i][ft_strlen(paths[i]) - 1] != '/')
+			*abs_path = ft_strcjoin(paths[i], cmd, '/');
+		else
+			*abs_path = ft_strjoin(paths[i], cmd);
 		if (!*abs_path)
 		{
 			ft_free_str_arr(paths);

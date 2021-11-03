@@ -11,7 +11,8 @@ void	ft_envclear(t_env **env, void (*del)(void *))
 		if (del)
 		{
 			del((*env)->name);
-			del((*env)->value);
+			if ((*env)->value)
+				del((*env)->value);
 		}
 		tmp = *env;
 		*env = (*env)->next;

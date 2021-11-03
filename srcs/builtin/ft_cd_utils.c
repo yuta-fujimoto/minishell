@@ -15,11 +15,14 @@ int	cd_error(char *pathname)
 {
 	char	*err;
 
+	if (!pathname)
+		return (FAILURE);
 	err = ft_strjoin("minishell: cd: ", pathname);
 	if (!err)
 		return (FAILURE);
 	perror(err);
 	free(err);
+	free(pathname);
 	g_sig_info.exit_status = EXIT_FAILURE;
 	return (SUCCESS);
 }
@@ -35,19 +38,25 @@ char	*update_environ_value(t_env *env, char *value)
 	return (oldvalue);
 }
 
-char	*absolute_path(char *pathname)
+char	*absolute_path(char *pathname, bool free_arg)
 {
 	char	*current;
 	char	*rlt;
 
 	current = get_current_directory();
 	if (!current)
+	{
+		if (free_arg)
+			free(pathname);
 		return (NULL);
+	}
 	if (current[ft_strlen(current) - 1] != '/')
 		rlt = ft_strcjoin(current, pathname, '/');
 	else
 		rlt = ft_strjoin(current, pathname);
 	free(current);
+	if (free_arg)
+		free(pathname);
 	return (rlt);
 }
 

@@ -33,7 +33,7 @@ static void	init_shlvl(t_env *env, t_set *set)
 	}
 	shlvl_int = ft_atoi(shlvl_env->value);
 	if (shlvl_int >= 999)
-		shlvl_int = 0;
+		shlvl_int = 1;
 	else
 		shlvl_int++;
 	free(shlvl_env->value);
