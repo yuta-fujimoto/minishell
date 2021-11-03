@@ -26,7 +26,6 @@ static void	sigint_handler(int sigint)
 	g_sig_info.signal = sigint;
 	if (g_sig_info.heredoc)
 	{
-		g_sig_info.exit_status = 1;
 		write(STDOUT_FILENO, "\n", 1);
 		if (isatty(STDIN_FILENO))
 			g_sig_info.term_stdin = ttyname(STDIN_FILENO);
