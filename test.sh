@@ -276,6 +276,12 @@ exec_test "export AAA+=A"
 exec_test "cd"
 exec_test "cd ./a b"
 exec_test "cd a b"
+exec_test '/bin/no'
+exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 300 hello.sh; ./hello.sh; rm -f ./hello.sh"
+exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 400 hello.sh; ./hello.sh; rm -f ./hello.sh"
+exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 500 hello.sh; ./hello.sh; rm -f ./hello.sh"
+exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 600 hello.sh; ./hello.sh; rm -f ./hello.sh"
+exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 700 hello.sh; ./hello.sh; rm -f ./hello.sh"
 
 rm -f lol ls a f1 test perm_a perm_b perm_c test_stdout i1 hello.c a.out ./incs/a.out
 

@@ -53,7 +53,7 @@ int	list_to_environ(t_env *env)
 	extern char	**environ;
 	int			i;
 
-	new_environ = ft_calloc(sizeof(char *), ft_envsize(env + 1));
+	new_environ = ft_calloc(sizeof(char *), ft_envsize(env) + 1);
 	if (!new_environ)
 		return (FAILURE);
 	i = 0;
