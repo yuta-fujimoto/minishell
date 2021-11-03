@@ -55,7 +55,7 @@ int	main(int ac, char **av)
 	if (str_equal("-c", av[1], 3))
 		set.input = ft_strdup(av[2]);
 	else
-		set.input = readline("minishell > ");
+		set.input = readline("\033[38;5;75mmsh-0.42$\033[39m ");
 	init_env(&set);
 	while (1)
 	{
@@ -75,6 +75,6 @@ int	main(int ac, char **av)
 			exit(g_sig_info.exit_status);
 		}
 		init_params(&set);
-		set.input = readline("minishell > ");
+		set.input = readline("\033[38;5;33mmsh-0.42$\033[39m ");
 	}
 }

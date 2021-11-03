@@ -9,7 +9,7 @@ extern t_sig_info	g_sig_info;
 
 static int	check_file(char *cmd_path)
 {
-	struct stat ss;
+	struct stat	ss;
 
 	stat(cmd_path, &ss);
 	if ((ss.st_mode & S_IXUSR) && (ss.st_mode & S_IRUSR))
@@ -53,6 +53,7 @@ int	exec_cmd_error(char *cmd, char *cmd_path, bool child_failure)
 bool	wait_options(pid_t pid, bool pipeline)
 {
 	int	wstatus;
+
 	waitpid(pid, &wstatus, 0);
 	if (((!WIFEXITED(wstatus) && !pipeline)
 			|| WEXITSTATUS(wstatus) == CHILD_FAILURE)

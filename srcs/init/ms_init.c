@@ -51,7 +51,7 @@ static void	sigint_handler(int sigint)
 
 static void	sigquit_handler(int sigquit)
 {
-	(void)sigquit;	
+	(void)sigquit;
 	ft_putendl_fd("Quit: 3", STDERR_FILENO);
 	g_sig_info.exit_status = 131;
 }

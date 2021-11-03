@@ -45,7 +45,7 @@ static bool	conclude_pipeline(t_pidlist *pidlst)
 		if (pidlst->pid == 0)
 			g_sig_info.exit_status = 127;
 		else if (!wait_options(pidlst->pid, true))
-			return (false);	
+			return (false);
 		pidlst = pidlst->next;
 	}
 	return (true);
