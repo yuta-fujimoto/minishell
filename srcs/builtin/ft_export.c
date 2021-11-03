@@ -41,19 +41,16 @@ int	ft_export_print(t_env *env)
 	return (ft_export_end(env, SUCCESS, NOTHING));
 }
 
-int	ft_export_update(char *s, t_env **env)
+int	ft_export_update(char *name, char *value, t_env **env, int type)
 {
-	char	*name;
-	char	*value;
 	t_env	*env_var;
 
-	name = get_name(s);
-	if (!name)
-		return (FAILURE);
-	value = get_value(s);
-	if (!value && ft_strchr(s, '='))
+	if (!name || (!value && type != NOTHING))
 	{
-		free(name);
+		if (name)
+			free(name);
+		if (value)
+			free(value);
 		return (FAILURE);
 	}
 	env_var = ft_find_env_var(*env, name);
@@ -64,21 +61,19 @@ int	ft_export_update(char *s, t_env **env)
 		env_var->value = value;
 		return (SUCCESS);
 	}
-	if ((env_var && !value) || ft_envadd_back(env
+	if (env_var && !value)
+		free(name);
+	else if (!ft_envadd_back(env
 			, ft_envnew_for_value_null(name, value)))
-		return (SUCCESS);
-	return (FAILURE);
+		return (FAILURE);
+	return (SUCCESS);
 }
 
-int	ft_export_add(char *s, t_env **env)
+int	ft_export_add(char *name, char *value, t_env **env)
 {
 	t_env	*p;
 	char	*tmp;
-	char	*name;
-	char	*value;
 
-	name = get_name(s);
-	value = get_value(s);
 	p = ft_find_env_var(*env, name);
 	if (!p)
 	{
@@ -112,9 +107,11 @@ int	ft_export(char **av)
 		if (type == ERROR)
 			ft_export_error(*av);
 		else if ((type == UPDATE || type == NOTHING)
-			&& ft_export_update(*av, &env) == FAILURE)
+			&& ft_export_update(get_name(*av), get_value(*av),
+				&env, type) == FAILURE)
 			return (ft_export_end(env, FAILURE, type));
-		else if (type == ADD && ft_export_add(*av, &env) == FAILURE)
+		else if (type == ADD && ft_export_add(get_name(*av),
+			get_value(*av), &env) == FAILURE)
 			return (ft_export_end(env, FAILURE, type));
 		av++;
 	}
