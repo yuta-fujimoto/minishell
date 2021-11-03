@@ -21,7 +21,8 @@ void	init_termios_attr(t_set *set)
 }
 
 static void	sigint_handler(int sigint)
-{	
+{
+	g_sig_info.exit_status = 1;
 	g_sig_info.signal = sigint;
 	if (g_sig_info.heredoc)
 	{
@@ -35,7 +36,6 @@ static void	sigint_handler(int sigint)
 	}
 	else if (!g_sig_info.child)
 	{
-		g_sig_info.exit_status = 1;
 		if (!g_sig_info.heredoc_sigint && !g_sig_info.heredoc_sigeof)
 			write(STDOUT_FILENO, "\n", 1);
 		rl_on_new_line();
