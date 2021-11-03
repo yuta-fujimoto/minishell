@@ -77,4 +77,4 @@ int	main(int ac, char **av)
 		init_params(&set);
 		set.input = readline("minishell > ");
 	}
-}//readline("\033[38;5;33mmsh-0.42$\033[39m ");
+}//readline("\033[38;5;75mmsh-0.42$\033[39m ");
