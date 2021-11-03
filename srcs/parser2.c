@@ -1,4 +1,5 @@
 #include "../incs/minishell.h"
+#include <unistd.h>
 
 void	parser_error(t_set *set)
 {

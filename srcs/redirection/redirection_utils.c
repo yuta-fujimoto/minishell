@@ -1,4 +1,5 @@
 #include "../../incs/minishell.h"
+#include <sys/stat.h>
 
 bool	has_redirection(t_node *node)
 {

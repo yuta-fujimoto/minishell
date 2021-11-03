@@ -1,4 +1,5 @@
 #include "../../incs/minishell.h"
+#include <unistd.h>
 
 bool	pipe_exit_failure(t_pipes *pipes)
 {
