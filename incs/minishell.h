@@ -199,6 +199,7 @@ int		identifier_type(char *s);
 void	delete_env(t_env **env, char *name);
 void	print_name_value(t_env *env);
 void	ft_swap_env(t_env *a, t_env *b);
+t_env	*ft_envnew_for_value_null(char *name, char *value);
 t_env	*environ_to_list(void);
 int		list_to_environ(t_env *env);
 void	free_environ(void);

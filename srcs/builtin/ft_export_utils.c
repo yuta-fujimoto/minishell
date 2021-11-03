@@ -64,9 +64,14 @@ void	print_name_value(t_env *env)
 	{
 		ft_putstr_fd("declare -x ", STDOUT_FILENO);
 		ft_putstr_fd(env->name, STDOUT_FILENO);
-		ft_putstr_fd("=\"", STDOUT_FILENO);
-		ft_putstr_fd(env->value, STDOUT_FILENO);
-		ft_putendl_fd("\"", STDOUT_FILENO);
+		if (env->value)
+		{
+			ft_putstr_fd("=\"", STDOUT_FILENO);
+			ft_putstr_fd(env->value, STDOUT_FILENO);
+			ft_putendl_fd("\"", STDOUT_FILENO);
+		}
+		else
+			ft_putchar_fd('\n', STDOUT_FILENO);
 		env = env->next;
 	}
 }

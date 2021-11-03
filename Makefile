@@ -32,6 +32,7 @@ SRCS :=	srcs/main.c \
 		srcs/builtin/canonical_path.c \
 		srcs/builtin/ft_export_utils.c \
 		srcs/builtin/env_utils.c \
+		srcs/builtin/env_utils2.c \
 		srcs/expansion/expansion.c \
 		srcs/expansion/expansion_node.c \
 		srcs/expansion/expansion_node2.c \

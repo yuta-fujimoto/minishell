@@ -106,7 +106,11 @@ exec_test 'export AAA=; env | grep AAA'
 exec_test 'export 1AAA=; env | grep 1AAA'
 exec_test 'export A1AA=; env | grep A1AA'
 exec_test 'export A1AA; env | grep A1AA'
-exec_test 'export LLL'
+exec_test 'export LLL; env | grep LLL ; export | grep LLL'
+exec_test 'export LLL;  export LLL=YOYO;env | grep LLL ; export | grep LLL'
+exec_test 'export LLL; unset LLL;env | grep LLL ; export | grep LLL'
+exec_test 'export LLL=a; export LLL; env | grep LLL ; export | grep LLL'
+
 # echo "export > a | exit" | bash ; echo "export | grep -v "minishell >" > a | exit" | ./minishell > b | diff a b >> test_env.log | rm a b;
 
 # unset TESTS
