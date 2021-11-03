@@ -24,7 +24,7 @@ static char	*get_available_path(char *pathname, bool *print_path)
 		return (NULL);
 	if (!newpath)
 		return (canonical_path(ft_strdup(pathname)));
-	else
+	else if (print_path)
 		*print_path = true;
 	if (newpath[0] == '/')
 		return (canonical_path(newpath));
@@ -90,7 +90,7 @@ static int	ft_cd_env(char *env)
 		ft_putendl_fd(" not set", STDERR_FILENO);
 		return (SUCCESS);
 	}
-	pathname = get_available_path(pathname, false);
+	pathname = get_available_path(pathname, NULL);
 	if (!pathname && errno != ENOENT)
 		return (FAILURE);
 	if (chdir(pathname) == SYS_ERROR)
