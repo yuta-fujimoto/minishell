@@ -114,7 +114,11 @@ exec_test 'export AAA=; env | grep AAA'
 exec_test 'export 1AAA=; env | grep 1AAA'
 exec_test 'export A1AA=; env | grep A1AA'
 exec_test 'export A1AA; env | grep A1AA'
-exec_test 'export LLL'
+exec_test 'export LLL; env | grep LLL ; export | grep LLL'
+exec_test 'export LLL;  export LLL=YOYO;env | grep LLL ; export | grep LLL'
+exec_test 'export LLL; unset LLL;env | grep LLL ; export | grep LLL'
+exec_test 'export LLL=a; export LLL; env | grep LLL ; export | grep LLL'
+
 # echo "export > a | exit" | bash ; echo "export | grep -v "minishell >" > a | exit" | ./minishell > b | diff a b >> test_env.log | rm a b;
 
 # unset TESTS
@@ -243,6 +247,7 @@ exec_test '"echo" result.log | grep 2 | "sort" | head "-1"'
 # exec_test 'echo testing multi ; echo "test 1 ; | and 2" ; cat tests/lorem.txt | grep Lorem'
 exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 755 hello.sh; hello.sh;cp hello.sh ./incs; hello.sh; ./hello.sh; chmod 000 hello.sh; ./hello.sh; export PATH+=:$PWD; hello.sh ; export PATH+=:./incs; hello.sh; rm -rf hello.sh"
 exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 755 hello.sh; hello.sh; ./hello.sh ; unset PWD; hello.sh; export PWD="::::::"; hello.sh; rm -rf hello.sh"
+exec_test 'export aaa; echo $aaa'
 
 # # SYNTAX ERROR
 exec_test ';; test'
@@ -286,6 +291,12 @@ exec_test "export AAA+=A"
 exec_test "cd"
 exec_test "cd ./a b"
 exec_test "cd a b"
+exec_test '/bin/no'
+exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 300 hello.sh; ./hello.sh; rm -f ./hello.sh"
+exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 400 hello.sh; ./hello.sh; rm -f ./hello.sh"
+exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 500 hello.sh; ./hello.sh; rm -f ./hello.sh"
+exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 600 hello.sh; ./hello.sh; rm -f ./hello.sh"
+exec_test "printf '#!/bin/bash\n echo hello' > hello.sh; chmod 700 hello.sh; ./hello.sh; rm -f ./hello.sh"
 
 # PERMISSIONS TESTS
 #exec_test 'touch a; chmod 000 a; ./a; chmod 777 a'

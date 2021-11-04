@@ -12,7 +12,8 @@ bool	ft_env(void)
 	env = environ;
 	while (*env)
 	{
-		ft_putendl_fd(*env, STDOUT_FILENO);
+		if (ft_strchr(*env, '='))
+			ft_putendl_fd(*env, STDOUT_FILENO);
 		env++;
 	}
 	return (SUCCESS);
