@@ -29,7 +29,7 @@ function exec_test()
 	echo ">>> MINISHELL" >>test_error.log
 	echo $@ "; exit" | ./minishell 2>>test_error.log > test_stdout
 	ES_1=$?
-	TEST1=$(cat test_stdout | grep -v "minishell >")
+	TEST1=$(cat test_stdout | grep -v 'msh-0\.42\$')
 	echo ">>> BASH" >>test_error.log
 	TEST2=$(echo $@ "; exit" | bash 2>>test_error.log)
 	ES_2=$?

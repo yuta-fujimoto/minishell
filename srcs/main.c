@@ -39,7 +39,7 @@ static void	ms_execution(t_set *set)
 
 void	ms_exit_eof(t_set *set)
 {
-	ft_putstr_fd("\033[Aminishell > ", STDOUT_FILENO);
+	ft_putstr_fd("\033[A\033[38;5;75mmsh-0.42$\033[39m ", STDOUT_FILENO);
 	ft_putendl_fd("exit", STDERR_FILENO);
 	ms_exit(set, g_sig_info.exit_status, true);
 }
@@ -55,7 +55,7 @@ int	main(int ac, char **av)
 	if (str_equal("-c", av[1], 3))
 		set.input = ft_strdup(av[2]);
 	else
-		set.input = readline("minishell > ");
+		set.input = readline("\033[38;5;75mmsh-0.42$\033[39m ");
 	init_env(&set);
 	while (1)
 	{
@@ -75,6 +75,6 @@ int	main(int ac, char **av)
 			exit(g_sig_info.exit_status);
 		}
 		init_params(&set);
-		set.input = readline("minishell > ");
+		set.input = readline("\033[38;5;75mmsh-0.42$\033[39m ");
 	}
-}//readline("\033[38;5;75mmsh-0.42$\033[39m ");
+}
