@@ -22,7 +22,6 @@ int	cd_error(char *pathname)
 		return (FAILURE);
 	perror(err);
 	free(err);
-	free(pathname);
 	g_sig_info.exit_status = EXIT_FAILURE;
 	return (SUCCESS);
 }

@@ -105,6 +105,8 @@ exec_test 'cd ./././././../minishell/srcs;  pwd; env | grep PWD | sort'
 exec_test 'cd ././././././././././.;  pwd; env | grep PWD | sort'
 exec_test 'export HOME=; cd ; pwd'
 exec_test 'export CDPATH="./"; mkdir dir; cd dir; pwd; cd ..; rmdir dir'
+exec_test 'export HOME=NO; cd'
+exec_test 'export HOME=;cd ; pwd'
 
 # export TESTS
 exec_test 'export AAA=BBB; env | grep AAA'
