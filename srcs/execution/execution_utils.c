@@ -29,6 +29,8 @@ static int	check_file(char *cmd_path)
 
 int	exec_cmd_error(char *cmd, char *cmd_path, bool child_failure)
 {
+	struct stat	ss;
+
 	if (child_failure || !is_acceptable_error(errno) || errno == ENOEXEC)
 	{	
 		if (errno == ENOEXEC)
@@ -41,9 +43,13 @@ int	exec_cmd_error(char *cmd, char *cmd_path, bool child_failure)
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(cmd, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
-	perror(NULL);
+	stat(cmd_path, &ss);
+	if (S_ISDIR(ss.st_mode))
+		ft_putendl_fd("is a directory", STDERR_FILENO);
+	else
+		perror(NULL);
 	free(cmd_path);
-	if (errno == EACCES)
+	if (errno == EACCES || errno == ENOTDIR)
 		return (126);
 	else if (errno == ENOENT)
 		return (127);

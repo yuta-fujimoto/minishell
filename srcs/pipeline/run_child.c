@@ -75,7 +75,9 @@ static bool	update_pipes(t_pipes *pipes)
 void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info)
 {
 	extern char	**environ;
+	char		**tmp;
 
+	tmp = environ;
 	if (!update_pipes(pipes))
 		exit(CHILD_FAILURE);
 	if (has_redirection(n))
@@ -95,6 +97,6 @@ void	run_child(t_node *n, t_pipes *pipes, t_set *set, t_pipe_info *p_info)
 			exit(exec_cmd_error(p_info->cmd[0], NULL, true));
 		exit(EXIT_SUCCESS);
 	}
-	else if (execve(p_info->cmd_path, p_info->cmd, environ) == SYS_ERROR)
+	else if (execve(p_info->cmd_path, p_info->cmd, tmp) == SYS_ERROR)
 		exit(exec_cmd_error(p_info->cmd[0], NULL, false));
 }

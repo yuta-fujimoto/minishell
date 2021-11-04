@@ -20,11 +20,10 @@ static bool	run_gnu_parent(t_pidlist *pidlst, t_set *set, char *cmd_path)
 	return (SUCCESS);
 }
 
-static bool	run_gnu_cmd(char **cmd, t_set *set)
+static bool	run_gnu_cmd(char **cmd, t_set *set, char **tmp)
 {
 	t_pidlist	pidlst;
 	char		*cmd_path;
-	extern char	**environ;
 	bool		path_error;
 
 	cmd_path = NULL;
@@ -40,7 +39,7 @@ static bool	run_gnu_cmd(char **cmd, t_set *set)
 	{
 		if (!mod_termios_attr(set, false))
 			exit(exec_cmd_error(cmd[0], cmd_path, true));
-		if (execve(cmd_path, cmd, environ) == SYS_ERROR)
+		if (execve(cmd_path, cmd, tmp) == SYS_ERROR)
 			exit(exec_cmd_error(cmd[0], cmd_path, false));
 	}
 	else
@@ -62,12 +61,15 @@ char	**get_cmd(t_node *node, t_set *set, t_redir *redir, bool *touch)
 
 static bool	run_cmd(char **cmd, t_set *set)
 {
-	bool	rlt;
+	bool		rlt;
+	extern char	**environ;
+	char		**tmp;
 
+	tmp = environ;
 	if (is_buildin(cmd[0]))
 		rlt = run_builtin_cmd(cmd, set, true);
 	else
-		rlt = run_gnu_cmd(cmd, set);
+		rlt = run_gnu_cmd(cmd, set, tmp);
 	return (rlt);
 }
 
