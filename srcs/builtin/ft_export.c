@@ -111,7 +111,7 @@ int	ft_export(char **av)
 				&env, type) == FAILURE)
 			return (ft_export_end(env, FAILURE, type));
 		else if (type == ADD && ft_export_add(get_name(*av),
-			get_value(*av), &env) == FAILURE)
+				get_value(*av), &env) == FAILURE)
 			return (ft_export_end(env, FAILURE, type));
 		av++;
 	}

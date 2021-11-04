@@ -87,18 +87,21 @@ static int	ft_cd_env(char *env)
 	pathname = getenv(env);
 	if (!pathname)
 	{
-		ft_putstr_fd("cd: ", STDERR_FILENO);
+		ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
 		ft_putstr_fd(env, STDERR_FILENO);
 		ft_putendl_fd(" not set", STDERR_FILENO);
 		return (SUCCESS);
 	}
-	pathname = get_available_path(pathname, NULL);
-	if (!pathname && errno != ENOENT)
-		return (FAILURE);
+	if (pathname[0] == '\0')
+		pathname = "./";
 	if (chdir(pathname) == SYS_ERROR)
 		return (cd_error(pathname));
 	if (str_equal(env, "OLDPWD", 7))
 		ft_putendl_fd(pathname, STDOUT_FILENO);
+	if (pathname[0] == '/')
+		pathname = canonical_path(ft_strdup(pathname));
+	else
+		pathname = canonical_path(absolute_path(pathname, false));
 	return (set_working_directory(pathname));
 }
 
@@ -120,5 +123,5 @@ int	ft_cd(char **av)
 		return (SUCCESS);
 	if (!malloc_success)
 		return (FAILURE);
-	return (cd_error(ft_strdup(av[1])));
+	return (cd_error(av[1]));
 }
