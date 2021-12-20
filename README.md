@@ -49,4 +49,4 @@ In order to run the program, simply run the executable.
 ```bash
 ./minishell
 ```
-To exit the program, you can use the builtin command ``exit`` or press ``Ctrl + d``.
+To exit the program, you can use the builtin command ``exit`` or press ``Ctrl-D``.
