@@ -13,9 +13,12 @@ This program was developed by [Yuta-Fujimoto](https://github.com/yuta-fujimoto) 
 |``echo``  | `-n`                      |
 |``cd``    | relitvie or absolute path |
 |``pwd``   | n/a                       |
-|``export``| n/a                       |
+|``export``| no options                |
+|``unset`` | no options                |
 |``env``   | n/a                       |
-|``exit``  | n/a                       |
+|``exit``  | no options                |
+
+Also, search and launch the right executable.
 
 #### Expansion
 - `'` inhibits all interpretions of a sequence of characters
