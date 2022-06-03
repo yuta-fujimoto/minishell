@@ -60,3 +60,7 @@ In order to run the program, simply run the executable.
 ./minishell
 ```
 To exit the program, you can use the builtin command ``exit`` or press ``Ctrl-d``.
+
+### Structure
+![Untitled Diagram drawio (1)](https://user-images.githubusercontent.com/64348608/171855905-1ce9b77e-1f93-472e-97b6-3a13610aeacc.png)
+
